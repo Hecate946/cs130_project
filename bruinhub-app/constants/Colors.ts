@@ -8,13 +8,14 @@ const tintColorDark = '#fff';
 
 export const Colors = {
   light: {
-    text: '#11181C',
-    background: '#fff',
+    text: '#0c0c0c',
+    background: '#f5f5f5',
     tint: tintColorLight,
-    icon: '#687076',
-    tabIconDefault: '#687076',
+    icon: '#DAEBFE',
+    tabIconDefault: '#DAEBFE',
     tabIconSelected: tintColorLight,
   },
+  // TODO: Find colors for dark theme
   dark: {
     text: '#ECEDEE',
     background: '#151718',
