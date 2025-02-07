@@ -41,6 +41,30 @@
       "serverId": "3c7ad661-7ce8-4163-af0d-ebc0f4c5b529"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "f9955304_da74a0b9",
+        "filename": "bruinhub-app/app/OnboardingScreen.tsx",
+        "patchSetId": 2
+      },
+      "lineNbr": 125,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2025-02-07T17:06:25Z",
+      "side": 1,
+      "message": "Yeah it should be toggle-able, but uhhh lowk we can keep the light/dark functionality as a reach/very low prio. I\u0027ll go back through and change if needed LOL",
+      "parentUuid": "be38ffed_a1e71328",
+      "range": {
+        "startLine": 125,
+        "startChar": 21,
+        "endLine": 125,
+        "endChar": 44
+      },
+      "revId": "bcc13567524506fd2ea0f644c79792ae246bd522",
+      "serverId": "3c7ad661-7ce8-4163-af0d-ebc0f4c5b529"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "0e10a59d_7d459919",
@@ -54,6 +78,30 @@
       "writtenOn": "2025-02-07T08:17:50Z",
       "side": 1,
       "message": "Are there separate ones for Rendez West and East?",
+      "range": {
+        "startLine": 32,
+        "startChar": 15,
+        "endLine": 32,
+        "endChar": 25
+      },
+      "revId": "bcc13567524506fd2ea0f644c79792ae246bd522",
+      "serverId": "3c7ad661-7ce8-4163-af0d-ebc0f4c5b529"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e529cb82_9a6ea5d0",
+        "filename": "bruinhub-app/constants/Categories.ts",
+        "patchSetId": 2
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2025-02-07T17:06:25Z",
+      "side": 1,
+      "message": "Not sure, we need to confirm with everyone.",
+      "parentUuid": "0e10a59d_7d459919",
       "range": {
         "startLine": 32,
         "startChar": 15,
