@@ -1,0 +1,67 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "0d382103_e7018e43",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2025-02-07T08:17:50Z",
+      "side": 1,
+      "message": "looks great! just a couple nits",
+      "revId": "bcc13567524506fd2ea0f644c79792ae246bd522",
+      "serverId": "3c7ad661-7ce8-4163-af0d-ebc0f4c5b529"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "be38ffed_a1e71328",
+        "filename": "bruinhub-app/app/OnboardingScreen.tsx",
+        "patchSetId": 2
+      },
+      "lineNbr": 125,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2025-02-07T08:17:50Z",
+      "side": 1,
+      "message": "If we\u0027re going to implement both light and dark modes, shouldn\u0027t this be toggleable? I couldn\u0027t find any logic for switching between the two (or using the system pref).",
+      "range": {
+        "startLine": 125,
+        "startChar": 21,
+        "endLine": 125,
+        "endChar": 44
+      },
+      "revId": "bcc13567524506fd2ea0f644c79792ae246bd522",
+      "serverId": "3c7ad661-7ce8-4163-af0d-ebc0f4c5b529"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0e10a59d_7d459919",
+        "filename": "bruinhub-app/constants/Categories.ts",
+        "patchSetId": 2
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2025-02-07T08:17:50Z",
+      "side": 1,
+      "message": "Are there separate ones for Rendez West and East?",
+      "range": {
+        "startLine": 32,
+        "startChar": 15,
+        "endLine": 32,
+        "endChar": 25
+      },
+      "revId": "bcc13567524506fd2ea0f644c79792ae246bd522",
+      "serverId": "3c7ad661-7ce8-4163-af0d-ebc0f4c5b529"
+    }
+  ]
+}
