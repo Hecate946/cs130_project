@@ -2,7 +2,7 @@ import { Pressable, StyleSheet, Text, View } from "react-native";
 import { Switch } from 'react-native-paper';
 import { Colors } from "@/constants/Colors";
 import * as Haptics from "expo-haptics";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 interface NotificationItemProps {
@@ -16,13 +16,21 @@ export default function NotificationItem({name, id} : NotificationItemProps) {
   const [isSwitchOn, setIsSwitchOn] = useState(false); //I will call setEnabled, which invokes useState which will do the hard work for me.
   //"enabled" is the boolean that holds the actual value.
 
+  useEffect(() => {
+    const loadSwitchState = async () => {
+      const storedValue = await AsyncStorage.getItem(`notification_${id}`);
+      setIsSwitchOn(storedValue === "on");
+    };
+
+    loadSwitchState();
+  }, []);
+
   const onToggleSwitch = async () => {
     const newValue = !isSwitchOn ? "on" : "off";
+    setIsSwitchOn(!isSwitchOn);
 
     await AsyncStorage.setItem(`notification_${id}`, newValue);
     await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-  
-    setIsSwitchOn(!isSwitchOn);
   };
 
   return (
