@@ -18,7 +18,18 @@ const Libraries = Categories.libraries;
 const ReslifeStudy = Categories.reslifeStudy;
 const ReslifeSpaces = Categories.reslifeSpaces;
 
-export default function NotificationsScreen() {
+interface NotificationsScreenProps {
+  onFinish: () => void;
+};
+
+export default function NotificationsScreen({ onFinish }: NotificationsScreenProps) {
+  
+  const handleFinish = async () => {
+    await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy); // Light, Medium, Heavy
+    //await AsyncStorage.setItem("finishedOnboarding", "true");
+    onFinish();
+  };
+
   return (
     <View style={styles.container}>
       <ScrollView
@@ -79,7 +90,7 @@ export default function NotificationsScreen() {
         <Link href="/" asChild>
           <Button
             style={styles.button}
-            //onPress={handleFinish}
+            onPress={handleFinish}
             uppercase={true}
             mode="elevated"
             //contentStyle={styles.buttonContent}
