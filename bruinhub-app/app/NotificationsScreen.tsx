@@ -46,42 +46,42 @@ export default function NotificationsScreen({ onFinish }: NotificationsScreenPro
         <Divider name="Restaurants" />
         <View /*style={styles.chipContainer}*/>
           {Restaurants.map((item) => (
-            <NotificationItem name={item.name} key={item.key}/>
+            <NotificationItem name={item.name} key={item.key} id={item.key}/>
           ))}
         </View> 
 
         <Divider name="Takeout" />
         <View /*style={styles.chipContainer}*/>
           {Takeout.map((item) => (
-            <NotificationItem name={item.name} key={item.key}/>
+            <NotificationItem name={item.name} key={item.key} id={item.key}/>
           ))}
         </View>
 
         <Divider name="Gyms" />
         <View /*style={styles.chipContainer}*/>
           {Gyms.map((item) => (
-            <NotificationItem name={item.name} key={item.key}/>
+            <NotificationItem name={item.name} key={item.key} id={item.key}/>
           ))}
         </View>
 
         <Divider name="Libraries" />
         <View /*style={styles.chipContainer}*/>
           {Libraries.map((item) => (
-            <NotificationItem name={item.name} key={item.key}/>
+            <NotificationItem name={item.name} key={item.key} id={item.key}/>
           ))}
         </View>
 
         <Divider name="ResLife Study Rooms" />
         <View /*style={styles.chipContainer}*/>
           {ReslifeStudy.map((item) => (
-            <NotificationItem name={item.name} key={item.key}/>
+            <NotificationItem name={item.name} key={item.key} id={item.key}/>
           ))}
         </View>
 
         <Divider name="ResLife Spaces" />
         <View /*style={styles.chipContainer}*/>
           {ReslifeSpaces.map((item) => (
-            <NotificationItem name={item.name} key={item.key}/>
+            <NotificationItem name={item.name} key={item.key} id={item.key}/>
           ))}
         </View>
 
