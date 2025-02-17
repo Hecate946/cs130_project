@@ -1,0 +1,67 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "0f51ca84_b118a0b1",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000003
+      },
+      "writtenOn": "2025-02-17T00:37:32Z",
+      "side": 1,
+      "message": "Some nits on the Home screen, the other files look solid. Thanks Nate!",
+      "revId": "a5ed808149fa60de710068ab1849ab2c4d0c4b8f",
+      "serverId": "3c7ad661-7ce8-4163-af0d-ebc0f4c5b529"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "58655cdd_ca571677",
+        "filename": "bruinhub-app/app/HomeScreen.tsx",
+        "patchSetId": 3
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 1000003
+      },
+      "writtenOn": "2025-02-17T00:37:32Z",
+      "side": 1,
+      "message": "nit -- use a better name for this variable, such as pin_AsyncStorageKey, etc. I think setting a convention for naming here on the home screen for multiple types of storage keys is important since the home screen will end up displaying lots of types of things.",
+      "range": {
+        "startLine": 43,
+        "startChar": 10,
+        "endLine": 43,
+        "endChar": 21
+      },
+      "revId": "a5ed808149fa60de710068ab1849ab2c4d0c4b8f",
+      "serverId": "3c7ad661-7ce8-4163-af0d-ebc0f4c5b529"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "fafcaa63_f74c22c1",
+        "filename": "bruinhub-app/app/HomeScreen.tsx",
+        "patchSetId": 3
+      },
+      "lineNbr": 81,
+      "author": {
+        "id": 1000003
+      },
+      "writtenOn": "2025-02-17T00:37:32Z",
+      "side": 1,
+      "message": "Nice to include some comments that dictate why the threshold is set to 0.25, etc. to improve readability for collaborators.",
+      "range": {
+        "startLine": 77,
+        "startChar": 2,
+        "endLine": 81,
+        "endChar": 5
+      },
+      "revId": "a5ed808149fa60de710068ab1849ab2c4d0c4b8f",
+      "serverId": "3c7ad661-7ce8-4163-af0d-ebc0f4c5b529"
+    }
+  ]
+}
