@@ -1,4 +1,4 @@
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import { Switch } from 'react-native-paper';
 import { Colors } from "@/constants/Colors";
 import * as Haptics from "expo-haptics";
@@ -11,10 +11,8 @@ interface NotificationItemProps {
 };
 
 export default function NotificationItem({name, id} : NotificationItemProps) {
-  //Example: const [enabled, setEnabled] = useState(false); 
 
-  const [isSwitchOn, setIsSwitchOn] = useState(false); //I will call setEnabled, which invokes useState which will do the hard work for me.
-  //"enabled" is the boolean that holds the actual value.
+  const [isSwitchOn, setIsSwitchOn] = useState(false);
 
   useEffect(() => {
     const loadSwitchState = async () => {
@@ -39,7 +37,7 @@ export default function NotificationItem({name, id} : NotificationItemProps) {
         {name}
       </Text>
       <Switch
-        color={Colors.dark.icon}
+        color={Colors.light.tint}
         value={isSwitchOn} 
         onValueChange={onToggleSwitch} 
       >
@@ -50,9 +48,9 @@ export default function NotificationItem({name, id} : NotificationItemProps) {
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: "row", // Places items in a row
-    alignItems: "center", // Aligns items vertically
-    justifyContent: "space-between", // Pushes items to the edges
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
     padding: 16,
     backgroundColor: "#fff",
     borderBottomWidth: 1,

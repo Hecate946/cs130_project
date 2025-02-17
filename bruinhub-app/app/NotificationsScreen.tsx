@@ -2,14 +2,9 @@ import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { Link } from "expo-router";
 import { Colors } from "@/constants/Colors";
 import { Button } from "react-native-paper";
-import * as Haptics from "expo-haptics";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Categories } from "@/constants/Categories";
+import * as Haptics from "expo-haptics";import { Categories } from "@/constants/Categories";
 import NotificationItem from "@/components/notifications/NotificationItem";
 import Divider from "@/components/Divider";
-
-//const array_categories = ["Fitness", "Dining", "Study Rooms"];
-//const array_restaurants = [{name: "B-Plate", "id": '0'}, {name: "De Neve", "id": '1'}, {name: "Epicuria", "id": '2'},{name: "The Study", "id": '3'},{name: "Rendezvous", "id": '4'},];
 
 const Restaurants = Categories.diningHalls;
 const Takeout = Categories.takeout;
@@ -25,8 +20,7 @@ interface NotificationsScreenProps {
 export default function NotificationsScreen({ onFinish }: NotificationsScreenProps) {
   
   const handleFinish = async () => {
-    await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy); // Light, Medium, Heavy
-    //await AsyncStorage.setItem("finishedOnboarding", "true");
+    await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
     onFinish();
   };
 
@@ -35,7 +29,6 @@ export default function NotificationsScreen({ onFinish }: NotificationsScreenPro
       <ScrollView
         style={styles.scrollContainer}
         contentContainerStyle={styles.contentContainer}
-        //keyboardShouldPersistTaps="handled"
       >
         <View style={styles.welcomeContainer}>
           <Text style={styles.title}>Notifications</Text>
@@ -44,42 +37,42 @@ export default function NotificationsScreen({ onFinish }: NotificationsScreenPro
         </View>
 
         <Divider name="Restaurants" />
-        <View /*style={styles.chipContainer}*/>
+        <View>
           {Restaurants.map((item) => (
             <NotificationItem name={item.name} key={item.key} id={item.key}/>
           ))}
         </View> 
 
         <Divider name="Takeout" />
-        <View /*style={styles.chipContainer}*/>
+        <View>
           {Takeout.map((item) => (
             <NotificationItem name={item.name} key={item.key} id={item.key}/>
           ))}
         </View>
 
         <Divider name="Gyms" />
-        <View /*style={styles.chipContainer}*/>
+        <View>
           {Gyms.map((item) => (
             <NotificationItem name={item.name} key={item.key} id={item.key}/>
           ))}
         </View>
 
         <Divider name="Libraries" />
-        <View /*style={styles.chipContainer}*/>
+        <View>
           {Libraries.map((item) => (
             <NotificationItem name={item.name} key={item.key} id={item.key}/>
           ))}
         </View>
 
         <Divider name="ResLife Study Rooms" />
-        <View /*style={styles.chipContainer}*/>
+        <View>
           {ReslifeStudy.map((item) => (
             <NotificationItem name={item.name} key={item.key} id={item.key}/>
           ))}
         </View>
 
         <Divider name="ResLife Spaces" />
-        <View /*style={styles.chipContainer}*/>
+        <View>
           {ReslifeSpaces.map((item) => (
             <NotificationItem name={item.name} key={item.key} id={item.key}/>
           ))}
@@ -93,7 +86,6 @@ export default function NotificationsScreen({ onFinish }: NotificationsScreenPro
             onPress={handleFinish}
             uppercase={true}
             mode="elevated"
-            //contentStyle={styles.buttonContent}
             labelStyle={styles.buttonLabel}
           >
             Done
@@ -102,34 +94,10 @@ export default function NotificationsScreen({ onFinish }: NotificationsScreenPro
       </View>
     </View>
   );
-  /*return (
-    <View style={styles.container}>
-      <View style = {styles.leftAlignedText}>
-      <Text>Notifications</Text>
-      <Text style={styles.bannerText}>Dining Halls</Text>
-      </View>
-      {array_restaurants.map(function(restaurant) {
-      return (
-        <View key={restaurant.id}>
-          <NotificationItem name={restaurant.name} />
-        </View>
-      )
-      })}
-      <Link href="/HomeScreen" asChild>
-        <Button 
-          style={styles.button} 
-          labelStyle={styles.buttonLabel}
-          mode="contained">
-          <Text>Done</Text>
-        </Button>
-      </Link>
-    </View> 
-  ); */
 }
 
 const styles = StyleSheet.create({
   container: {
-    //padding: 12,
     flex: 1,
     justifyContent: "flex-start", //puts in center of screen up/down wise.
     alignItems: "center",//alignItems: "flex-start", //aligns actual text and buttons to center left/right wise.
