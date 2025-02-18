@@ -1,27 +1,56 @@
 from flask import Flask, jsonify
-import psycopg
+from flask_cors import CORS
 import os
+from datetime import datetime
+from database import DatabaseManager
+from database.gyms import GymDatabase
+from tasks import init_scheduler
+from tasks.gym_tasks import setup_gym_tasks, scrape_and_store_gym_data
+from routes import api  # Add this import
+import logging
+
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+)
 
 app = Flask(__name__)
+CORS(app)  # Enable CORS for all routes
 
-# Load database connection URL
+# Register the API blueprint
+app.register_blueprint(api, url_prefix='/api')  # Add this line
+
+# Load configuration
 DB_URL = os.getenv("DATABASE_URL")
+SCRAPE_INTERVAL = int(os.getenv("SCRAPE_INTERVAL", "300"))  # Default 5 minutes
 
-def test_db_connection():
-    try:
-        with psycopg.connect(DB_URL) as conn:
-            with conn.cursor() as cur:
-                cur.execute("SELECT 1;")
-                return True
-    except Exception as e:
-        print(f"Database connection failed: {e}")
-        return False
+# Initialize database managers
+db_manager = DatabaseManager(DB_URL)
 
-@app.route('/test-db', methods=['GET'])
-def test_db():
-    if test_db_connection():
-        return jsonify({"message": "Database connected successfully!"})
-    return jsonify({"error": "Failed to connect to the database."}), 500
+# Setup tasks
+setup_gym_tasks(DB_URL)
+
+# Health check endpoint
+@app.route('/health', methods=['GET'])
+def health_check():
+    if db_manager.test_connection():
+        return jsonify({
+            "status": "healthy",
+            "database": "connected",
+            "timestamp": datetime.now().isoformat()
+        })
+    return jsonify({
+        "status": "unhealthy",
+        "database": "disconnected",
+        "timestamp": datetime.now().isoformat()
+    }), 500
 
 if __name__ == "__main__":
-    app.run(debug=True, host="0.0.0.0", port=5000)
+    # Initialize scheduler
+    scheduler = init_scheduler(SCRAPE_INTERVAL)
+    
+    # Initial scrape on startup
+    scrape_and_store_gym_data()
+    
+    app.run(debug=True, host="0.0.0.0", port=5001)
