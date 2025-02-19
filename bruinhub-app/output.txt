@@ -1,0 +1,235 @@
+
+> bruinhub-app@1.0.0 test
+> jest --watchAll
+
+  console.error
+    Warning: Encountered two children with the same key, `1`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version.
+        at View
+        at View (/Users/nathan/Documents/CS/CS130/cs130_project/bruinhub-app/node_modules/react-native/jest/mockComponent.js:33:18)
+        at RCTScrollView
+        at Component (/Users/nathan/Documents/CS/CS130/cs130_project/bruinhub-app/node_modules/react-native/jest/mockNativeComponent.js:17:18)
+        at ScrollViewMock (/Users/nathan/Documents/CS/CS130/cs130_project/bruinhub-app/node_modules/react-native/jest/mockScrollView.js:22:23)
+        at View
+        at View (/Users/nathan/Documents/CS/CS130/cs130_project/bruinhub-app/node_modules/react-native/jest/mockComponent.js:33:18)
+        at onFinish (/Users/nathan/Documents/CS/CS130/cs130_project/bruinhub-app/app/HomeScreen.tsx:17:38)
+
+      46 |   it("filters items based on search query", async () => {
+      47 |     CategoriesMap.set("Category1", new Map([["1", "Test Item"], ["2", "Another Item"]]));
+    > 48 |     const { getByPlaceholderText, queryByText } = render(<HomeScreen onFinish={mockOnFinish} />);
+         |                                                         ^
+      49 |
+      50 |     const searchInput = getByPlaceholderText("Search");
+      51 |     fireEvent.changeText(searchInput, "Test");
+
+      at printWarning (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:72:30)
+      at error (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:46:7)
+      at warnOnInvalidKey (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:3716:11)
+      at reconcileChildrenArray (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:3753:21)
+      at reconcileChildFibers (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:4214:16)
+      at reconcileChildren (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:9122:28)
+      at updateFragment (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:9447:3)
+      at beginWork (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:11404:14)
+      at performUnitOfWork (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:15847:12)
+      at workLoopSync (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:15784:5)
+      at renderRootSync (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:15756:7)
+      at performConcurrentWorkOnRoot (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:15114:74)
+      at flushActQueue (node_modules/react/cjs/react.development.js:2667:24)
+      at act (node_modules/react/cjs/react.development.js:2582:11)
+      at actImplementation (node_modules/@testing-library/react-native/src/act.ts:31:25)
+      at renderWithAct (node_modules/@testing-library/react-native/src/render-act.ts:12:11)
+      at renderInternal (node_modules/@testing-library/react-native/src/render.tsx:68:33)
+      at renderInternal (node_modules/@testing-library/react-native/src/render.tsx:43:10)
+      at Object.<anonymous> (__tests__/HomeScreen-test.tsx:48:57)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+      at node_modules/@babel/runtime/helpers/asyncToGenerator.js:22:7
+      at Object.<anonymous> (node_modules/@babel/runtime/helpers/asyncToGenerator.js:14:12)
+
+  console.error
+    Warning: Encountered two children with the same key, `2`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version.
+        at View
+        at View (/Users/nathan/Documents/CS/CS130/cs130_project/bruinhub-app/node_modules/react-native/jest/mockComponent.js:33:18)
+        at RCTScrollView
+        at Component (/Users/nathan/Documents/CS/CS130/cs130_project/bruinhub-app/node_modules/react-native/jest/mockNativeComponent.js:17:18)
+        at ScrollViewMock (/Users/nathan/Documents/CS/CS130/cs130_project/bruinhub-app/node_modules/react-native/jest/mockScrollView.js:22:23)
+        at View
+        at View (/Users/nathan/Documents/CS/CS130/cs130_project/bruinhub-app/node_modules/react-native/jest/mockComponent.js:33:18)
+        at onFinish (/Users/nathan/Documents/CS/CS130/cs130_project/bruinhub-app/app/HomeScreen.tsx:17:38)
+
+      46 |   it("filters items based on search query", async () => {
+      47 |     CategoriesMap.set("Category1", new Map([["1", "Test Item"], ["2", "Another Item"]]));
+    > 48 |     const { getByPlaceholderText, queryByText } = render(<HomeScreen onFinish={mockOnFinish} />);
+         |                                                         ^
+      49 |
+      50 |     const searchInput = getByPlaceholderText("Search");
+      51 |     fireEvent.changeText(searchInput, "Test");
+
+      at printWarning (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:72:30)
+      at error (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:46:7)
+      at warnOnInvalidKey (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:3716:11)
+      at reconcileChildrenArray (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:3753:21)
+      at reconcileChildFibers (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:4214:16)
+      at reconcileChildren (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:9122:28)
+      at updateFragment (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:9447:3)
+      at beginWork (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:11404:14)
+      at performUnitOfWork (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:15847:12)
+      at workLoopSync (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:15784:5)
+      at renderRootSync (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:15756:7)
+      at performConcurrentWorkOnRoot (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:15114:74)
+      at flushActQueue (node_modules/react/cjs/react.development.js:2667:24)
+      at act (node_modules/react/cjs/react.development.js:2582:11)
+      at actImplementation (node_modules/@testing-library/react-native/src/act.ts:31:25)
+      at renderWithAct (node_modules/@testing-library/react-native/src/render-act.ts:12:11)
+      at renderInternal (node_modules/@testing-library/react-native/src/render.tsx:68:33)
+      at renderInternal (node_modules/@testing-library/react-native/src/render.tsx:43:10)
+      at Object.<anonymous> (__tests__/HomeScreen-test.tsx:48:57)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+      at node_modules/@babel/runtime/helpers/asyncToGenerator.js:22:7
+      at Object.<anonymous> (node_modules/@babel/runtime/helpers/asyncToGenerator.js:14:12)
+
+  console.error
+    Warning: Encountered two children with the same key, `1`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version.
+        at View
+        at View (/Users/nathan/Documents/CS/CS130/cs130_project/bruinhub-app/node_modules/react-native/jest/mockComponent.js:33:18)
+        at RCTScrollView
+        at Component (/Users/nathan/Documents/CS/CS130/cs130_project/bruinhub-app/node_modules/react-native/jest/mockNativeComponent.js:17:18)
+        at ScrollViewMock (/Users/nathan/Documents/CS/CS130/cs130_project/bruinhub-app/node_modules/react-native/jest/mockScrollView.js:22:23)
+        at View
+        at View (/Users/nathan/Documents/CS/CS130/cs130_project/bruinhub-app/node_modules/react-native/jest/mockComponent.js:33:18)
+        at onFinish (/Users/nathan/Documents/CS/CS130/cs130_project/bruinhub-app/app/HomeScreen.tsx:17:38)
+
+      58 |
+      59 |   it("calls onFinish and clears pins when finishing onboarding", async () => {
+    > 60 |     const { getByText } = render(<HomeScreen onFinish={mockOnFinish} />);
+         |                                 ^
+      61 |     fireEvent.press(getByText("Back to onboarding for dev purposes"));
+      62 |
+      63 |     await waitFor(() => {
+
+      at printWarning (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:72:30)
+      at error (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:46:7)
+      at warnOnInvalidKey (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:3716:11)
+      at reconcileChildrenArray (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:3753:21)
+      at reconcileChildFibers (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:4214:16)
+      at reconcileChildren (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:9122:28)
+      at updateFragment (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:9447:3)
+      at beginWork (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:11404:14)
+      at performUnitOfWork (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:15847:12)
+      at workLoopSync (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:15784:5)
+      at renderRootSync (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:15756:7)
+      at performConcurrentWorkOnRoot (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:15114:74)
+      at flushActQueue (node_modules/react/cjs/react.development.js:2667:24)
+      at act (node_modules/react/cjs/react.development.js:2582:11)
+      at actImplementation (node_modules/@testing-library/react-native/src/act.ts:31:25)
+      at renderWithAct (node_modules/@testing-library/react-native/src/render-act.ts:12:11)
+      at renderInternal (node_modules/@testing-library/react-native/src/render.tsx:68:33)
+      at renderInternal (node_modules/@testing-library/react-native/src/render.tsx:43:10)
+      at Object.<anonymous> (__tests__/HomeScreen-test.tsx:60:33)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+      at node_modules/@babel/runtime/helpers/asyncToGenerator.js:22:7
+      at Object.<anonymous> (node_modules/@babel/runtime/helpers/asyncToGenerator.js:14:12)
+
+  console.error
+    Warning: Encountered two children with the same key, `2`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version.
+        at View
+        at View (/Users/nathan/Documents/CS/CS130/cs130_project/bruinhub-app/node_modules/react-native/jest/mockComponent.js:33:18)
+        at RCTScrollView
+        at Component (/Users/nathan/Documents/CS/CS130/cs130_project/bruinhub-app/node_modules/react-native/jest/mockNativeComponent.js:17:18)
+        at ScrollViewMock (/Users/nathan/Documents/CS/CS130/cs130_project/bruinhub-app/node_modules/react-native/jest/mockScrollView.js:22:23)
+        at View
+        at View (/Users/nathan/Documents/CS/CS130/cs130_project/bruinhub-app/node_modules/react-native/jest/mockComponent.js:33:18)
+        at onFinish (/Users/nathan/Documents/CS/CS130/cs130_project/bruinhub-app/app/HomeScreen.tsx:17:38)
+
+      58 |
+      59 |   it("calls onFinish and clears pins when finishing onboarding", async () => {
+    > 60 |     const { getByText } = render(<HomeScreen onFinish={mockOnFinish} />);
+         |                                 ^
+      61 |     fireEvent.press(getByText("Back to onboarding for dev purposes"));
+      62 |
+      63 |     await waitFor(() => {
+
+      at printWarning (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:72:30)
+      at error (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:46:7)
+      at warnOnInvalidKey (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:3716:11)
+      at reconcileChildrenArray (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:3753:21)
+      at reconcileChildFibers (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:4214:16)
+      at reconcileChildren (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:9122:28)
+      at updateFragment (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:9447:3)
+      at beginWork (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:11404:14)
+      at performUnitOfWork (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:15847:12)
+      at workLoopSync (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:15784:5)
+      at renderRootSync (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:15756:7)
+      at performConcurrentWorkOnRoot (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:15114:74)
+      at flushActQueue (node_modules/react/cjs/react.development.js:2667:24)
+      at act (node_modules/react/cjs/react.development.js:2582:11)
+      at actImplementation (node_modules/@testing-library/react-native/src/act.ts:31:25)
+      at renderWithAct (node_modules/@testing-library/react-native/src/render-act.ts:12:11)
+      at renderInternal (node_modules/@testing-library/react-native/src/render.tsx:68:33)
+      at renderInternal (node_modules/@testing-library/react-native/src/render.tsx:43:10)
+      at Object.<anonymous> (__tests__/HomeScreen-test.tsx:60:33)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+      at node_modules/@babel/runtime/helpers/asyncToGenerator.js:22:7
+      at Object.<anonymous> (node_modules/@babel/runtime/helpers/asyncToGenerator.js:14:12)
+
+  console.error
+    Warning: Encountered two children with the same key, `1`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version.
+        at View
+        at View (/Users/nathan/Documents/CS/CS130/cs130_project/bruinhub-app/node_modules/react-native/jest/mockComponent.js:33:18)
+        at RCTScrollView
+        at Component (/Users/nathan/Documents/CS/CS130/cs130_project/bruinhub-app/node_modules/react-native/jest/mockNativeComponent.js:17:18)
+        at ScrollViewMock (/Users/nathan/Documents/CS/CS130/cs130_project/bruinhub-app/node_modules/react-native/jest/mockScrollView.js:22:23)
+        at View
+        at View (/Users/nathan/Documents/CS/CS130/cs130_project/bruinhub-app/node_modules/react-native/jest/mockComponent.js:33:18)
+        at onFinish (/Users/nathan/Documents/CS/CS130/cs130_project/bruinhub-app/app/HomeScreen.tsx:17:38)
+
+      at printWarning (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:72:30)
+      at error (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:46:7)
+      at warnOnInvalidKey (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:3716:11)
+      at reconcileChildrenArray (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:3753:21)
+      at reconcileChildFibers (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:4214:16)
+      at reconcileChildren (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:9122:28)
+      at updateFragment (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:9447:3)
+      at beginWork (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:11404:14)
+      at performUnitOfWork (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:15847:12)
+      at workLoopSync (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:15784:5)
+      at renderRootSync (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:15756:7)
+      at performConcurrentWorkOnRoot (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:15114:74)
+      at workLoop (node_modules/scheduler/cjs/scheduler.development.js:266:34)
+      at flushWork (node_modules/scheduler/cjs/scheduler.development.js:239:14)
+      at performWorkUntilDeadline (node_modules/scheduler/cjs/scheduler.development.js:533:21)
+      at Timeout.task [as _onTimeout] (node_modules/jsdom/lib/jsdom/browser/Window.js:520:19)
+
+  console.error
+    Warning: Encountered two children with the same key, `2`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version.
+        at View
+        at View (/Users/nathan/Documents/CS/CS130/cs130_project/bruinhub-app/node_modules/react-native/jest/mockComponent.js:33:18)
+        at RCTScrollView
+        at Component (/Users/nathan/Documents/CS/CS130/cs130_project/bruinhub-app/node_modules/react-native/jest/mockNativeComponent.js:17:18)
+        at ScrollViewMock (/Users/nathan/Documents/CS/CS130/cs130_project/bruinhub-app/node_modules/react-native/jest/mockScrollView.js:22:23)
+        at View
+        at View (/Users/nathan/Documents/CS/CS130/cs130_project/bruinhub-app/node_modules/react-native/jest/mockComponent.js:33:18)
+        at onFinish (/Users/nathan/Documents/CS/CS130/cs130_project/bruinhub-app/app/HomeScreen.tsx:17:38)
+
+      at printWarning (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:72:30)
+      at error (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:46:7)
+      at warnOnInvalidKey (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:3716:11)
+      at reconcileChildrenArray (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:3753:21)
+      at reconcileChildFibers (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:4214:16)
+      at reconcileChildren (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:9122:28)
+      at updateFragment (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:9447:3)
+      at beginWork (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:11404:14)
+      at performUnitOfWork (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:15847:12)
+      at workLoopSync (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:15784:5)
+      at renderRootSync (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:15756:7)
+      at performConcurrentWorkOnRoot (node_modules/react-test-renderer/cjs/react-test-renderer.development.js:15114:74)
+      at workLoop (node_modules/scheduler/cjs/scheduler.development.js:266:34)
+      at flushWork (node_modules/scheduler/cjs/scheduler.development.js:239:14)
+      at performWorkUntilDeadline (node_modules/scheduler/cjs/scheduler.development.js:533:21)
+      at Timeout.task [as _onTimeout] (node_modules/jsdom/lib/jsdom/browser/Window.js:520:19)
+
+
+
+[1B[J
