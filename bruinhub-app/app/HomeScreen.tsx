@@ -108,7 +108,7 @@ export default function HomeScreen({ onFinish }: HomeScreenProps) {
           filteredPinned.map((item) => (
             <HomeCard
               name={item.name}
-              description={item.name}
+              description={item.id}
               isPinned={true}
               pinCallback={() => togglePin(item.id)}
               key={item.id}
@@ -120,7 +120,7 @@ export default function HomeScreen({ onFinish }: HomeScreenProps) {
           filteredUnpinned.map((item) => (
             <HomeCard
               name={item.name}
-              description={item.name}
+              description={item.id}
               isPinned={false}
               pinCallback={() => togglePin(item.id)}
               key={item.id}
