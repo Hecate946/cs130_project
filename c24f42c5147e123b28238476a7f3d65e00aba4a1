@@ -1,0 +1,191 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "43275b6b_f6b8731e",
+        "filename": "bruinhub-app/app/NotificationsScreen.tsx",
+        "patchSetId": 2
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2025-02-19T05:08:29Z",
+      "side": 1,
+      "message": "nit whitespace",
+      "revId": "c24f42c5147e123b28238476a7f3d65e00aba4a1",
+      "serverId": "3c7ad661-7ce8-4163-af0d-ebc0f4c5b529"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "bb7875b0_ae6e5f24",
+        "filename": "bruinhub-app/app/NotificationsScreen.tsx",
+        "patchSetId": 2
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2025-02-19T05:08:29Z",
+      "side": 1,
+      "message": "nit rename welcomeContainer to notifContainer (or sm related to it)",
+      "revId": "c24f42c5147e123b28238476a7f3d65e00aba4a1",
+      "serverId": "3c7ad661-7ce8-4163-af0d-ebc0f4c5b529"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ac16b66e_5df1df30",
+        "filename": "bruinhub-app/app/NotificationsScreen.tsx",
+        "patchSetId": 2
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2025-02-19T05:08:29Z",
+      "side": 1,
+      "message": "nit whitespace",
+      "revId": "c24f42c5147e123b28238476a7f3d65e00aba4a1",
+      "serverId": "3c7ad661-7ce8-4163-af0d-ebc0f4c5b529"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "72ab6328_68280e6a",
+        "filename": "bruinhub-app/app/NotificationsScreen.tsx",
+        "patchSetId": 2
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2025-02-19T05:08:29Z",
+      "side": 1,
+      "message": "nit whitespace",
+      "revId": "c24f42c5147e123b28238476a7f3d65e00aba4a1",
+      "serverId": "3c7ad661-7ce8-4163-af0d-ebc0f4c5b529"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "88162e63_b7b2642c",
+        "filename": "bruinhub-app/app/NotificationsScreen.tsx",
+        "patchSetId": 2
+      },
+      "lineNbr": 102,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2025-02-19T05:08:29Z",
+      "side": 1,
+      "message": "slay comments",
+      "revId": "c24f42c5147e123b28238476a7f3d65e00aba4a1",
+      "serverId": "3c7ad661-7ce8-4163-af0d-ebc0f4c5b529"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d0fcf7eb_6f7905ac",
+        "filename": "bruinhub-app/app/NotificationsScreen.tsx",
+        "patchSetId": 2
+      },
+      "lineNbr": 125,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2025-02-19T05:08:29Z",
+      "side": 1,
+      "message": "nit whitespace",
+      "revId": "c24f42c5147e123b28238476a7f3d65e00aba4a1",
+      "serverId": "3c7ad661-7ce8-4163-af0d-ebc0f4c5b529"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "02da58f8_f2de3b1e",
+        "filename": "bruinhub-app/components/notifications/NotificationItem.tsx",
+        "patchSetId": 2
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2025-02-19T05:08:29Z",
+      "side": 1,
+      "message": "also, can we increase the text size :D",
+      "revId": "c24f42c5147e123b28238476a7f3d65e00aba4a1",
+      "serverId": "3c7ad661-7ce8-4163-af0d-ebc0f4c5b529"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c5956169_6c170582",
+        "filename": "bruinhub-app/components/notifications/NotificationItem.tsx",
+        "patchSetId": 2
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2025-02-19T05:08:29Z",
+      "side": 1,
+      "message": "nit whitespace",
+      "revId": "c24f42c5147e123b28238476a7f3d65e00aba4a1",
+      "serverId": "3c7ad661-7ce8-4163-af0d-ebc0f4c5b529"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4ee27596_6309b594",
+        "filename": "bruinhub-app/components/notifications/NotificationItem.tsx",
+        "patchSetId": 2
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2025-02-19T05:08:29Z",
+      "side": 1,
+      "message": "nit whitespace",
+      "revId": "c24f42c5147e123b28238476a7f3d65e00aba4a1",
+      "serverId": "3c7ad661-7ce8-4163-af0d-ebc0f4c5b529"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9a1826cd_c8fa759e",
+        "filename": "bruinhub-app/components/notifications/NotificationItem.tsx",
+        "patchSetId": 2
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2025-02-19T05:08:29Z",
+      "side": 1,
+      "message": "nit whitespace",
+      "revId": "c24f42c5147e123b28238476a7f3d65e00aba4a1",
+      "serverId": "3c7ad661-7ce8-4163-af0d-ebc0f4c5b529"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "12786db1_5998b1b6",
+        "filename": "bruinhub-app/components/notifications/NotificationItem.tsx",
+        "patchSetId": 2
+      },
+      "lineNbr": 58,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2025-02-19T05:08:29Z",
+      "side": 1,
+      "message": "can we add a border radius (a smol one)",
+      "revId": "c24f42c5147e123b28238476a7f3d65e00aba4a1",
+      "serverId": "3c7ad661-7ce8-4163-af0d-ebc0f4c5b529"
+    }
+  ]
+}
