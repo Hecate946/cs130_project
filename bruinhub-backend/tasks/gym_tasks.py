@@ -46,4 +46,4 @@ def scrape_and_store_gym_data():
             )
             
     except Exception as e:
-        logger.error(f"Error in periodic scraping: {e}")
+        logger.error(f"Error in periodic gym data scraping: {e}", exc_info=True)

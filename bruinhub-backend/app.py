@@ -10,6 +10,7 @@ from tasks.dining_tasks import setup_dining_tasks, scrape_and_store_dining_data
 from routes import api  # Add this import
 import logging
 
+from config import DATABASE_URL
 # Configure logging
 logging.basicConfig(
     level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
@@ -21,8 +22,11 @@ CORS(app)  # Enable CORS for all routes
 # Register the API blueprint
 app.register_blueprint(api, url_prefix="/api")  # Add this line
 
+
+
+
 # Load configuration
-DB_URL = os.getenv("DATABASE_URL")
+DB_URL = DATABASE_URL
 SCRAPE_INTERVAL = int(os.getenv("SCRAPE_INTERVAL", "300"))  # Default 5 minutes
 
 # Initialize database managers

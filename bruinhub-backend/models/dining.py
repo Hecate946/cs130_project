@@ -1,28 +1,23 @@
 from dataclasses import dataclass
 from datetime import datetime
-from typing import List, Dict, Optional
-
+from typing import Dict, Optional
 
 @dataclass
 class DiningHall:
+    """Represents a dining hall with its latest data."""
     id: int
     name: str
+    slug: str
     capacity: int
+    menu: Dict[str, list]  # Station -> List of items
+    regular_hours: Dict[str, str]
+    special_hours: Optional[Dict[str, str]]
     last_updated: datetime
 
-
 @dataclass
-class DiningMenuSnapshot:
+class DiningCapacityHistory:
+    """Tracks historical capacity changes for a dining hall."""
     id: int
     hall_id: int
-    snapshot_time: datetime
-    menu: Dict[str, List[str]]  # Station name -> List of food items
-
-
-@dataclass
-class DiningHoursSnapshot:
-    id: int
-    hall_id: int
-    snapshot_time: datetime
-    regular_hours: Dict[str, str]
-    special_hours: Optional[Dict[str, str]]  # Special hours for holidays, events, etc.
+    capacity: int
+    last_updated: datetime

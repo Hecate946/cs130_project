@@ -31,14 +31,20 @@ def scrape_and_store_dining_data():
         dining_data = scraper.scrape_dining_halls()
 
         if dining_data:
-            for hall_name, hall_info in dining_data.items():
-                logger.info(f"Storing menu snapshot for {hall_name}")
-                dining_db.create_menu_snapshot(hall_name, hall_info)
+            for hall_slug, hall_info in dining_data.items():
+                logger.info(f"Updating dining hall data for {hall_slug}")
 
-                logger.info(f"Storing hours snapshot for {hall_name}")
-                dining_db.update_dining_hours(
-                    hall_name, hall_info["hours"], hall_info.get("special_hours", None)
+                # Update dining hall details (menu & hours)
+                dining_db.update_dining_hall(
+                    slug=hall_slug,
+                    menu=hall_info["menu"],
+                    regular_hours=hall_info["regular_hours"],
+                    special_hours=hall_info.get("special_hours", None),
                 )
+
+                # Store historical capacity update
+                logger.info(f"Storing capacity update for {hall_slug}")
+                dining_db.insert_dining_capacity(hall_slug, hall_info["capacity"])
 
     except Exception as e:
         logger.error(f"Error in periodic dining hall scraping: {e}", exc_info=True)

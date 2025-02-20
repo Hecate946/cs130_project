@@ -2,7 +2,7 @@ from typing import Dict, List, Optional
 import json
 import logging
 from datetime import datetime
-from models.gyms import Gym, GymZoneSnapshot, GymHoursSnapshot
+from models.gyms import Gym, GymCapacityHistory
 from database.manager import DatabaseManager
 
 logger = logging.getLogger(__name__)
@@ -13,158 +13,118 @@ class GymDatabase:
         logger.info("Initialized GymDatabase")
 
     def get_gym_by_slug(self, slug: str) -> Optional[Gym]:
-        """Get gym information by slug"""
+        """Get gym information by slug."""
         logger.info(f"Getting gym info for slug: {slug}")
         
         query = """
-            SELECT id, name, slug, last_updated
+            SELECT id, name, slug, regular_hours, special_hours, last_updated
             FROM gyms
             WHERE slug = %s
         """
         row = self.db.fetch_one(query, (slug,))
         
         if row:
-            logger.info(f"Found gym with id: {row[0]}, name: {row[1]}")
-            return Gym(*row)
+            return Gym(
+                id=row[0],
+                name=row[1],
+                slug=row[2],
+                regular_hours=json.loads(row[3]) if row[3] else {},
+                special_hours=json.loads(row[4]) if row[4] else None,
+                last_updated=row[5],
+            )
         
         logger.warning(f"No gym found with slug: {slug}")
         return None
 
-    def create_gym_zones_snapshot(self, slug: str, zones_data: List[Dict]) -> bool:
-        """Creates a new snapshot of gym zone data"""
-        logger.info(f"Creating zones snapshot for gym: {slug}")
-        
+    def update_gym_hours(
+        self, slug: str, regular_hours: Dict[str, str], special_hours: Optional[Dict[str, str]] = None
+    ) -> bool:
+        """Updates a gym's regular and special hours."""
         gym = self.get_gym_by_slug(slug)
         if not gym:
             logger.error(f"No gym found with slug {slug}")
             return False
 
-        # Update gym's last_updated timestamp
         update_query = """
-            UPDATE gyms 
-            SET last_updated = NOW() 
+            UPDATE gyms
+            SET regular_hours = %s, special_hours = %s, last_updated = NOW()
             WHERE id = %s
         """
-        self.db.execute(update_query, (gym.id,))
+        params = (json.dumps(regular_hours), json.dumps(special_hours) if special_hours else None, gym.id)
+        
+        self.db.execute(update_query, params)
+        logger.info(f"Successfully updated hours for gym: {slug}")
+        return True
 
-        # Insert new snapshot
-        insert_query = """
-            INSERT INTO gym_zones_snapshot 
-            (gym_id, zones)
-            VALUES (%s, %s)
-            RETURNING id
-        """
-        snapshot_id = self.db.fetch_one(insert_query, (gym.id, json.dumps(zones_data)))
-
-        if snapshot_id:
-            logger.info(f"Created zones snapshot with id: {snapshot_id[0]}")
-            return True
-
-        logger.error("Failed to create gym zones snapshot")
-        return False
-
-    def update_gym_hours(
-        self,
-        slug: str,
-        regular_hours: Dict[str, str],
-        special_hours: Optional[Dict[str, str]] = None,
-    ) -> bool:
-        """Creates a new snapshot of gym hours"""
+    def insert_gym_capacity(self, slug: str, zone_name: str, capacity: int) -> bool:
+        """Inserts or updates capacity for a specific gym zone."""
         gym = self.get_gym_by_slug(slug)
         if not gym:
             logger.error(f"No gym found with slug {slug}")
             return False
 
         insert_query = """
-            INSERT INTO gym_hours_snapshot 
-            (gym_id, regular_hours, special_hours)
-            VALUES (%s, %s, %s)
+            INSERT INTO gym_capacity_history (gym_id, zone_name, capacity, last_updated)
+            VALUES (%s, %s, %s, NOW())
             RETURNING id
         """
-        params = (gym.id, json.dumps(regular_hours), json.dumps(special_hours) if special_hours else None)
+        params = (gym.id, zone_name, capacity)
         
-        snapshot_id = self.db.fetch_one(insert_query, params)
-
-        if snapshot_id:
-            logger.info(f"Successfully stored gym hours snapshot with id: {snapshot_id[0]}")
+        capacity_id = self.db.fetch_one(insert_query, params)
+        if capacity_id:
+            logger.info(f"Inserted gym capacity entry with ID: {capacity_id[0]}")
             return True
 
-        logger.error("Failed to update gym hours snapshot")
+        logger.error("Failed to insert gym capacity")
         return False
 
-    def get_latest_gym_zones(self, slug: str) -> Optional[GymZoneSnapshot]:
-        """Retrieves the most recent gym zone snapshot for a specific gym"""
+    def get_latest_gym_capacity(self, slug: str) -> Optional[List[GymCapacityHistory]]:
+        """Retrieves the most recent capacity data for each gym zone."""
         gym = self.get_gym_by_slug(slug)
         if not gym:
             logger.error(f"No gym found with slug {slug}")
             return None
 
         query = """
-            SELECT id, gym_id, snapshot_time, zones
-            FROM gym_zones_snapshot
+            SELECT id, gym_id, zone_name, capacity, last_updated
+            FROM gym_capacity_history
             WHERE gym_id = %s
-            ORDER BY snapshot_time DESC
-            LIMIT 1
+            ORDER BY last_updated DESC
         """
-        row = self.db.fetch_one(query, (gym.id,))
+        rows = self.db.fetch_all(query, (gym.id,))
         
-        if row:
-            return GymZoneSnapshot(
-                id=row[0],
-                gym_id=row[1],
-                snapshot_time=row[2],
-                zones=row[3],  # psycopg already deserializes JSONB
-            )
-        
-        return None
+        if rows:
+            return [
+                GymCapacityHistory(
+                    id=row[0],
+                    gym_id=row[1],
+                    zone_name=row[2],
+                    capacity=row[3],
+                    last_updated=row[4],
+                )
+                for row in rows
+            ]
 
-    def get_latest_gym_hours(self, slug: str) -> Optional[GymHoursSnapshot]:
-        """Retrieves the most recent gym hours snapshot"""
-        gym = self.get_gym_by_slug(slug)
-        if not gym:
-            logger.error(f"No gym found with slug {slug}")
-            return None
-
-        query = """
-            SELECT id, gym_id, snapshot_time, regular_hours, special_hours
-            FROM gym_hours_snapshot
-            WHERE gym_id = %s
-            ORDER BY snapshot_time DESC
-            LIMIT 1
-        """
-        row = self.db.fetch_one(query, (gym.id,))
-        
-        if row:
-            return GymHoursSnapshot(
-                id=row[0],
-                gym_id=row[1],
-                snapshot_time=row[2],
-                regular_hours=row[3] or {},
-                special_hours=row[4],  # psycopg already deserializes JSONB
-            )
-        
+        logger.warning(f"No capacity data found for gym: {slug}")
         return None
 
     def get_gym_latest(self, slug: str) -> Dict:
-        """Get latest data for a gym by slug"""
+        """Gets the latest data for a gym, including capacity per zone."""
         gym = self.get_gym_by_slug(slug)
         if not gym:
             return {}
 
-        zones = self.get_latest_gym_zones(slug)
-        hours = self.get_latest_gym_hours(slug)
+        capacities = self.get_latest_gym_capacity(slug)
+        zones = {
+            cap.zone_name: {"capacity": cap.capacity, "last_updated": cap.last_updated.isoformat()}
+            for cap in capacities
+        } if capacities else {}
 
         return {
             "name": gym.name,
             "slug": gym.slug,
-            "zones": zones.zones if zones else [],
-            "hours": (
-                {
-                    "regular": hours.regular_hours if hours else {},
-                    "special": hours.special_hours if hours else None,
-                }
-                if hours
-                else None
-            ),
-            "last_updated": zones.snapshot_time.isoformat() if zones else None,
+            "regular_hours": gym.regular_hours,
+            "special_hours": gym.special_hours,
+            "zones": zones,
+            "last_updated": gym.last_updated.isoformat(),
         }
