@@ -4,25 +4,25 @@ from typing import List, Dict, Optional
 
 
 @dataclass
-class Gym:
+class DiningHall:
     id: int
     name: str
-    slug: str
+    capacity: int
     last_updated: datetime
 
 
 @dataclass
-class GymZoneSnapshot:
+class DiningMenuSnapshot:
     id: int
-    gym_id: int
+    hall_id: int
     snapshot_time: datetime
-    zones: List[Dict]
+    menu: Dict[str, List[str]]  # Station name -> List of food items
 
 
 @dataclass
-class GymHoursSnapshot:
+class DiningHoursSnapshot:
     id: int
-    gym_id: int
+    hall_id: int
     snapshot_time: datetime
     regular_hours: Dict[str, str]
-    special_hours: Optional[Dict[str, str]]
+    special_hours: Optional[Dict[str, str]]  # Special hours for holidays, events, etc.

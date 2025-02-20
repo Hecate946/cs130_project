@@ -11,6 +11,7 @@ db_manager = None
 gym_db = None
 scraper = None
 
+
 def setup_gym_tasks(database_url: str):
     """Setup database connections and scrapers for gym tasks"""
     global db_manager, gym_db, scraper
@@ -18,6 +19,7 @@ def setup_gym_tasks(database_url: str):
     db_manager = DatabaseManager(database_url)
     gym_db = GymDatabase(db_manager)
     scraper = GymScrapers()
+
 
 def scrape_and_store_gym_data():
     """Periodic task to scrape and store gym data"""
@@ -44,4 +46,4 @@ def scrape_and_store_gym_data():
             )
             
     except Exception as e:
-        logger.error(f"Error in periodic scraping: {e}") 
+        logger.error(f"Error in periodic scraping: {e}")

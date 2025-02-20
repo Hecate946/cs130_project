@@ -1,1 +1,1 @@
-from .gyms import Gym, GymZoneSnapshot, GymHoursSnapshot 
+from .gyms import Gym, GymZoneSnapshot, GymHoursSnapshot

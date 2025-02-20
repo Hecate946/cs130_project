@@ -6,6 +6,7 @@ from config import FACILITY_COUNT_URL, BFIT_URL, JWC_URL, FACILITY_IDS
 
 logger = logging.getLogger(__name__)
 
+
 class GymScrapers:
     @staticmethod
     def get_facility_counts() -> Dict:
@@ -77,11 +78,11 @@ class GymScrapers:
                     "Thursday": "6:00 AM - 1:00 AM",
                     "Friday": "6:00 AM - 9:00 PM",
                     "Saturday": "9:00 AM - 6:00 PM",
-                    "Sunday": "9:00 AM - 11:00 PM"
+                    "Sunday": "9:00 AM - 11:00 PM",
                 },
                 "special_hours": {
                     "2025-01-26": "1:00 PM - 11:00 PM",  # Staff meeting
-                    "2025-02-15": "9:00 AM - 6:00 PM",   # Presidents Day Weekend
+                    "2025-02-15": "9:00 AM - 6:00 PM",  # Presidents Day Weekend
                     "2025-02-16": "9:00 AM - 6:00 PM",
                     "2025-02-17": "9:00 AM - 6:00 PM"
                 }

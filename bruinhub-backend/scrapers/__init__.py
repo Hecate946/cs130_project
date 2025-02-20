@@ -1,1 +1,1 @@
-from .gyms import GymScrapers 
+from .gyms import GymScrapers

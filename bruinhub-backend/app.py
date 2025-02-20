@@ -6,20 +6,20 @@ from database import DatabaseManager
 from database.gyms import GymDatabase
 from tasks import init_scheduler
 from tasks.gym_tasks import setup_gym_tasks, scrape_and_store_gym_data
+from tasks.dining_tasks import setup_dining_tasks, scrape_and_store_dining_data
 from routes import api  # Add this import
 import logging
 
 # Configure logging
 logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+    level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
 )
 
 app = Flask(__name__)
 CORS(app)  # Enable CORS for all routes
 
 # Register the API blueprint
-app.register_blueprint(api, url_prefix='/api')  # Add this line
+app.register_blueprint(api, url_prefix="/api")  # Add this line
 
 # Load configuration
 DB_URL = os.getenv("DATABASE_URL")
@@ -30,27 +30,38 @@ db_manager = DatabaseManager(DB_URL)
 
 # Setup tasks
 setup_gym_tasks(DB_URL)
+setup_dining_tasks(DB_URL)
+
 
 # Health check endpoint
-@app.route('/health', methods=['GET'])
+@app.route("/health", methods=["GET"])
 def health_check():
     if db_manager.test_connection():
-        return jsonify({
-            "status": "healthy",
-            "database": "connected",
-            "timestamp": datetime.now().isoformat()
-        })
-    return jsonify({
-        "status": "unhealthy",
-        "database": "disconnected",
-        "timestamp": datetime.now().isoformat()
-    }), 500
+        return jsonify(
+            {
+                "status": "healthy",
+                "database": "connected",
+                "timestamp": datetime.now().isoformat(),
+            }
+        )
+    return (
+        jsonify(
+            {
+                "status": "unhealthy",
+                "database": "disconnected",
+                "timestamp": datetime.now().isoformat(),
+            }
+        ),
+        500,
+    )
+
 
 if __name__ == "__main__":
     # Initialize scheduler
     scheduler = init_scheduler(SCRAPE_INTERVAL)
-    
+
     # Initial scrape on startup
     scrape_and_store_gym_data()
-    
+    scrape_and_store_dining_data()
+
     app.run(debug=True, host="0.0.0.0", port=5001)
