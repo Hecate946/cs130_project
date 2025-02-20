@@ -24,6 +24,30 @@
       "serverId": "3c7ad661-7ce8-4163-af0d-ebc0f4c5b529"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "e4f13dc2_8eb26ead",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1000001
+      },
+      "writtenOn": "2025-02-20T20:45:41Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f5dab821_1a0c3a57",
+      "range": {
+        "startLine": 7,
+        "startChar": 0,
+        "endLine": 7,
+        "endChar": 239
+      },
+      "revId": "f4fa97aaf49f14e0b1fa357713a06b22f770a02f",
+      "serverId": "3c7ad661-7ce8-4163-af0d-ebc0f4c5b529"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "c9b2c5ea_1e36bc08",
@@ -47,6 +71,30 @@
       "serverId": "3c7ad661-7ce8-4163-af0d-ebc0f4c5b529"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "f99f5dbb_45ea6a62",
+        "filename": "bruinhub-backend/database/dining.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 1000001
+      },
+      "writtenOn": "2025-02-20T20:45:41Z",
+      "side": 1,
+      "message": "Acknowledged",
+      "parentUuid": "c9b2c5ea_1e36bc08",
+      "range": {
+        "startLine": 23,
+        "startChar": 8,
+        "endLine": 23,
+        "endChar": 11
+      },
+      "revId": "f4fa97aaf49f14e0b1fa357713a06b22f770a02f",
+      "serverId": "3c7ad661-7ce8-4163-af0d-ebc0f4c5b529"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "12fb23bf_fe89cb85",
@@ -60,6 +108,30 @@
       "writtenOn": "2025-02-20T20:20:20Z",
       "side": 1,
       "message": "I\u0027m pretty sure we\u0027re just gonna have a single `/v1/restaurants` endpoint that returns all the data for the dine-in dining halls",
+      "range": {
+        "startLine": 36,
+        "startChar": 4,
+        "endLine": 42,
+        "endChar": 54
+      },
+      "revId": "f4fa97aaf49f14e0b1fa357713a06b22f770a02f",
+      "serverId": "3c7ad661-7ce8-4163-af0d-ebc0f4c5b529"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8c5973ba_be6f60de",
+        "filename": "bruinhub-backend/routes.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 1000001
+      },
+      "writtenOn": "2025-02-20T20:45:41Z",
+      "side": 1,
+      "message": "Will make the slug optional in the next commit",
+      "parentUuid": "12fb23bf_fe89cb85",
       "range": {
         "startLine": 36,
         "startChar": 4,
