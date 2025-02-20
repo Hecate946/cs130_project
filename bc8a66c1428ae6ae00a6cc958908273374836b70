@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1a9ab2b9_e69ea8f8",
+        "filename": "bruinhub-backend/database/dining.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2025-02-20T01:23:41Z",
+      "side": 1,
+      "message": "Reminder to propagate errors so eventually the API can respond with HTTP 503.",
+      "range": {
+        "startLine": 51,
+        "startChar": 12,
+        "endLine": 51,
+        "endChar": 21
+      },
+      "revId": "bc8a66c1428ae6ae00a6cc958908273374836b70",
+      "serverId": "3c7ad661-7ce8-4163-af0d-ebc0f4c5b529"
+    }
+  ]
+}
