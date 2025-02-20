@@ -6,7 +6,6 @@ from scrapers.dining import DiningScrapers
 logger = logging.getLogger(__name__)
 
 # Initialize global instances
-# These will be set by the setup function
 db_manager = None
 dining_db = None
 scraper = None
@@ -39,7 +38,7 @@ def scrape_and_store_dining_data():
                     slug=hall_slug,
                     menu=hall_info["menu"],
                     regular_hours=hall_info["regular_hours"],
-                    special_hours=hall_info.get("special_hours", None),
+                    special_hours=hall_info.get("special_hours"),
                 )
 
                 # Store historical capacity update

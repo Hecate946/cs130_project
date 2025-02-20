@@ -6,7 +6,6 @@ from typing import Dict, Optional
 class Gym:
     """Represents a gym with its latest schedule."""
     id: int
-    name: str
     slug: str
     regular_hours: Dict[str, str]
     special_hours: Optional[Dict[str, str]]
