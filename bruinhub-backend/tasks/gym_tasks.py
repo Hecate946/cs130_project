@@ -24,27 +24,24 @@ def scrape_and_store_gym_data():
     try:
         logger.info("Starting periodic gym data scraping")
         
-        # Scrape BFIT
-        logger.info("Scraping BFIT data")
-        bfit_data = scraper.scrape_bfit()
-        if bfit_data:
-            logger.info("Storing BFIT zones snapshot")
-            gym_db.create_gym_zones_snapshot('bfit', bfit_data['zones'])
-            logger.info("Storing BFIT hours snapshot")
-            gym_db.update_gym_hours('bfit', 
-                                  bfit_data['hours']['regular_hours'],
-                                  bfit_data['hours']['special_hours'])
-        
-        # Scrape Wooden
-        logger.info("Scraping Wooden Center data")
-        wooden_data = scraper.scrape_wooden()
-        if wooden_data:
-            logger.info("Storing Wooden zones snapshot")
-            gym_db.create_gym_zones_snapshot('john-wooden-center', wooden_data['zones'])
-            logger.info("Storing Wooden hours snapshot")
-            gym_db.update_gym_hours('john-wooden-center',
-                              wooden_data['hours']['regular_hours'],
-                              wooden_data['hours']['special_hours'])
+        # Scrape facility counts
+        logger.info("Scraping facility counts")
+        facility_counts = scraper.scrape_facility_counts()
+        for slug, zones in facility_counts.items():
+            if zones:  # Only store if we got data
+                logger.info(f"Storing {slug} zones snapshot")
+                gym_db.create_gym_zones_snapshot(slug, zones)
+
+        # Scrape hours
+        logger.info("Scraping hours")
+        hours_data = scraper.scrape_hours()
+        for slug, hours in hours_data.items():
+            logger.info(f"Storing {slug} hours snapshot")
+            gym_db.update_gym_hours(
+                slug,
+                hours['regular_hours'],
+                hours.get('special_hours')
+            )
             
     except Exception as e:
         logger.error(f"Error in periodic scraping: {e}") 

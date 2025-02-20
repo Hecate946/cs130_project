@@ -1,46 +1,75 @@
 from datetime import datetime
 from typing import Dict, List
 import logging
-from datetime import datetime, timezone
+import requests
+from config import FACILITY_COUNT_URL, BFIT_URL, JWC_URL, FACILITY_IDS
 
 logger = logging.getLogger(__name__)
 
 class GymScrapers:
     @staticmethod
-    def scrape_bfit() -> Dict:
-        """Simulates scraping B-Fit gym data"""
-        logger.info("Starting BFIT data scrape")
+    def get_facility_counts() -> Dict:
+        """Get raw facility count data from UCLA's API"""
         try:
-            # Dummy zone data matching BFIT's layout
-            zones_data = [
-                {
-                    "zone_name": "Cardio Zones",
-                    "open": True,
-                    "last_count": 26,
-                    "percentage": 43
-                },
-                {
-                    "zone_name": "Strength & Conditioning Area",
-                    "open": True,
-                    "last_count": 31,
-                    "percentage": 52
-                },
-                {
-                    "zone_name": "Free Weights Zone",
-                    "open": True,
-                    "last_count": 18,
-                    "percentage": 60
-                },
-                {
-                    "zone_name": "Selectorized Equipment Zone",
-                    "open": True,
-                    "last_count": 15,
-                    "percentage": 38
-                }
-            ]
+            response = requests.get(FACILITY_COUNT_URL)
+            response.raise_for_status()
+            return response.json()
+        except Exception as e:
+            logger.error(f"Error fetching facility counts: {e}")
+            return {}
 
-            # Dummy hours data matching BFIT's schedule
-            hours_data = {
+    @staticmethod
+    def filter_facility_zones(data: List[Dict], facility_id: int) -> List[Dict]:
+        """Filter zones for a specific facility and format them"""
+        try:
+            zones = []
+            for zone in data:
+                if zone.get("FacilityId") == facility_id:
+                    # Calculate percentage ourselves
+                    last_count = zone["LastCount"]
+                    total_capacity = zone["TotalCapacity"]
+                    percentage = round((last_count / total_capacity) * 100) if total_capacity > 0 else 0
+                    
+                    zones.append({
+                        "zone_name": zone["LocationName"],
+                        "open": not zone["IsClosed"],
+                        "last_count": last_count,
+                        "percentage": percentage
+                    })
+            return zones
+        except Exception as e:
+            logger.error(f"Error filtering facility zones: {e}")
+            return []
+
+    @staticmethod
+    def scrape_facility_counts() -> Dict[str, List[Dict]]:
+        """Scrapes facility counts for all gyms"""
+        logger.info("Starting facility counts scrape")
+        try:
+            # Get facility counts
+            facility_data = GymScrapers.get_facility_counts()
+            if not facility_data:
+                logger.error("Failed to get facility data")
+                return {}
+
+            # Get counts for each facility
+            results = {}
+            for slug, facility_id in FACILITY_IDS.items():
+                zones = GymScrapers.filter_facility_zones(facility_data, facility_id)
+                logger.info(f"Found {len(zones)} zones for {slug}")
+                results[slug] = zones
+
+            return results
+
+        except Exception as e:
+            logger.error(f"Error in facility counts scraping: {e}")
+            return {}
+
+    @staticmethod
+    def get_static_hours() -> Dict[str, Dict]:
+        """Get static hours data (until we implement webpage scraping)"""
+        return {
+            'bfit': {
                 "regular_hours": {
                     "Monday": "6:00 AM - 1:00 AM",
                     "Tuesday": "6:00 AM - 1:00 AM",
@@ -56,27 +85,32 @@ class GymScrapers:
                     "2025-02-16": "9:00 AM - 6:00 PM",
                     "2025-02-17": "9:00 AM - 6:00 PM"
                 }
+            },
+            'john-wooden-center': {
+                "regular_hours": {
+                    "Monday": "6:00 AM - 11:00 PM",
+                    "Tuesday": "6:00 AM - 11:00 PM",
+                    "Wednesday": "6:00 AM - 11:00 PM",
+                    "Thursday": "6:00 AM - 11:00 PM",
+                    "Friday": "6:00 AM - 10:00 PM",
+                    "Saturday": "8:00 AM - 8:00 PM",
+                    "Sunday": "8:00 AM - 10:00 PM"
+                },
+                "special_hours": {
+                    "2025-01-26": "8:00 AM - 6:00 PM"  # Example special hours
+                }
             }
-
-            logger.info("Successfully scraped BFIT data")
-            return {
-                "zones": zones_data,
-                "hours": hours_data
-            }
-
-        except Exception as e:
-            logger.error(f"Error in dummy BFIT scraping: {e}")
-            return {}
-
+        }
 
     @staticmethod
-    def scrape_wooden() -> Dict:
-        """Scrapes Wooden Center data"""
-        logger.info("Starting Wooden Center data scrape")
+    def scrape_hours() -> Dict[str, Dict]:
+        """Scrapes hours for all gyms (currently returns static data)"""
+        logger.info("Starting hours scrape")
         try:
-            # TODO: Implement actual scraping logic
-            logger.info("Wooden Center scraping not yet implemented")
-            return {}
+            # TODO: Implement actual web scraping for hours
+            # For now, return static data
+            return GymScrapers.get_static_hours()
+
         except Exception as e:
-            logger.error(f"Error scraping Wooden: {e}")
+            logger.error(f"Error in hours scraping: {e}")
             return {} 
