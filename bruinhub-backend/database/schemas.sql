@@ -31,7 +31,9 @@ CREATE TABLE IF NOT EXISTS gym_capacity_history (
     gym_id INT REFERENCES gyms(id) ON DELETE CASCADE,
     zone_name VARCHAR(100) NOT NULL,
     capacity INT NOT NULL,
-    last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    percentage INT NOT NULL,
+    last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE (gym_id, zone_name, capacity, percentage, last_updated)
 );
 
 -- Ensure initial dining halls exist

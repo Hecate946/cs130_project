@@ -3,6 +3,7 @@ from typing import Dict, List
 import logging
 import requests
 from config import FACILITY_COUNT_URL, BFIT_URL, JWC_URL, FACILITY_IDS
+import static
 
 logger = logging.getLogger(__name__)
 
@@ -35,7 +36,8 @@ class GymScrapers:
                         "zone_name": zone["LocationName"],
                         "open": not zone["IsClosed"],
                         "last_count": last_count,
-                        "percentage": percentage
+                        "percentage": percentage,
+                        "last_updated": zone["LastUpdatedDateAndTime"]
                     })
             return zones
         except Exception as e:
@@ -69,49 +71,4 @@ class GymScrapers:
     @staticmethod
     def get_static_hours() -> Dict[str, Dict]:
         """Get static hours data (until we implement webpage scraping)"""
-        return {
-            'bfit': {
-                "regular_hours": {
-                    "Monday": "6:00 AM - 1:00 AM",
-                    "Tuesday": "6:00 AM - 1:00 AM",
-                    "Wednesday": "6:00 AM - 1:00 AM",
-                    "Thursday": "6:00 AM - 1:00 AM",
-                    "Friday": "6:00 AM - 9:00 PM",
-                    "Saturday": "9:00 AM - 6:00 PM",
-                    "Sunday": "9:00 AM - 11:00 PM",
-                },
-                "special_hours": {
-                    "2025-01-26": "1:00 PM - 11:00 PM",  # Staff meeting
-                    "2025-02-15": "9:00 AM - 6:00 PM",  # Presidents Day Weekend
-                    "2025-02-16": "9:00 AM - 6:00 PM",
-                    "2025-02-17": "9:00 AM - 6:00 PM"
-                }
-            },
-            'john-wooden-center': {
-                "regular_hours": {
-                    "Monday": "6:00 AM - 11:00 PM",
-                    "Tuesday": "6:00 AM - 11:00 PM",
-                    "Wednesday": "6:00 AM - 11:00 PM",
-                    "Thursday": "6:00 AM - 11:00 PM",
-                    "Friday": "6:00 AM - 10:00 PM",
-                    "Saturday": "8:00 AM - 8:00 PM",
-                    "Sunday": "8:00 AM - 10:00 PM"
-                },
-                "special_hours": {
-                    "2025-01-26": "8:00 AM - 6:00 PM"  # Example special hours
-                }
-            }
-        }
-
-    @staticmethod
-    def scrape_hours() -> Dict[str, Dict]:
-        """Scrapes hours for all gyms (currently returns static data)"""
-        logger.info("Starting hours scrape")
-        try:
-            # TODO: Implement actual web scraping for hours
-            # For now, return static data
-            return GymScrapers.get_static_hours()
-
-        except Exception as e:
-            logger.error(f"Error in hours scraping: {e}")
-            return {} 
+        return static.GYM_HOURS
