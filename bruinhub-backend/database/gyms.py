@@ -17,7 +17,7 @@ class GymDatabase:
         logger.info(f"Getting gym info for slug: {slug}")
         
         query = """
-            SELECT id, name, slug, regular_hours, special_hours, last_updated
+            SELECT id, slug, regular_hours, special_hours, last_updated
             FROM gyms
             WHERE slug = %s
         """
@@ -26,11 +26,10 @@ class GymDatabase:
         if row:
             return Gym(
                 id=row[0],
-                name=row[1],
-                slug=row[2],
-                regular_hours=json.loads(row[3]) if row[3] else {},
-                special_hours=json.loads(row[4]) if row[4] else None,
-                last_updated=row[5],
+                slug=row[1],
+                regular_hours=row[2] if row[2] else {},
+                special_hours=row[3] if row[3] else None,
+                last_updated=row[4],
             )
         
         logger.warning(f"No gym found with slug: {slug}")
@@ -121,7 +120,6 @@ class GymDatabase:
         } if capacities else {}
 
         return {
-            "name": gym.name,
             "slug": gym.slug,
             "regular_hours": gym.regular_hours,
             "special_hours": gym.special_hours,

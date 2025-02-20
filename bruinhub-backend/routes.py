@@ -16,38 +16,36 @@ db_manager = DatabaseManager(DATABASE_URL)
 gym_db = GymDatabase(db_manager)
 dining_db = DiningDatabase(db_manager)
 
-
 @api.route("/v1/gym/<slug>", methods=["GET"])
 def get_gym_data(slug: str):
     """
-    Get latest data for a specific gym
-
-    BFIT slug: 'bfit'
-    Wooden slug: 'wooden'
+    Get latest data for a specific gym.
+    
+    Example:
+    - `/v1/gym/bfit` → Returns data for BFIT gym.
+    - `/v1/gym/john-wooden-center` → Returns data for Wooden Center.
     """
     data = gym_db.get_gym_latest(slug)
     if not data:
-        return (
-            jsonify(
-                {"error": "Gym not found", "timestamp": datetime.now().isoformat()}
-            ),
-            404,
-        )
+        return jsonify({"error": "Gym not found", "timestamp": datetime.now().isoformat()}), 404
 
     return jsonify({"data": data, "timestamp": datetime.now().isoformat()})
 
 
-@api.route("/v1/dining/halls", methods=["GET"])
-def get_dining_halls():
+@api.route("/v1/dining/<slug>", methods=["GET"])
+def get_dining_hall(slug: str):
     """
-    Retrieves all dining halls and their menu items.
+    Retrieves data for a specific dining hall.
+
+    Example:
+    - `/v1/dining/epicuria` → Returns data for Epicuria dining hall.
+    - `/v1/dining/de-neve` → Returns data for De Neve.
     """
-    logger.info("Fetching dining hall data")
+    logger.info(f"Fetching dining hall data for {slug}")
 
-    data = dining_db.get_all_dining_halls()
-
+    data = dining_db.get_dining_hall_latest(slug)
     if not data:
-        logger.warning("No dining hall data found")
-        return jsonify({"error": "No dining hall data available"}), 404
+        logger.warning(f"Dining hall '{slug}' not found")
+        return jsonify({"error": "Dining hall not found"}), 404
 
-    return jsonify(data)
+    return jsonify({"data": data, "timestamp": datetime.now().isoformat()})

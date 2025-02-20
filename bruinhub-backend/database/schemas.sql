@@ -1,9 +1,7 @@
 -- Create the dining_halls table (stores latest menu and hours)
 CREATE TABLE IF NOT EXISTS dining_halls (
     id SERIAL PRIMARY KEY,
-    name VARCHAR(100) UNIQUE NOT NULL,
     slug VARCHAR(50) UNIQUE,
-    capacity INT NOT NULL,
     menu JSONB DEFAULT '{}'::JSONB,  -- Stores the latest menu (station -> list of items)
     regular_hours JSONB DEFAULT '{}'::JSONB, -- Stores regular hours
     special_hours JSONB DEFAULT '{}'::JSONB, -- Stores special hours
@@ -21,7 +19,6 @@ CREATE TABLE IF NOT EXISTS dining_capacity_history (
 -- Create the gyms table (stores gym metadata)
 CREATE TABLE IF NOT EXISTS gyms (
     id SERIAL PRIMARY KEY,
-    name VARCHAR(100) UNIQUE NOT NULL,
     slug VARCHAR(50) UNIQUE,
     regular_hours JSONB DEFAULT '{}'::JSONB, -- Stores regular hours
     special_hours JSONB DEFAULT '{}'::JSONB, -- Stores special hours
@@ -37,3 +34,28 @@ CREATE TABLE IF NOT EXISTS gym_capacity_history (
     last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+-- Ensure initial dining halls exist
+INSERT INTO dining_halls (slug, menu, regular_hours, special_hours)
+VALUES 
+    ('epicuria', '{}'::jsonb, '{}'::jsonb, '{}'::jsonb),
+    ('de-neve', '{}'::jsonb, '{}'::jsonb, '{}'::jsonb),
+    ('bruin-plate', '{}'::jsonb, '{}'::jsonb, '{}'::jsonb)
+ON CONFLICT (slug) DO NOTHING;
+
+-- Insert initial capacity history
+INSERT INTO dining_capacity_history (hall_id, capacity, last_updated)
+SELECT id, capacity, NOW()
+FROM (
+    VALUES
+        ('epicuria', 100),
+        ('de-neve', 20),
+        ('bruin-plate', 70)
+) AS t(slug, capacity)
+JOIN dining_halls ON dining_halls.slug = t.slug;
+
+-- Ensure initial gyms exist
+INSERT INTO gyms (slug, regular_hours, special_hours)
+VALUES 
+    ('bfit', '{}'::jsonb, '{}'::jsonb),
+    ('john-wooden-center', '{}'::jsonb, '{}'::jsonb)
+ON CONFLICT (slug) DO NOTHING;

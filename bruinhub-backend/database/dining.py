@@ -16,7 +16,7 @@ class DiningDatabase:
         logger.info(f"Getting dining hall info for slug: {slug}")
         
         query = """
-            SELECT id, name, slug, capacity, menu, regular_hours, special_hours, last_updated
+            SELECT id, slug, menu, regular_hours, special_hours, last_updated
             FROM dining_halls
             WHERE slug = %s
         """
@@ -25,13 +25,11 @@ class DiningDatabase:
         if row:
             return DiningHall(
                 id=row[0],
-                name=row[1],
-                slug=row[2],
-                capacity=row[3],
-                menu=json.loads(row[4]) if row[4] else {},
-                regular_hours=json.loads(row[5]) if row[5] else {},
-                special_hours=json.loads(row[6]) if row[6] else None,
-                last_updated=row[7],
+                slug=row[1],
+                menu=row[2] if row[2] else {},
+                regular_hours=row[3] if row[3] else {},
+                special_hours=row[4] if row[4] else None,
+                last_updated=row[5],
             )
         
         logger.warning(f"No dining hall found with slug: {slug}")
@@ -114,7 +112,6 @@ class DiningDatabase:
 
         capacity = self.get_latest_dining_capacity(slug)
         return {
-            "name": hall.name,
             "slug": hall.slug,
             "capacity": capacity.capacity if capacity else hall.capacity,
             "menu": hall.menu,

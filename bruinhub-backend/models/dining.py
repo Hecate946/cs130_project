@@ -6,9 +6,7 @@ from typing import Dict, Optional
 class DiningHall:
     """Represents a dining hall with its latest data."""
     id: int
-    name: str
     slug: str
-    capacity: int
     menu: Dict[str, list]  # Station -> List of items
     regular_hours: Dict[str, str]
     special_hours: Optional[Dict[str, str]]
