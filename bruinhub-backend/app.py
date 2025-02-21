@@ -11,6 +11,7 @@ from routes import api  # Add this import
 import logging
 
 from config import DATABASE_URL
+
 # Configure logging
 logging.basicConfig(
     level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
@@ -21,8 +22,6 @@ CORS(app)  # Enable CORS for all routes
 
 # Register the API blueprint
 app.register_blueprint(api, url_prefix="/api")  # Add this line
-
-
 
 
 # Load configuration

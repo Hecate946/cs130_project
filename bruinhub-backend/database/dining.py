@@ -6,6 +6,7 @@ from database.manager import DatabaseManager
 
 logger = logging.getLogger(__name__)
 
+
 class DiningDatabase:
     def __init__(self, db_manager: DatabaseManager):
         self.db_manager = db_manager
@@ -14,14 +15,14 @@ class DiningDatabase:
     def get_dining_hall_by_slug(self, slug: str) -> Optional[DiningHall]:
         """Get dining hall information by slug."""
         logger.info(f"Getting dining hall info for slug: {slug}")
-        
+
         query = """
             SELECT id, slug, menu, regular_hours, special_hours, last_updated
             FROM dining_halls
             WHERE slug = %s
         """
         row = self.db_manager.fetch_one(query, (slug,))
-        
+
         if row:
             return DiningHall(
                 id=row[0],
@@ -31,12 +32,16 @@ class DiningDatabase:
                 special_hours=row[4] if row[4] else None,
                 last_updated=row[5],
             )
-        
+
         logger.warning(f"No dining hall found with slug: {slug}")
         return None
 
     def update_dining_hall(
-        self, slug: str, menu: Dict[str, list], regular_hours: Dict[str, str], special_hours: Optional[Dict[str, str]] = None
+        self,
+        slug: str,
+        menu: Dict[str, list],
+        regular_hours: Dict[str, str],
+        special_hours: Optional[Dict[str, str]] = None,
     ) -> bool:
         """Updates a dining hall's menu and hours."""
         hall = self.get_dining_hall_by_slug(slug)
@@ -49,8 +54,13 @@ class DiningDatabase:
             SET menu = %s, regular_hours = %s, special_hours = %s, last_updated = NOW()
             WHERE id = %s
         """
-        params = (json.dumps(menu), json.dumps(regular_hours), json.dumps(special_hours) if special_hours else None, hall.id)
-        
+        params = (
+            json.dumps(menu),
+            json.dumps(regular_hours),
+            json.dumps(special_hours) if special_hours else None,
+            hall.id,
+        )
+
         self.db_manager.execute(update_query, params)
         logger.info(f"Successfully updated dining hall {slug}")
         return True
@@ -68,7 +78,7 @@ class DiningDatabase:
             RETURNING id
         """
         params = (hall.id, capacity)
-        
+
         capacity_id = self.db_manager.fetch_one(insert_query, params)
         if capacity_id:
             logger.info(f"Inserted dining capacity entry with ID: {capacity_id[0]}")
@@ -92,7 +102,7 @@ class DiningDatabase:
             LIMIT 1
         """
         row = self.db_manager.fetch_one(query, (hall.id,))
-        
+
         if row:
             return DiningCapacityHistory(
                 id=row[0],
