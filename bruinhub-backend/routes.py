@@ -98,7 +98,7 @@ def get_library_rooms(slug: str):
     Example:
     - `/v1/library/powell/rooms` → Returns rooms and booking details for Powell Library.
     """
-    data = library_db.get_library_rooms(slug)  # Assumes this method exists.
+    data = library_db.get_library_rooms(slug)
     if not data:
         return jsonify(
             {"error": "No rooms found for this library", "timestamp": datetime.now().isoformat()}
@@ -138,7 +138,7 @@ def get_library_bookings_by_date_range(slug: str):
             "timestamp": datetime.now().isoformat()
         }), 400
 
-    data = library_db.get_library_bookings_by_date_range(slug, start_date, end_date)  # Assumes this method exists.
+    data = library_db.get_library_bookings_by_date_range(slug, start_date, end_date)
     if not data:
         return jsonify({
             "error": "No booking data found for the specified date range",
