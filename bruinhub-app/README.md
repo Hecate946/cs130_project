@@ -1,6 +1,23 @@
-# Screen Test Cases
 
-## HomeScreen Test Cases
+# File Structure
+
+`/app` contains the screens for the app.
+
+`/assets` contains all images used in the app.
+
+`/components` contains all reusable components. components shared across screens are within `/components` directory, while screen-specific components are in subdirectories (e.g. `/components/home`).
+
+`/constants` contains colors and defined categories for the app.
+
+`/hooks` contains pre-defined hooks.
+
+`__tests__` reflects the same directory structure as `/bruinhub-app`. Namely, tests for screens live under `__tests__/app` and tests for components live under `__tests__/components`. Further subdirectories are also reflected. 
+
+# Test Cases
+
+## Screen Test Cases
+
+### HomeScreen Test Cases
 
 1. Renders HomeScreen correctly
 
@@ -22,7 +39,7 @@ Expected Failure: If the filtering does not work, it could indicate issues with 
 Expected Success: Pressing the button should trigger AsyncStorage.setItem("finishedOnboarding", "false") and call mockOnFinish.
 Expected Failure: If either action does not occur, there may be issues with button event handling, incorrect AsyncStorage interaction, or missing function calls in the component logic.
 
-## Onboarding Screen Test Cases
+### Onboarding Screen Test Cases
 
 1. Renders OnboardingScreen correctly
 
@@ -34,16 +51,16 @@ Expected Failure: If elements are missing, it may indicate rendering issues, inc
 Expected Success: Pressing "Let's Go" should trigger haptic feedback, set onboarding completion in AsyncStorage, and call mockOnFinish.
 Expected Failure: If any function is not called, potential issues include incorrect event handling, missing async handling, or failed mock implementation.
 
-# Component Test Cases
+## Component Test Cases
 
-## Divider Component Test Cases
+### Divider Component Test Cases
 
 1. Renders Divider component correctly with the provided name
 
 Expected Success: The Divider component should display the provided text (e.g., "Test Divider").
 Expected Failure: If the text does not appear, potential issues include incorrect prop handling, missing styles, or component rendering failures.
 
-## HomeCard Component Test Cases
+### HomeCard Component Test Cases
 
 1. Renders HomeCard with provided name and description
 
@@ -60,7 +77,7 @@ Expected Failure: If haptic feedback is not triggered, the press event may not b
 Expected Success: Pressing the pin icon should invoke pinCallback.
 Expected Failure: If pinCallback is not called, event handling for the button may be incorrect.
 
-## SelectableChip Component Test Cases
+### SelectableChip Component Test Cases
 
 1. Rendering the SelectableChip Component
 
