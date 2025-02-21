@@ -18,4 +18,5 @@ class GymCapacityHistory:
     gym_id: int
     zone_name: str
     capacity: int
+    percentage: int
     last_updated: datetime
