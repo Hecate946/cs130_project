@@ -1,0 +1,67 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "18500f92_1f70f8d4",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000003
+      },
+      "writtenOn": "2025-02-21T08:06:35Z",
+      "side": 1,
+      "message": "minor nits",
+      "revId": "f001042fc2b5f55160ca8524ee3aa5fe396c0f54",
+      "serverId": "3c7ad661-7ce8-4163-af0d-ebc0f4c5b529"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ab2ce99d_29ce2b1d",
+        "filename": "bruinhub-app/README.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 1000003
+      },
+      "writtenOn": "2025-02-21T08:06:35Z",
+      "side": 1,
+      "message": "NIT - maybe add \"for home screen\" since components/home can sound vague and some like the home directory for something else.",
+      "range": {
+        "startLine": 8,
+        "startChar": 123,
+        "endLine": 8,
+        "endChar": 197
+      },
+      "revId": "f001042fc2b5f55160ca8524ee3aa5fe396c0f54",
+      "serverId": "3c7ad661-7ce8-4163-af0d-ebc0f4c5b529"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "aadeedc5_ec2fad64",
+        "filename": "bruinhub-app/README.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 1000003
+      },
+      "writtenOn": "2025-02-21T08:06:35Z",
+      "side": 1,
+      "message": "nit -- trailing whitespace",
+      "range": {
+        "startLine": 14,
+        "startChar": 225,
+        "endLine": 14,
+        "endChar": 226
+      },
+      "revId": "f001042fc2b5f55160ca8524ee3aa5fe396c0f54",
+      "serverId": "3c7ad661-7ce8-4163-af0d-ebc0f4c5b529"
+    }
+  ]
+}
