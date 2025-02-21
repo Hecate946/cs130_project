@@ -48,7 +48,4 @@ class LibraryScrapers:
             except requests.exceptions.RequestException as e:
                 logger.error(f"Failed to fetch data from {url}")
                 logger.error(e)
-            print("-----------------")
-            print(results)
-            print("-----------------")
         return results
