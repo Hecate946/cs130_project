@@ -8,6 +8,7 @@ from database.manager import DatabaseManager
 logger = logging.getLogger(__name__)
 
 
+
 class GymDatabase:
     def __init__(self, db_manager: DatabaseManager):
         self.db = db_manager
@@ -17,12 +18,14 @@ class GymDatabase:
         """Get gym information by slug."""
         logger.info(f"Getting gym info for slug: {slug}")
 
+
         query = """
             SELECT id, slug, regular_hours, special_hours, last_updated
             FROM gyms
             WHERE slug = %s
         """
         row = self.db.fetch_one(query, (slug,))
+
 
         if row:
             return Gym(
@@ -32,6 +35,7 @@ class GymDatabase:
                 special_hours=row[3] if row[3] else None,
                 last_updated=row[4],
             )
+
 
         logger.warning(f"No gym found with slug: {slug}")
         return None
