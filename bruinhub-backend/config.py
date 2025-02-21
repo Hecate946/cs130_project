@@ -104,5 +104,5 @@ LIBRARY_EID_TO_NAME_MAP = {
     165441: "Room 6 (Capacity 4)"
 }
 
-OCCUSPACE_PREFIX = "https://testing.occuspace.io/waitz/location/"
-MENUS_PREFIX = "https://menu.dining.ucla.edu/Menus/"
+OCCUSPACE_PREFIX = "https://testing.occuspace.io/waitz/location"
+MENUS_PREFIX = "https://menu.dining.ucla.edu/Menus"
