@@ -33,12 +33,16 @@ def scrape_and_store_gym_data():
                 for zone in zones:
                     logger.info(f"Storing capacity for {slug} - {zone['zone_name']}")
                     gym_db.insert_gym_capacity(
-                        slug, zone["zone_name"], zone["last_count"]
+                        slug,
+                        zone["zone_name"],
+                        zone["last_count"],
+                        zone["percentage"],
+                        zone["last_updated"]  # This will be the LastUpdatedDateAndTime from the API
                     )
 
         # Scrape hours
         logger.info("Scraping hours")
-        hours_data = scraper.scrape_hours()
+        hours_data = scraper.get_static_hours()
         for slug, hours in hours_data.items():
             logger.info(f"Updating hours for {slug}")
             gym_db.update_gym_hours(
