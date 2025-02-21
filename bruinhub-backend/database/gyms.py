@@ -55,7 +55,7 @@ class GymDatabase:
         logger.info(f"Successfully updated hours for gym: {slug}")
         return True
 
-    def insert_gym_capacity(self, slug: str, zone_name: str, capacity: int) -> bool:
+    def insert_gym_capacity(self, slug: str, zone_name: str, capacity: int, percentage: int, last_updated: str) -> bool:
         """Inserts or updates capacity for a specific gym zone."""
         gym = self.get_gym_by_slug(slug)
         if not gym:
@@ -63,19 +63,20 @@ class GymDatabase:
             return False
 
         insert_query = """
-            INSERT INTO gym_capacity_history (gym_id, zone_name, capacity, last_updated)
-            VALUES (%s, %s, %s, NOW())
+            INSERT INTO gym_capacity_history (gym_id, zone_name, capacity, percentage, last_updated)
+            VALUES (%s, %s, %s, %s, %s)
+            ON CONFLICT (gym_id, zone_name, capacity, percentage, last_updated) DO NOTHING
             RETURNING id
         """
-        params = (gym.id, zone_name, capacity)
+        params = (gym.id, zone_name, capacity, percentage, last_updated)
         
         capacity_id = self.db.fetch_one(insert_query, params)
         if capacity_id:
             logger.info(f"Inserted gym capacity entry with ID: {capacity_id[0]}")
             return True
-
-        logger.error("Failed to insert gym capacity")
-        return False
+        else:
+            logger.info(f"Skipped duplicate capacity entry for {slug} - {zone_name}")
+            return True
 
     def get_latest_gym_capacity(self, slug: str) -> Optional[List[GymCapacityHistory]]:
         """Retrieves the most recent capacity data for each gym zone."""
@@ -85,10 +86,16 @@ class GymDatabase:
             return None
 
         query = """
-            SELECT id, gym_id, zone_name, capacity, last_updated
-            FROM gym_capacity_history
-            WHERE gym_id = %s
-            ORDER BY last_updated DESC
+            WITH RankedCapacities AS (
+                SELECT id, gym_id, zone_name, capacity, percentage, last_updated,
+                       ROW_NUMBER() OVER (PARTITION BY gym_id, zone_name ORDER BY last_updated DESC) as rn
+                FROM gym_capacity_history
+                WHERE gym_id = %s
+            )
+            SELECT id, gym_id, zone_name, capacity, percentage, last_updated
+            FROM RankedCapacities
+            WHERE rn = 1
+            ORDER BY zone_name
         """
         rows = self.db.fetch_all(query, (gym.id,))
         
@@ -99,7 +106,8 @@ class GymDatabase:
                     gym_id=row[1],
                     zone_name=row[2],
                     capacity=row[3],
-                    last_updated=row[4],
+                    percentage=row[4],
+                    last_updated=row[5],
                 )
                 for row in rows
             ]
@@ -115,7 +123,11 @@ class GymDatabase:
 
         capacities = self.get_latest_gym_capacity(slug)
         zones = {
-            cap.zone_name: {"capacity": cap.capacity, "last_updated": cap.last_updated.isoformat()}
+            cap.zone_name: {
+                "capacity": cap.capacity,
+                "percentage": cap.percentage,
+                "last_updated": cap.last_updated.isoformat()
+            }
             for cap in capacities
         } if capacities else {}
 
