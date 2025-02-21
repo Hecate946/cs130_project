@@ -30,15 +30,21 @@ class GymScrapers:
                     # Calculate percentage ourselves
                     last_count = zone["LastCount"]
                     total_capacity = zone["TotalCapacity"]
-                    percentage = round((last_count / total_capacity) * 100) if total_capacity > 0 else 0
-                    
-                    zones.append({
-                        "zone_name": zone["LocationName"],
-                        "open": not zone["IsClosed"],
-                        "last_count": last_count,
-                        "percentage": percentage,
-                        "last_updated": zone["LastUpdatedDateAndTime"]
-                    })
+                    percentage = (
+                        round((last_count / total_capacity) * 100)
+                        if total_capacity > 0
+                        else 0
+                    )
+
+                    zones.append(
+                        {
+                            "zone_name": zone["LocationName"],
+                            "open": not zone["IsClosed"],
+                            "last_count": last_count,
+                            "percentage": percentage,
+                            "last_updated": zone["LastUpdatedDateAndTime"],
+                        }
+                    )
             return zones
         except Exception as e:
             logger.error(f"Error filtering facility zones: {e}")

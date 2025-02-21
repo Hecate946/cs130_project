@@ -2,6 +2,7 @@ import pytest
 from flask import Flask
 from routes import api  # Import the Flask Blueprint
 
+
 @pytest.fixture
 def client():
     """Fixture to create a test client for Flask"""
@@ -10,7 +11,9 @@ def client():
     app.config["TESTING"] = True
     return app.test_client()
 
+
 # ------------------ Gym API Tests ------------------
+
 
 def test_get_specific_gym(client):
     """Test fetching a specific gym"""
@@ -23,6 +26,7 @@ def test_get_specific_gym(client):
     else:
         assert "error" in data
 
+
 def test_get_invalid_gym(client):
     """Test fetching an invalid gym"""
     response = client.get("/v1/gym/invalid-gym")
@@ -30,7 +34,9 @@ def test_get_invalid_gym(client):
     data = response.get_json()
     assert data["error"] == "Gym not found"
 
+
 # ------------------ Dining API Tests ------------------
+
 
 def test_get_specific_dining_hall(client):
     """Test fetching a specific dining hall"""
@@ -42,6 +48,7 @@ def test_get_specific_dining_hall(client):
         assert data["data"]["slug"] == "epicuria"
     else:
         assert "error" in data
+
 
 def test_get_invalid_dining_hall(client):
     """Test fetching an invalid dining hall"""

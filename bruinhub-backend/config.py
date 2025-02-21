@@ -7,10 +7,7 @@ load_dotenv()
 DATABASE_URL = os.getenv("DATABASE_URL")
 
 # Facility IDs for UCLA Recreation API
-FACILITY_IDS = {
-    'bfit': 803,
-    'john-wooden-center': 802
-}
+FACILITY_IDS = {"bfit": 803, "john-wooden-center": 802}
 
 # URLs for scraping
 FACILITY_COUNT_URL = "https://goboardapi.azurewebsites.net/api/FacilityCount/GetCountsByAccount?AccountAPIKey=73829a91-48cb-4b7b-bd0b-8cf4134c04cd"
