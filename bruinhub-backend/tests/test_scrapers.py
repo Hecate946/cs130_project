@@ -1,6 +1,7 @@
 import pytest
 from scrapers.gyms import GymScrapers
 from config import FACILITY_IDS
+from scrapers.restaurants import get_restaurants
 
 
 def test_get_facility_counts():
@@ -85,3 +86,27 @@ def test_scrape_facility_counts():
             assert 0 <= first_zone["percentage"] <= 100
             assert isinstance(first_zone["last_count"], int)
             assert isinstance(first_zone["open"], bool)
+
+def test_get_restaurants():
+    """Test the restaurant data fetching"""
+    restaurants = get_restaurants()
+
+    # Check we got data for our restaurants
+    assert isinstance(restaurants, dict), "Restaurants should be a dictionary"
+    assert "BruinPlate" in restaurants, "Should have data for BruinPlate"
+    assert "DeNeve" in restaurants, "Should have data for DeNeve"
+    assert "Epicuria" in restaurants, "Should have data for Epicuria"
+
+    # Check structure of restaurant data
+    for restaurant, data in restaurants.items():
+        assert isinstance(data, dict), f"Data for {restaurant} should be a dictionary"
+        assert "hours_today" in data
+        assert "occupants" in data
+        assert "capacity" in data
+        assert "menu" in data
+
+        # Basic validation
+        assert isinstance(data["occupants"], int)
+        assert isinstance(data["capacity"], int)
+        assert isinstance(data["hours_today"], list)
+        assert isinstance(data["menu"], dict)
