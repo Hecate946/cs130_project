@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6a43b7ed_0978c46b",
+        "filename": "bruinhub-app/README.md",
+        "patchSetId": 2
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2025-02-21T20:01:11Z",
+      "side": 1,
+      "message": "Why the double underscores?",
+      "range": {
+        "startLine": 14,
+        "startChar": 1,
+        "endLine": 14,
+        "endChar": 10
+      },
+      "revId": "8f0dda4f9766c3eaffaa6cf69873a54b323eeafa",
+      "serverId": "3c7ad661-7ce8-4163-af0d-ebc0f4c5b529"
+    }
+  ]
+}
