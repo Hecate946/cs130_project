@@ -64,7 +64,8 @@ class GymScrapers:
             # Get counts for each facility
             results = {}
             for slug, facility_id in FACILITY_IDS.items():
-                zones = GymScrapers.filter_facility_zones(facility_data, facility_id)
+                zones = GymScrapers.filter_facility_zones(
+                    facility_data, facility_id)
                 logger.info(f"Found {len(zones)} zones for {slug}")
                 results[slug] = zones
 

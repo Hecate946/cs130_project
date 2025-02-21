@@ -19,7 +19,8 @@ class DatabaseManager:
     def run_schema(self):
         """Runs the schemas.sql script at startup."""
         try:
-            logger.info("Applying database schema from database/schemas.sql...")
+            logger.info(
+                "Applying database schema from database/schemas.sql...")
             conn = psycopg.connect(self.db_url)
             cur = conn.cursor()
 

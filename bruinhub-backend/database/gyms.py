@@ -87,7 +87,8 @@ class GymDatabase:
 
         capacity_id = self.db.fetch_one(insert_query, params)
         if capacity_id:
-            logger.info(f"Inserted gym capacity entry with ID: {capacity_id[0]}")
+            logger.info(
+                f"Inserted gym capacity entry with ID: {capacity_id[0]}")
             return True
         else:
             logger.info(f"Skipped duplicate capacity entry for {slug} - {zone_name}")

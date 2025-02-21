@@ -43,7 +43,9 @@ def scrape_and_store_dining_data():
 
                 # Store historical capacity update
                 logger.info(f"Storing capacity update for {hall_slug}")
-                dining_db.insert_dining_capacity(hall_slug, hall_info["capacity"])
+                dining_db.insert_dining_capacity(
+                    hall_slug, hall_info["capacity"])
 
     except Exception as e:
-        logger.error(f"Error in periodic dining hall scraping: {e}", exc_info=True)
+        logger.error(
+            f"Error in periodic dining hall scraping: {e}", exc_info=True)
