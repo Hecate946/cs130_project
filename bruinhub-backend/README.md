@@ -35,6 +35,61 @@ Background task definitions and scheduling:
 
 Tasks are run on a schedule to keep our database updated with the latest facility information.
 
+## Testing Scenarios
+
+### API Tests
+
+1. Retrieving a specific gym.
+
+Success: The API returns the latest data for the specified gym.
+Failure: The API returns an error or incorrect data.
+
+2. Retrieving a nonexistent gym.
+
+Success: The API returns a 404 error for a nonexistent gym.
+Failure: The API returns a different status code or incorrect data.
+
+3. Retrieving a specific dining hall.
+
+Success: The API returns the latest data for the specified dining hall.
+Failure: The API returns an error or incorrect data.
+
+4. Retrieving a nonexistent dining hall.
+
+Success: The API returns a 404 error for a nonexistent dining hall.
+Failure: The API returns a different status code or incorrect data.
+
+### Library Scraping Tests
+
+1. Model creating a library reservation room and booking in the database.
+
+Success: The library reservation room and booking are created in the database.
+Failure: The library reservation room and booking are not created in the database.
+
+2. Booking time constraints.
+
+Success: Database returns error for start time after end time.
+Failure: Database does not return error for start time after end time.
+
+### Restaurant Scraping Tests
+
+1. The shape of the Occuspace API and UCLA menus endpoints should not change.
+
+Success: The Occuspace API and UCLA menus endpoints maintain the same structure.
+Failure: The Occuspace API and UCLA menus endpoints change their structure.
+
+### Gym Scraping Tests
+
+1. Each facility's live counts are retrievable.
+
+Success: The live counts for each facility are retrievable.
+Failure: One or many facilities do not have retrievable live counts.
+
+2. Zone data can be filtered correctly.
+
+Success: The zone data can be filtered correctly.
+Failure: The zone data cannot be filtered correctly, such as returning zones from the wrong facility or none at all.
+
 ## API Endpoints
 
 ### Gym Data
@@ -43,4 +98,4 @@ Tasks are run on a schedule to keep our database updated with the latest facilit
   - Wooden Center: `/api/v1/gym/wooden`
 
 ### Health Check
-- `GET /health` - Check service health and database connectivity 
+- `GET /health` - Check service health and database connectivity
