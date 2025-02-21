@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ae0de086_4eda6ddf",
+        "filename": "bruinhub-app/__tests__/components/notification/NotificationItem-test.tsx",
+        "patchSetId": 3
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2025-02-21T20:00:40Z",
+      "side": 1,
+      "message": "What is the `id` attribute for?",
+      "range": {
+        "startLine": 27,
+        "startChar": 76,
+        "endLine": 27,
+        "endChar": 82
+      },
+      "revId": "4b33458b30df7ff28e42ff4f971e017e2f931d82",
+      "serverId": "3c7ad661-7ce8-4163-af0d-ebc0f4c5b529"
+    }
+  ]
+}
