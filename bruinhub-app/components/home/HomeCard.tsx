@@ -24,7 +24,7 @@ export default function HomeCard({ name, description, isPinned, pinCallback }: H
     <Card onPress={() => handlePress()} style={styles.card}>
       <View style={styles.imageContainer}>
         {/* <Image source={{ uri: imageUrl }} style={styles.image} /> */}
-        <TouchableOpacity onPress={pinCallback}>
+        <TouchableOpacity onPress={pinCallback} testID="pin-button">
           <MaterialCommunityIcons
             name={isPinned ? "pin" : "pin-outline"}
             size={28}

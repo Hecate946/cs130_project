@@ -1,7 +1,6 @@
 import React from "react";
 import { render, fireEvent, waitFor } from "@testing-library/react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import * as Haptics from "expo-haptics";
 import HomeScreen from "@/app/HomeScreen";
 import { CategoriesMap } from "@/constants/CategoriesMap";
 
@@ -39,19 +38,6 @@ describe("HomeScreen", () => {
 
     await waitFor(() => expect(findByText("Pinned")).toBeTruthy());
   });
-
-//   it("toggles pin status when pin button is clicked", async () => {
-//     (AsyncStorage.getAllKeys as jest.Mock).mockResolvedValue([]);
-//     const { getByText } = render(<HomeScreen onFinish={mockOnFinish} />);
-
-//     const testItem = { id: "1", name: "Test Item" };
-//     CategoriesMap.set("Category1", new Map([["1", "Test Item"]]));
-
-//     await waitFor(() => expect(getByText("Test Item")).toBeTruthy());
-
-//     fireEvent.press(getByText("Test Item"));
-//     await waitFor(() => expect(Haptics.impactAsync).toHaveBeenCalled());
-//   });
 
   it("filters items based on search query", async () => {
     CategoriesMap.set("Category1", new Map([["1", "Test Item"], ["2", "Another Item"]]));
