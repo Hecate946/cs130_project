@@ -7,6 +7,7 @@ from database.manager import DatabaseManager
 logger = logging.getLogger(__name__)
 
 
+
 class DiningDatabase:
     def __init__(self, db_manager: DatabaseManager):
         self.db_manager = db_manager
@@ -15,6 +16,7 @@ class DiningDatabase:
     def get_dining_hall_by_slug(self, slug: str) -> Optional[DiningHall]:
         """Get dining hall information by slug."""
         logger.info(f"Getting dining hall info for slug: {slug}")
+
 
         query = """
             SELECT id, slug, menu, regular_hours, special_hours, last_updated
@@ -81,7 +83,8 @@ class DiningDatabase:
 
         capacity_id = self.db_manager.fetch_one(insert_query, params)
         if capacity_id:
-            logger.info(f"Inserted dining capacity entry with ID: {capacity_id[0]}")
+            logger.info(
+                f"Inserted dining capacity entry with ID: {capacity_id[0]}")
             return True
 
         logger.error("Failed to insert dining capacity")

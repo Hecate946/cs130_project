@@ -36,6 +36,39 @@ CREATE TABLE IF NOT EXISTS gym_capacity_history (
     UNIQUE (gym_id, zone_name, capacity, percentage, last_updated)
 );
 
+DROP TABLE IF EXISTS libraries CASCADE;
+-- Create the libraries table (stores library metadata)
+CREATE TABLE IF NOT EXISTS libraries (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(50) UNIQUE,
+    slug VARCHAR(50) UNIQUE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    location VARCHAR(100)
+);
+
+
+-- Create the library_rooms table (stores individual rooms & capacity)
+CREATE TABLE IF NOT EXISTS library_rooms (
+    id SERIAL PRIMARY KEY,
+    library_id INT REFERENCES libraries(id) ON DELETE CASCADE,
+    name VARCHAR(50) NOT NULL,
+    capacity INT,
+    accessibility_features TEXT,
+    last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE (library_id, name)
+);
+
+-- Create the library_bookings table (stores individual bookings associated with a library room)
+CREATE TABLE IF NOT EXISTS library_bookings (
+    id SERIAL PRIMARY KEY,
+    room_id INT REFERENCES library_rooms(id) ON DELETE CASCADE,
+    start_time TIMESTAMP NOT NULL,
+    end_time TIMESTAMP NOT NULL,
+    status VARCHAR(20) CHECK (status IN ('available', 'booked')) NOT NULL DEFAULT 'available',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
 -- Ensure initial dining halls exist
 INSERT INTO dining_halls (slug, menu, regular_hours, special_hours)
 VALUES 

@@ -40,7 +40,8 @@ def test_get_invalid_gym(client):
 
 def test_get_specific_dining_hall(client):
     """Test fetching a specific dining hall"""
-    response = client.get("/v1/dining/epicuria")  # Assuming 'epicuria' is a valid slug
+    response = client.get(
+        "/v1/dining/epicuria")  # Assuming 'epicuria' is a valid slug
     assert response.status_code in [200, 404]
     data = response.get_json()
     if response.status_code == 200:

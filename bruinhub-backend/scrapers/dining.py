@@ -79,11 +79,13 @@ class DiningScrapers:
                 hall.setdefault("menu", {})  # Ensure menu exists
                 hall.setdefault("capacity", 0)  # Ensure capacity exists
                 hall.setdefault("regular_hours", {})  # Ensure hours exist
-                hall.setdefault("special_hours", {})  # Ensure special hours exist
+                # Ensure special hours exist
+                hall.setdefault("special_hours", {})
 
             logger.info("Successfully scraped dining hall data")
             return dining_data
 
         except Exception as e:
-            logger.error(f"Error in dummy dining hall scraping: {e}", exc_info=True)
+            logger.error(
+                f"Error in dummy dining hall scraping: {e}", exc_info=True)
             return {}
