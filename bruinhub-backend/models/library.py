@@ -30,7 +30,7 @@ class LibraryRoom(db.Model):
     library_id: int = db.Column(
         db.Integer, db.ForeignKey("libraries.id"), nullable=False)
     name: str = db.Column(db.String(255), nullable=False)
-    capacity: int = db.Column(db.Integer, nullable=False)
+    capacity: int = db.Column(db.Integer, nullable=True)
     accessibility_features: Optional[str] = db.Column(db.Text, nullable=True)
     last_updated: datetime = db.Column(db.DateTime, default=datetime.now(
         timezone.utc), onupdate=datetime.now(timezone.utc))

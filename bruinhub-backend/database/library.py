@@ -1,89 +1,172 @@
 from datetime import datetime
-from typing import Dict, List
+from typing import Dict, List, Optional
 import json
-from models.library import LibraryRoom, LibraryBooking
+import logging
+from sqlalchemy import text
+from flask import current_app
+
+from models.library import Library, LibraryRoom, LibraryBooking
 from database.manager import DatabaseManager
 from config import LIBRARY_EID_TO_NAME_MAP
-from sqlalchemy import text
 
+logger = logging.getLogger(__name__)
 
-def process_library_data(data: Dict, library_id: int, db: DatabaseManager):
-    """Process raw JSON data from library API and store in database"""
+class LibraryDatabase:
+    def __init__(self, db_manager: DatabaseManager):
+        self.db = db_manager
+        logger.info("Initialized LibraryDatabase")
 
-    # Group slots by itemId (room)
-    rooms_slots = {}
-    for slot in data['slots']:
-        room_id = slot['itemId']
-        if room_id not in rooms_slots:
-            rooms_slots[room_id] = []
-        rooms_slots[room_id].append(slot)
+    def get_library_details(self, slug: str) -> Optional[Dict]:
+        """Return a dictionary of library details given its slug."""
+        library = Library.query.filter_by(slug=slug).first()
+        if library:
+            return {
+                "id": library.id,
+                "name": library.name,
+                "slug": library.slug,
+                "location": library.location,
+                "created_at": library.created_at.isoformat() if library.created_at else None
+            }
+        return None
 
-    # Process each room
-    for room_id, slots in rooms_slots.items():
-        room_name = LIBRARY_EID_TO_NAME_MAP[room_id]
-        # First, ensure room exists in database
-        room = get_or_create_room(
-            db=db,
-            library_id=library_id,
-            room_id=room_id,
-            name=room_name  # You might want to get actual room names from somewhere
-        )
+    def get_library_bookings(self, slug: str) -> Optional[List[Dict]]:
+        """Return an array of booking dictionaries for the library identified by slug."""
+        library = Library.query.filter_by(slug=slug).first()
+        if not library:
+            return None
 
-        # Process all slots for this room
-        process_room_slots(db, room.id, slots)
+        bookings = (LibraryBooking.query
+                    .join(LibraryRoom, LibraryRoom.id == LibraryBooking.room_id)
+                    .filter(LibraryRoom.library_id == library.id)
+                    .all())
+        results = []
+        for booking in bookings:
+            results.append({
+                "id": booking.id,
+                "room_id": booking.room_id,
+                "start_time": booking.start_time.isoformat(),
+                "end_time": booking.end_time.isoformat(),
+                "status": booking.status,
+                "created_at": booking.created_at.isoformat() if booking.created_at else None
+            })
+        return results
 
+    def get_library_rooms(self, slug: str) -> Optional[List[Dict]]:
+        """Return an array of room dictionaries (with booking info) for the library."""
+        library = Library.query.filter_by(slug=slug).first()
+        if not library:
+            return None
 
-def get_or_create_room(db: DatabaseManager, library_id: int, room_id: int, name: str) -> LibraryRoom:
-    """Get existing room or create new one"""
-    room = db.session.execute(
-        text("SELECT id FROM library_rooms WHERE library_id = :library_id AND name = :name"),
-        {"library_id": library_id, "name": name}
-    ).fetchone()
+        rooms = LibraryRoom.query.filter_by(library_id=library.id).all()
+        results = []
+        for room in rooms:
+            room_data = {
+                "id": room.id,
+                "name": room.name,
+                "capacity": room.capacity,
+                "accessibility_features": room.accessibility_features,
+                "last_updated": room.last_updated.isoformat() if room.last_updated else None,
+                "created_at": room.created_at.isoformat() if room.created_at else None,
+                "bookings": []
+            }
+            bookings = LibraryBooking.query.filter_by(room_id=room.id).all()
+            for booking in bookings:
+                room_data["bookings"].append({
+                    "id": booking.id,
+                    "start_time": booking.start_time.isoformat(),
+                    "end_time": booking.end_time.isoformat(),
+                    "status": booking.status,
+                    "created_at": booking.created_at.isoformat() if booking.created_at else None
+                })
+            results.append(room_data)
+        return results
 
-    if not room:
-        room_id_value = db.session.execute(
-            text("""
-                INSERT INTO library_rooms (library_id, name, capacity)
-                VALUES (:library_id, :name, :capacity)
-                RETURNING id
-            """),
-            {"library_id": library_id, "name": name,
-                "capacity": 1}  # Default capacity
-        ).fetchone()[0]
-    else:
-        room_id_value = room[0]
+    def get_library_bookings_by_date_range(self, slug: str, start_date: datetime, end_date: datetime) -> Optional[List[Dict]]:
+        """
+        Return an array of bookings for a library that have start_time and end_time within the specified range.
+        """
+        library = Library.query.filter_by(slug=slug).first()
+        if not library:
+            return None
 
-    return LibraryRoom(id=room_id_value, library_id=library_id, name=name)
+        bookings = (LibraryBooking.query
+                    .join(LibraryRoom, LibraryRoom.id == LibraryBooking.room_id)
+                    .filter(LibraryRoom.library_id == library.id)
+                    .filter(LibraryBooking.start_time >= start_date)
+                    .filter(LibraryBooking.end_time <= end_date)
+                    .all())
+        results = []
+        for booking in bookings:
+            results.append({
+                "id": booking.id,
+                "room_id": booking.room_id,
+                "start_time": booking.start_time.isoformat(),
+                "end_time": booking.end_time.isoformat(),
+                "status": booking.status,
+                "created_at": booking.created_at.isoformat() if booking.created_at else None
+            })
+        return results
 
+    def process_library_data(self, data: Dict, library_id: int):
+        """
+        Process raw JSON data from a library API and store it in the database.
+        Groups slots by room, ensures the room exists, then processes each slot.
+        """
+        # Group slots by itemId (room)
+        rooms_slots = {}
+        for slot in data["slots"]:
+            room_id = slot["itemId"]
+            if room_id not in rooms_slots:
+                rooms_slots[room_id] = []
+            rooms_slots[room_id].append(slot)
 
-def process_room_slots(db: DatabaseManager, room_id: int, slots: List[Dict]):
-    """Process and store all time slots for a room"""
-    for slot in slots:
-        # Convert strings to datetime objects
-        start_time = datetime.strptime(slot['start'], '%Y-%m-%d %H: %M: %S')
-        end_time = datetime.strptime(slot['end'], '%Y-%m-%d %H: %M: %S')
+        # Process each room
+        for room_id, slots in rooms_slots.items():
+            room_name = LIBRARY_EID_TO_NAME_MAP.get(room_id, f"Room {room_id}")
+            # Ensure room exists in database
+            room = self._get_or_create_room(library_id, room_id, room_name)
+            # Process all slots for this room
+            self._process_room_slots(room.id, slots)
 
-        # Determine status based on className
-        status = 'booked' if slot.get(
-            'className') == 's-lc-eq-checkout' else 'available'
+    def _get_or_create_room(self, library_id: int, room_id: int, name: str) -> LibraryRoom:
+        """Get an existing room or create a new one using raw SQL."""
+        result = self.db.session.execute(
+            text("SELECT id FROM library_rooms WHERE library_id = :library_id AND name = :name"),
+            {"library_id": library_id, "name": name}
+        ).fetchone()
 
-        # Create or update booking
-        db.session.execute(
-            text("""
-                INSERT INTO library_bookings (room_id, start_time, end_time, status)
-                VALUES (:room_id, :start_time, :end_time, :status)
-                ON CONFLICT (room_id, start_time, end_time)
-                DO UPDATE SET status = EXCLUDED.status
-            """),
-            {"room_id": room_id, "start_time": start_time,
-                "end_time": end_time, "status": status}
-        )
+        if not result:
+            room_id_value = self.db.session.execute(
+                text("""
+                    INSERT INTO library_rooms (library_id, name, capacity)
+                    VALUES (:library_id, :name, :capacity)
+                    RETURNING id
+                """),
+                {"library_id": library_id, "name": name, "capacity": 1}  # Default capacity
+            ).fetchone()[0]
+        else:
+            room_id_value = result[0]
 
+        return LibraryRoom(id=room_id_value, library_id=library_id, name=name)
 
-def update_library_availability(library_id: int, json_file_path: str):
-    """Update availability for a specific library from JSON file"""
-    with open(json_file_path, 'r') as f:
-        data = json.load(f)
+    def _process_room_slots(self, room_id: int, slots: List[Dict]):
+        """Process and store all time slots for a room using raw SQL."""
+        for slot in slots:
+            # Clean the time strings by replacing ": " with ":"
+            start = slot["start"].replace(": ", ":")
+            end = slot["end"].replace(": ", ":")
+            
+            # Convert strings to datetime objects with the correct format
+            start_time = datetime.strptime(start, "%Y-%m-%d %H:%M:%S")
+            end_time = datetime.strptime(end, "%Y-%m-%d %H:%M:%S")
+            status = "booked" if slot.get("className") == "s-lc-eq-checkout" else "available"
 
-    db = DatabaseManager("your_database_url")
-    process_library_data(data, library_id, db)
+            self.db.session.execute(
+                text("""
+                    INSERT INTO library_bookings (room_id, start_time, end_time, status)
+                    VALUES (:room_id, :start_time, :end_time, :status)
+                    ON CONFLICT (room_id, start_time, end_time)
+                    DO UPDATE SET status = EXCLUDED.status
+                """),
+                {"room_id": room_id, "start_time": start_time, "end_time": end_time, "status": status}
+            )
