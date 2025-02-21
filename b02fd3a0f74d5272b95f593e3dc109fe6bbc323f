@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "5b762070_fc74c009",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000005
+      },
+      "writtenOn": "2025-02-21T05:48:24Z",
+      "side": 1,
+      "message": "Solid, consider moving hardcoded info into config.py in the future",
+      "revId": "b02fd3a0f74d5272b95f593e3dc109fe6bbc323f",
+      "serverId": "3c7ad661-7ce8-4163-af0d-ebc0f4c5b529"
+    }
+  ]
+}
