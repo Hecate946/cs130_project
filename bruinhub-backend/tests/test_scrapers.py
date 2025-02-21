@@ -2,27 +2,31 @@ import pytest
 from scrapers.gyms import GymScrapers
 from config import FACILITY_IDS
 
+
 def test_get_facility_counts():
     """Test that we can fetch raw facility count data"""
     scraper = GymScrapers()
     data = scraper.get_facility_counts()
-    
+
     # Check we got some data
     assert data, "Should receive data from facility counts API"
     assert isinstance(data, list), "Facility data should be a list"
-    
+
     # Check data structure
     first_item = data[0]
     assert "FacilityId" in first_item, "Each facility should have an ID"
     assert "LocationName" in first_item, "Each facility should have a location name"
     assert "LastCount" in first_item, "Each facility should have a count"
     assert "TotalCapacity" in first_item, "Each facility should have a capacity"
-    assert "LastUpdatedDateAndTime" in first_item, "Each facility should have a timestamp"
+    assert "LastUpdatedDateAndTime" in first_item, (
+        "Each facility should have a timestamp"
+    )
+
 
 def test_filter_facility_zones():
     """Test that we can filter and format zone data correctly"""
     scraper = GymScrapers()
-    
+
     # Create sample facility data
     sample_data = [
         {
@@ -31,7 +35,7 @@ def test_filter_facility_zones():
             "LastCount": 30,
             "TotalCapacity": 50,
             "IsClosed": False,
-            "LastUpdatedDateAndTime": "2024-02-19T23:55:03.003"
+            "LastUpdatedDateAndTime": "2024-02-19T23:55:03.003",
         },
         {
             "FacilityId": 999,  # Different facility
@@ -39,14 +43,14 @@ def test_filter_facility_zones():
             "LastCount": 10,
             "TotalCapacity": 20,
             "IsClosed": True,
-            "LastUpdatedDateAndTime": "2024-02-19T23:55:03.003"
-        }
+            "LastUpdatedDateAndTime": "2024-02-19T23:55:03.003",
+        },
     ]
-    
+
     # Test filtering for BFIT
     bfit_zones = scraper.filter_facility_zones(sample_data, FACILITY_IDS["bfit"])
     assert len(bfit_zones) == 1, "Should only get BFIT zones"
-    
+
     zone = bfit_zones[0]
     assert zone["zone_name"] == "Weight Room"
     assert zone["last_count"] == 30
@@ -54,16 +58,17 @@ def test_filter_facility_zones():
     assert zone["open"] is True
     assert zone["last_updated"] == "2024-02-19T23:55:03.003"
 
+
 def test_scrape_facility_counts():
     """Test the main scraping function that gets all gym data"""
     scraper = GymScrapers()
     results = scraper.scrape_facility_counts()
-    
+
     # Check we got data for our gyms
     assert isinstance(results, dict), "Results should be a dictionary"
     assert "bfit" in results, "Should have data for BFIT"
     assert "john-wooden-center" in results, "Should have data for Wooden Center"
-    
+
     # Check structure of zone data
     for gym_slug, zones in results.items():
         assert isinstance(zones, list), f"Zones for {gym_slug} should be a list"
@@ -74,7 +79,7 @@ def test_scrape_facility_counts():
             assert "percentage" in first_zone
             assert "open" in first_zone
             assert "last_updated" in first_zone
-            
+
             # Basic validation
             assert isinstance(first_zone["percentage"], int)
             assert 0 <= first_zone["percentage"] <= 100

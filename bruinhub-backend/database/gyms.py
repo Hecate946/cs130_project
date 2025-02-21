@@ -7,6 +7,7 @@ from database.manager import DatabaseManager
 
 logger = logging.getLogger(__name__)
 
+
 class GymDatabase:
     def __init__(self, db_manager: DatabaseManager):
         self.db = db_manager
@@ -15,14 +16,14 @@ class GymDatabase:
     def get_gym_by_slug(self, slug: str) -> Optional[Gym]:
         """Get gym information by slug."""
         logger.info(f"Getting gym info for slug: {slug}")
-        
+
         query = """
             SELECT id, slug, regular_hours, special_hours, last_updated
             FROM gyms
             WHERE slug = %s
         """
         row = self.db.fetch_one(query, (slug,))
-        
+
         if row:
             return Gym(
                 id=row[0],
@@ -31,12 +32,15 @@ class GymDatabase:
                 special_hours=row[3] if row[3] else None,
                 last_updated=row[4],
             )
-        
+
         logger.warning(f"No gym found with slug: {slug}")
         return None
 
     def update_gym_hours(
-        self, slug: str, regular_hours: Dict[str, str], special_hours: Optional[Dict[str, str]] = None
+        self,
+        slug: str,
+        regular_hours: Dict[str, str],
+        special_hours: Optional[Dict[str, str]] = None,
     ) -> bool:
         """Updates a gym's regular and special hours."""
         gym = self.get_gym_by_slug(slug)
@@ -49,13 +53,24 @@ class GymDatabase:
             SET regular_hours = %s, special_hours = %s, last_updated = NOW()
             WHERE id = %s
         """
-        params = (json.dumps(regular_hours), json.dumps(special_hours) if special_hours else None, gym.id)
-        
+        params = (
+            json.dumps(regular_hours),
+            json.dumps(special_hours) if special_hours else None,
+            gym.id,
+        )
+
         self.db.execute(update_query, params)
         logger.info(f"Successfully updated hours for gym: {slug}")
         return True
 
-    def insert_gym_capacity(self, slug: str, zone_name: str, capacity: int, percentage: int, last_updated: str) -> bool:
+    def insert_gym_capacity(
+        self,
+        slug: str,
+        zone_name: str,
+        capacity: int,
+        percentage: int,
+        last_updated: str,
+    ) -> bool:
         """Inserts or updates capacity for a specific gym zone."""
         gym = self.get_gym_by_slug(slug)
         if not gym:
@@ -69,7 +84,7 @@ class GymDatabase:
             RETURNING id
         """
         params = (gym.id, zone_name, capacity, percentage, last_updated)
-        
+
         capacity_id = self.db.fetch_one(insert_query, params)
         if capacity_id:
             logger.info(f"Inserted gym capacity entry with ID: {capacity_id[0]}")
@@ -98,7 +113,7 @@ class GymDatabase:
             ORDER BY zone_name
         """
         rows = self.db.fetch_all(query, (gym.id,))
-        
+
         if rows:
             return [
                 GymCapacityHistory(
@@ -122,14 +137,18 @@ class GymDatabase:
             return {}
 
         capacities = self.get_latest_gym_capacity(slug)
-        zones = {
-            cap.zone_name: {
-                "capacity": cap.capacity,
-                "percentage": cap.percentage,
-                "last_updated": cap.last_updated.isoformat()
+        zones = (
+            {
+                cap.zone_name: {
+                    "capacity": cap.capacity,
+                    "percentage": cap.percentage,
+                    "last_updated": cap.last_updated.isoformat(),
+                }
+                for cap in capacities
             }
-            for cap in capacities
-        } if capacities else {}
+            if capacities
+            else {}
+        )
 
         return {
             "slug": gym.slug,

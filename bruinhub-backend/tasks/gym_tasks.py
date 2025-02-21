@@ -37,7 +37,9 @@ def scrape_and_store_gym_data():
                         zone["zone_name"],
                         zone["last_count"],
                         zone["percentage"],
-                        zone["last_updated"]  # This will be the LastUpdatedDateAndTime from the API
+                        zone[
+                            "last_updated"
+                        ],  # This will be the LastUpdatedDateAndTime from the API
                     )
 
         # Scrape hours
