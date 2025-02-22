@@ -647,6 +647,5 @@ def test_get_library_bookings_by_date_range_no_results(app):
         start_range = datetime(2025, 6, 1, 0, 0, 0)
         end_range = datetime(2025, 6, 1, 23, 59, 59)
         bookings_in_range = library_db.get_library_bookings_by_date_range("noresults", start_range, end_range)
-        # Depending on implementation, you might return an empty list or a 404 error via route.
-        # For a direct library_db call, assume empty list.
-        assert bookings_in_range == []  # or assert bookings_in_range is None if that's expected
+
+        assert bookings_in_range == []

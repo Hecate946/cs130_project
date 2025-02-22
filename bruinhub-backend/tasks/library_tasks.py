@@ -8,7 +8,7 @@ logger = logging.getLogger(__name__)
 # Initialize global instances
 # These will be set by the setup function
 db_manager = None
-libraries_db = None
+library_db = None
 scraper = None
 
 
@@ -17,7 +17,7 @@ def setup_library_tasks(database_url: str):
     global db_manager, library_db, scraper
     logger.info("Setting up library tasks with database and scrapers")
     db_manager = DatabaseManager(database_url)
-    libraries_db = LibraryDatabase(db_manager)
+    library_db = LibraryDatabase(db_manager)
     scraper = LibraryScrapers()
 
 
@@ -28,10 +28,18 @@ def scrape_and_store_library_data():
 
         # Scrape data
         raw_data = scraper.scrape_library_data()
+        logger.info(f"Scraped data for {len(raw_data)} libraries")
 
         # Process each library's data
-        for library_id, data in raw_data.items():
-            libraries_db.process_library_data(data, library_id, db_manager)
+        for library_name, data in raw_data.items():
+            library_id = library_db.get_library_id_by_name(library_name)
+            if not library_id:
+                logger.warning(f"Library {library_name} not found in database")
+                continue
+            
+            logger.info(f"Processing data for {library_name}")
+            library_db.process_library_data(data, library_id)
+            logger.info(f"Successfully processed data for {library_name}")
 
         logger.info("Successfully updated library data")
     except Exception as e:
