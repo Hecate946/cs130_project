@@ -3,9 +3,8 @@ from flask import Blueprint, jsonify, request
 from datetime import datetime
 from database.gyms import GymDatabase
 from database.dining import DiningDatabase
-from database.library import LibraryDatabase  # New import for library API
+from database.library import LibraryDatabase
 from database import DatabaseManager
-import os
 from config import DATABASE_URL
 
 logger = logging.getLogger(__name__)
