@@ -9,6 +9,7 @@ from tasks.gym_tasks import setup_gym_tasks, scrape_and_store_gym_data
 from tasks.dining_tasks import setup_dining_tasks, scrape_and_store_dining_data
 from tasks.library_tasks import setup_library_tasks, scrape_and_store_library_data
 from routes import api  # Add this import
+from models.library import db
 import logging
 
 from config import DATABASE_URL
@@ -21,13 +22,20 @@ logging.basicConfig(
 app = Flask(__name__)
 CORS(app)  # Enable CORS for all routes
 
+
 # Register the API blueprint
 app.register_blueprint(api, url_prefix="/api")  # Add this line
 
-
 # Load configuration
 DB_URL = DATABASE_URL
-SCRAPE_INTERVAL = int(os.getenv("SCRAPE_INTERVAL", "300"))  # Default 5 minutes
+SCRAPE_INTERVAL = int(os.getenv("SCRAPE_INTERVAL", "15"))  # Default 5 minutes
+
+app.config["SQLALCHEMY_DATABASE_URI"] = DB_URL
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+db.init_app(app)
+
+app.app_context().push()
+db.create_all()
 
 # Initialize database managers
 db_manager = DatabaseManager(DB_URL)
@@ -63,11 +71,13 @@ def health_check():
 
 if __name__ == "__main__":
     # Initialize scheduler
-    scheduler = init_scheduler(SCRAPE_INTERVAL)
+    scheduler = init_scheduler(app, SCRAPE_INTERVAL)
+    # scheduler = init_scheduler(SCRAPE_INTERVAL)
 
     # Initial scrape on startup
     # scrape_and_store_gym_data()
     # scrape_and_store_dining_data()
+    # with app.app_context():
     scrape_and_store_library_data()
 
     app.run(debug=True, host="0.0.0.0", port=5001)
