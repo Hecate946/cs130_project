@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "095f4f7b_341e42b5",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000005
+      },
+      "writtenOn": "2025-02-23T08:03:18Z",
+      "side": 1,
+      "message": "Might create separate config files for library, gym, dining in the future",
+      "revId": "4065fa229c546b6ea45fe5ee3ed33ebc3010daba",
+      "serverId": "3c7ad661-7ce8-4163-af0d-ebc0f4c5b529"
+    }
+  ]
+}
