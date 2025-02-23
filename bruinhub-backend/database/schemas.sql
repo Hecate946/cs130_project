@@ -1,17 +1,17 @@
 -- Create the dining_halls table (stores latest menu and hours)
 CREATE TABLE IF NOT EXISTS dining_halls (
     id SERIAL PRIMARY KEY,
-    slug VARCHAR(50) UNIQUE,
-    menu JSONB DEFAULT '{}'::JSONB,  -- Stores the latest menu (station -> list of items)
-    regular_hours JSONB DEFAULT '{}'::JSONB, -- Stores regular hours
-    special_hours JSONB DEFAULT '{}'::JSONB, -- Stores special hours
+    slug VARCHAR(50) UNIQUE NOT NULL, -- e.g., "bplate", "deneve"
+    menu JSONB DEFAULT '{}'::JSONB,   -- Station -> List of items
+    hours_today JSONB DEFAULT '{}'::JSONB, -- Stores today's hours
     last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Capacity history table (tracks historical capacity changes)
+-- Capacity history table (tracks historical occupancy and capacity changes)
 CREATE TABLE IF NOT EXISTS dining_capacity_history (
     id SERIAL PRIMARY KEY,
-    hall_id INT REFERENCES dining_halls(id) ON DELETE CASCADE,
+    slug VARCHAR(50) REFERENCES dining_halls(slug) ON DELETE CASCADE, -- Foreign key using slug
+    occupants INT NOT NULL,
     capacity INT NOT NULL,
     last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
@@ -103,23 +103,20 @@ CREATE TABLE IF NOT EXISTS library_bookings (
 );
 
 -- Ensure initial dining halls exist
-INSERT INTO dining_halls (slug, menu, regular_hours, special_hours)
+INSERT INTO dining_halls (slug, menu, hours_today)
 VALUES 
-    ('epicuria', '{}'::jsonb, '{}'::jsonb, '{}'::jsonb),
-    ('de-neve', '{}'::jsonb, '{}'::jsonb, '{}'::jsonb),
-    ('bruin-plate', '{}'::jsonb, '{}'::jsonb, '{}'::jsonb)
+    ('epicuria', '{}'::jsonb, '{}'::jsonb),
+    ('deneve', '{}'::jsonb, '{}'::jsonb),
+    ('bplate', '{}'::jsonb, '{}'::jsonb)
 ON CONFLICT (slug) DO NOTHING;
 
 -- Insert initial capacity history
-INSERT INTO dining_capacity_history (hall_id, capacity, last_updated)
-SELECT id, capacity, NOW()
-FROM (
-    VALUES
-        ('epicuria', 100),
-        ('de-neve', 20),
-        ('bruin-plate', 70)
-) AS t(slug, capacity)
-JOIN dining_halls ON dining_halls.slug = t.slug;
+INSERT INTO dining_capacity_history (slug, occupants, capacity, last_updated)
+VALUES
+    ('epicuria', 0, 0, NOW()),
+    ('deneve', 0, 0, NOW()),
+    ('bplate', 0, 0, NOW())
+ON CONFLICT DO NOTHING;
 
 -- Ensure initial gyms exist
 INSERT INTO gyms (slug, regular_hours, special_hours)

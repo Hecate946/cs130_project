@@ -10,16 +10,16 @@ class DiningHall:
     id: int
     slug: str
     menu: Dict[str, list]  # Station -> List of items
-    regular_hours: Dict[str, str]
-    special_hours: Optional[Dict[str, str]]
+    hours_today: Dict[str, str]
     last_updated: datetime
 
 
 @dataclass
 class DiningCapacityHistory:
-    """Tracks historical capacity changes for a dining hall."""
+    """Tracks historical capacity and occupancy changes for a dining hall."""
 
     id: int
-    hall_id: int
+    slug: str
+    occupants: int
     capacity: int
     last_updated: datetime

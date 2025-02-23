@@ -17,7 +17,7 @@ class DiningDatabase:
         logger.info(f"Getting dining hall info for slug: {slug}")
 
         query = """
-            SELECT id, slug, menu, regular_hours, special_hours, last_updated
+            SELECT id, slug, menu, hours_today, last_updated
             FROM dining_halls
             WHERE slug = %s
         """
@@ -28,9 +28,8 @@ class DiningDatabase:
                 id=row[0],
                 slug=row[1],
                 menu=row[2] if row[2] else {},
-                regular_hours=row[3] if row[3] else {},
-                special_hours=row[4] if row[4] else None,
-                last_updated=row[5],
+                hours_today=row[3] if row[3] else {},
+                last_updated=row[4],
             )
 
         logger.warning(f"No dining hall found with slug: {slug}")
@@ -40,8 +39,7 @@ class DiningDatabase:
         self,
         slug: str,
         menu: Dict[str, list],
-        regular_hours: Dict[str, str],
-        special_hours: Optional[Dict[str, str]] = None,
+        hours_today: Dict[str, str],
     ) -> bool:
         """Updates a dining hall's menu and hours."""
         hall = self.get_dining_hall_by_slug(slug)
@@ -51,65 +49,58 @@ class DiningDatabase:
 
         update_query = """
             UPDATE dining_halls
-            SET menu = %s, regular_hours = %s, special_hours = %s, last_updated = NOW()
-            WHERE id = %s
+            SET menu = %s, hours_today = %s, last_updated = NOW()
+            WHERE slug = %s
         """
         params = (
             json.dumps(menu),
-            json.dumps(regular_hours),
-            json.dumps(special_hours) if special_hours else None,
-            hall.id,
+            json.dumps(hours_today),
+            slug,
         )
 
         self.db_manager.execute(update_query, params)
         logger.info(f"Successfully updated dining hall {slug}")
         return True
 
-    def insert_dining_capacity(self, slug: str, capacity: int) -> bool:
-        """Inserts a capacity record for a dining hall."""
-        hall = self.get_dining_hall_by_slug(slug)
-        if not hall:
-            logger.error(f"No dining hall found with slug {slug}")
+    def insert_dining_capacity(self, slug: str, occupants: int, capacity: int) -> bool:
+        """Inserts a capacity and occupancy record for a dining hall."""
+        try:
+            insert_query = """
+                INSERT INTO dining_capacity_history (slug, occupants, capacity, last_updated)
+                VALUES (%s, %s, %s, NOW())
+                RETURNING id
+            """
+            params = (slug, occupants, capacity)
+
+            capacity_id = self.db_manager.fetch_one(insert_query, params)
+            if capacity_id:
+                logger.info(f"Inserted dining capacity entry with ID: {capacity_id[0]}")
+                return True
+
+            logger.error("Failed to insert dining capacity")
             return False
-
-        insert_query = """
-            INSERT INTO dining_capacity_history (hall_id, capacity, last_updated)
-            VALUES (%s, %s, NOW())
-            RETURNING id
-        """
-        params = (hall.id, capacity)
-
-        capacity_id = self.db_manager.fetch_one(insert_query, params)
-        if capacity_id:
-            logger.info(
-                f"Inserted dining capacity entry with ID: {capacity_id[0]}")
-            return True
-
-        logger.error("Failed to insert dining capacity")
-        return False
+        except Exception as e:
+            logger.error(f"Error inserting dining capacity: {e}")
+            return False
 
     def get_latest_dining_capacity(self, slug: str) -> Optional[DiningCapacityHistory]:
         """Retrieves the most recent capacity data for a dining hall."""
-        hall = self.get_dining_hall_by_slug(slug)
-        if not hall:
-            logger.error(f"No dining hall found with slug {slug}")
-            return None
-
         query = """
-            SELECT id, hall_id, capacity, last_updated
+            SELECT id, slug, occupants, capacity, last_updated
             FROM dining_capacity_history
-            WHERE hall_id = %s
+            WHERE slug = %s
             ORDER BY last_updated DESC
             LIMIT 1
         """
-        row = self.db_manager.fetch_one(query, (hall.id,))
+        row = self.db_manager.fetch_one(query, (slug,))
 
         if row:
             return DiningCapacityHistory(
                 id=row[0],
-                hall_id=row[1],
-                capacity=row[2],
-                last_updated=row[3],
+                slug=row[1],
+                occupants=row[2],
+                capacity=row[3],
+                last_updated=row[4],
             )
 
         logger.warning(f"No capacity data found for dining hall: {slug}")
@@ -124,9 +115,9 @@ class DiningDatabase:
         capacity = self.get_latest_dining_capacity(slug)
         return {
             "slug": hall.slug,
-            "capacity": capacity.capacity if capacity else hall.capacity,
             "menu": hall.menu,
-            "regular_hours": hall.regular_hours,
-            "special_hours": hall.special_hours,
+            "hours_today": hall.hours_today,
+            "occupants": capacity.occupants if capacity else 0,
+            "capacity": capacity.capacity if capacity else 0,
             "last_updated": hall.last_updated.isoformat(),
         }

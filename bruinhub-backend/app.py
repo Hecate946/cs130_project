@@ -7,15 +7,16 @@ from database.gyms import GymDatabase
 from tasks import init_scheduler
 from tasks.gym_tasks import setup_gym_tasks, scrape_and_store_gym_data
 from tasks.dining_tasks import setup_dining_tasks, scrape_and_store_dining_data
+from tasks.library_tasks import setup_library_tasks, scrape_and_store_library_data
 from routes import api  # Add this import
 import logging
-
-from config import DATABASE_URL
+from config import DATABASE_URL, RESTAURANTS
 
 # Configure logging
 logging.basicConfig(
     level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
 )
+logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
 CORS(app)  # Enable CORS for all routes
@@ -34,6 +35,7 @@ db_manager = DatabaseManager(DB_URL)
 # Setup tasks
 setup_gym_tasks(DB_URL)
 setup_dining_tasks(DB_URL)
+setup_library_tasks(DB_URL)
 
 
 # Health check endpoint
@@ -66,5 +68,6 @@ if __name__ == "__main__":
     # Initial scrape on startup
     scrape_and_store_gym_data()
     scrape_and_store_dining_data()
+    scrape_and_store_library_data()
 
     app.run(debug=True, host="0.0.0.0", port=5001)

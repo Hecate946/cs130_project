@@ -6,6 +6,10 @@ load_dotenv()
 # Database configuration
 DATABASE_URL = os.getenv("DATABASE_URL")
 
+###############
+##### GYM #####
+###############
+
 # Facility IDs for UCLA Recreation API
 FACILITY_IDS = {"bfit": 803, "john-wooden-center": 802}
 
@@ -13,6 +17,12 @@ FACILITY_IDS = {"bfit": 803, "john-wooden-center": 802}
 FACILITY_COUNT_URL = "https://goboardapi.azurewebsites.net/api/FacilityCount/GetCountsByAccount?AccountAPIKey=73829a91-48cb-4b7b-bd0b-8cf4134c04cd"
 BFIT_URL = "https://recreation.ucla.edu/facilities/bfit"
 JWC_URL = "https://recreation.ucla.edu/facilities/jwc"
+
+
+
+###################
+##### LIBRARY #####
+###################
 
 # Library reservation URLs
 POWELL_URL = "https://calendar.library.ucla.edu/reserve/spaces/powell"
@@ -104,5 +114,24 @@ LIBRARY_EID_TO_NAME_MAP = {
     165441: "Room 6 (Capacity 4)"
 }
 
+
+###################
+###### DINING #####
+###################
+
+
 OCCUSPACE_PREFIX = "https://testing.occuspace.io/waitz/location"
 MENUS_PREFIX = "https://menu.dining.ucla.edu/Menus"
+
+RESTAURANTS = {
+    "bplate": "BruinPlate",
+    "deneve": "DeNeve",
+    "epicuria": "Epicuria"
+}
+
+# From https://testing.occuspace.io/waitz/customer/21/locations
+OCCUSPACE_IDS: dict[str, int] = {
+    "epicuria": 88,
+    "bplate": 77,
+    "deneve": 78,
+}

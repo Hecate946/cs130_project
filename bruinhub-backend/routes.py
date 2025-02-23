@@ -37,23 +37,49 @@ def get_gym_data(slug: str):
     return jsonify({"data": data, "timestamp": datetime.now().isoformat()})
 
 
+@api.route("/v1/dining", methods=["GET"])
+def get_dining_halls():
+    """
+    Get all dining halls.
+    
+    Example:
+    - `/v1/dining` → Returns list of all dining halls with current status.
+    """
+    logger.info("Fetching all dining halls data")
+    
+    all_data = {}
+    for slug in RESTAURANTS:  # Import RESTAURANTS from config
+        data = dining_db.get_dining_hall_latest(slug)
+        if data:
+            all_data[slug] = data
+    
+    return jsonify({
+        "data": all_data,
+        "timestamp": datetime.now().isoformat()
+    })
+
+
 @api.route("/v1/dining/<slug>", methods=["GET"])
 def get_dining_hall(slug: str):
     """
-    Retrieves data for a specific dining hall.
-
+    Get data for a specific dining hall.
+    
     Example:
-    - `/v1/dining/epicuria` → Returns data for Epicuria dining hall.
-    - `/v1/dining/de-neve` → Returns data for De Neve.
+    - `/v1/dining/epicuria` → Returns data for Epicuria.
     """
     logger.info(f"Fetching dining hall data for {slug}")
-
+    
     data = dining_db.get_dining_hall_latest(slug)
     if not data:
-        logger.warning(f"Dining hall '{slug}' not found")
-        return jsonify({"error": "Dining hall not found"}), 404
-
-    return jsonify({"data": data, "timestamp": datetime.now().isoformat()})
+        return jsonify({
+            "error": "Dining hall not found",
+            "timestamp": datetime.now().isoformat()
+        }), 404
+    
+    return jsonify({
+        "data": data,
+        "timestamp": datetime.now().isoformat()
+    })
 
 
 @api.route("/v1/library/<slug>", methods=["GET"])
@@ -146,3 +172,7 @@ def get_library_bookings_by_date_range(slug: str):
         }), 404
 
     return jsonify({"data": data, "timestamp": datetime.now().isoformat()})
+
+# @api.route("/v1/test/restaurants", methods=["GET"])
+# def get_restaurants():
+

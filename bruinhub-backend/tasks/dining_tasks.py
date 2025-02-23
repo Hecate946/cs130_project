@@ -6,6 +6,7 @@ from scrapers.dining import DiningScrapers
 logger = logging.getLogger(__name__)
 
 # Initialize global instances
+# These will be set by the setup function
 db_manager = None
 dining_db = None
 scraper = None
@@ -37,15 +38,20 @@ def scrape_and_store_dining_data():
                 dining_db.update_dining_hall(
                     slug=hall_slug,
                     menu=hall_info["menu"],
-                    regular_hours=hall_info["regular_hours"],
-                    special_hours=hall_info.get("special_hours"),
+                    hours_today=hall_info["regular_hours"],  # Using regular_hours from scraper as hours_today
                 )
 
                 # Store historical capacity update
                 logger.info(f"Storing capacity update for {hall_slug}")
                 dining_db.insert_dining_capacity(
-                    hall_slug, hall_info["capacity"])
+                    slug=hall_slug,
+                    occupants=hall_info["occupants"],
+                    capacity=hall_info["capacity"]
+                )
+
+            logger.info("Successfully completed dining data update")
+        else:
+            logger.warning("No dining data retrieved from scraper")
 
     except Exception as e:
-        logger.error(
-            f"Error in periodic dining hall scraping: {e}", exc_info=True)
+        logger.error(f"Error in periodic dining hall scraping: {e}", exc_info=True)

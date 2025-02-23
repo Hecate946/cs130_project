@@ -1,7 +1,7 @@
 import pytest
 from scrapers.gyms import GymScrapers
 from config import FACILITY_IDS
-from scrapers.restaurants import get_restaurants
+from scrapers.dining import DiningScrapers
 
 
 def test_get_facility_counts():
@@ -87,20 +87,21 @@ def test_scrape_facility_counts():
             assert isinstance(first_zone["last_count"], int)
             assert isinstance(first_zone["open"], bool)
 
-def test_get_restaurants():
+def test_scrape_dining_halls():
     """Test the restaurant data fetching"""
-    restaurants = get_restaurants()
+    scraper = DiningScrapers()
+    restaurants = scraper.scrape_dining_halls()
 
     # Check we got data for our restaurants
     assert isinstance(restaurants, dict), "Restaurants should be a dictionary"
-    assert "BruinPlate" in restaurants, "Should have data for BruinPlate"
-    assert "DeNeve" in restaurants, "Should have data for DeNeve"
-    assert "Epicuria" in restaurants, "Should have data for Epicuria"
+    assert "bplate" in restaurants, "Should have data for slug: bplate"
+    assert "deneve" in restaurants, "Should have data for slug: deneve"
+    assert "epicuria" in restaurants, "Should have data for slug: epicuria"
 
     # Check structure of restaurant data
     for restaurant, data in restaurants.items():
         assert isinstance(data, dict), f"Data for {restaurant} should be a dictionary"
-        assert "hours_today" in data
+        assert "regular_hours" in data
         assert "occupants" in data
         assert "capacity" in data
         assert "menu" in data
@@ -108,5 +109,5 @@ def test_get_restaurants():
         # Basic validation
         assert isinstance(data["occupants"], int)
         assert isinstance(data["capacity"], int)
-        assert isinstance(data["hours_today"], list)
+        assert isinstance(data["regular_hours"], list)
         assert isinstance(data["menu"], dict)

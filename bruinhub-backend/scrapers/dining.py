@@ -1,91 +1,95 @@
-from datetime import datetime
 from typing import Dict
+import requests
+from bs4 import BeautifulSoup
 import logging
+from config import OCCUSPACE_PREFIX, MENUS_PREFIX, RESTAURANTS, OCCUSPACE_IDS
 
 logger = logging.getLogger(__name__)
 
 
 class DiningScrapers:
+    """Handles scraping of UCLA dining data from various sources"""
+
+    @staticmethod
+    def _get_hours_today(slug: str) -> Dict[str, str]:
+        """Returns the hours of operation for today."""
+        try:
+            data = requests.get(f"{OCCUSPACE_PREFIX}/{OCCUSPACE_IDS[slug]}/hours").json()
+            hours = next(rules["hours"] for rules in data["data"][0]["rules"] if rules["active"])
+            return hours
+        except Exception as e:
+            logger.error(f"Error fetching hours for {slug}: {str(e)}")
+            return {}
+
+    @staticmethod
+    def _get_occupancy(slug: str) -> tuple[int, int]:
+        """Returns number of people and the capacity of the restaurant."""
+        try:
+            data = requests.get(f"{OCCUSPACE_PREFIX}/{OCCUSPACE_IDS[slug]}").json()
+            return data["data"]["people"], data["data"]["capacity"]
+        except Exception as e:
+            logger.error(f"Error fetching occupancy for {slug}: {str(e)}")
+            return None, None
+
+    @staticmethod
+    def _get_menu(slug: str) -> Dict[str, list[str]]:
+        """Returns the menu for the restaurant."""
+        try:
+            response = requests.get(f"{MENUS_PREFIX}/{RESTAURANTS[slug]}")
+            response.raise_for_status()
+            soup = BeautifulSoup(response.text, "lxml")
+            return {
+                str(section.contents[0]).strip(): [elem.text for elem in section.select("a")]
+                for section in soup.select("li.sect-item")
+            }
+        except Exception as e:
+            logger.error(f"Error fetching menu for {slug}: {str(e)}")
+            return {}
+
     @staticmethod
     def scrape_dining_halls() -> Dict:
-        """Simulates scraping UCLA dining hall data"""
-        logger.info("Starting dining hall data scrape")
-        try:
-            # Dummy data formatted to match DB schema
-            dining_data = {
-                "epicuria": {
-                    "menu": {
-                        "Capri": ["Spinach Tortellini", "Shrimp Alfredo Pasta"],
-                        "Psistaria": ["Vegetarian Meatball Sandwich"],
-                        "Mezze": ["Roasted Carrots"],
-                        "Alimenti": ["Braised Lamb", "Polenta"],
-                    },
-                    "capacity": 100,
-                    "regular_hours": {
-                        "Monday": "7:00 AM - 10:00 PM",
-                        "Tuesday": "7:00 AM - 10:00 PM",
-                        "Wednesday": "7:00 AM - 10:00 PM",
-                        "Thursday": "7:00 AM - 10:00 PM",
-                        "Friday": "7:00 AM - 9:00 PM",
-                        "Saturday": "8:00 AM - 8:00 PM",
-                        "Sunday": "8:00 AM - 8:00 PM",
-                    },
-                    "special_hours": {},
-                },
-                "de-neve": {
-                    "menu": {
-                        "Flex Bar": ["Chicken Thigh"],
-                        "The Front Burner": ["Pork Pozole", "Vegetarian Pozole"],
-                        "The Kitchen": ["Carne Asada Fries"],
-                        "The Pizzeria": ["Garlic Chicken Pizza", "Mushroom Pizza"],
-                        "The Grill": ["DFC"],
-                    },
-                    "capacity": 20,
-                    "regular_hours": {
-                        "Monday": "7:30 AM - 9:30 PM",
-                        "Tuesday": "7:30 AM - 9:30 PM",
-                        "Wednesday": "7:30 AM - 9:30 PM",
-                        "Thursday": "7:30 AM - 9:30 PM",
-                        "Friday": "7:30 AM - 9:00 PM",
-                        "Saturday": "8:30 AM - 8:00 PM",
-                        "Sunday": "8:30 AM - 8:00 PM",
-                    },
-                    "special_hours": {
-                        "2025-02-15": "8:00 AM - 6:00 PM",  # Example special hours
-                    },
-                },
-                "bruin-plate": {
-                    "menu": {
-                        "Freshly Bowled": ["Roasted Vegetables"],
-                        "Harvest": ["Quinoa Salad"],
-                        "Simply Grilled": ["Grilled Chicken"],
-                    },
-                    "capacity": 70,
-                    "regular_hours": {
-                        "Monday": "7:00 AM - 10:00 PM",
-                        "Tuesday": "7:00 AM - 10:00 PM",
-                        "Wednesday": "7:00 AM - 10:00 PM",
-                        "Thursday": "7:00 AM - 10:00 PM",
-                        "Friday": "7:00 AM - 9:00 PM",
-                        "Saturday": "8:00 AM - 8:00 PM",
-                        "Sunday": "8:00 AM - 8:00 PM",
-                    },
-                    "special_hours": {},
-                },
+        """
+        Scrapes and returns dining hall data including occupancy, menu, and hours.
+        
+        Returns:
+            Dict: A dictionary containing data for all dining locations with structure:
+            {
+                "slug": {
+                    "menu": Dict[str, list[str]],
+                    "capacity": int,
+                    "occupants": int,
+                    "regular_hours": Dict[str, str]
+                }
             }
+        """
+        logger.info("Starting dining hall data scrape")
+        dining_data = {}
 
-            # Ensure each hall has required keys (to avoid KeyErrors)
-            for hall in dining_data.values():
-                hall.setdefault("menu", {})  # Ensure menu exists
-                hall.setdefault("capacity", 0)  # Ensure capacity exists
-                hall.setdefault("regular_hours", {})  # Ensure hours exist
-                # Ensure special hours exist
-                hall.setdefault("special_hours", {})
+        for slug in RESTAURANTS:
+            try:
+                logger.info(f"Scraping data for {slug}")
+                occupants, capacity = DiningScrapers._get_occupancy(slug)
+                
+                dining_data[slug] = {
+                    "menu": DiningScrapers._get_menu(slug),
+                    "capacity": capacity,
+                    "occupants": occupants,
+                    "regular_hours": DiningScrapers._get_hours_today(slug)
+                }
+                
+                logger.info(f"Successfully scraped data for {slug}")
+            except Exception as e:
+                logger.error(f"Error scraping data for {slug}: {str(e)}")
+                continue
 
-            logger.info("Successfully scraped dining hall data")
-            return dining_data
+        return dining_data
 
-        except Exception as e:
-            logger.error(
-                f"Error in dummy dining hall scraping: {e}", exc_info=True)
-            return {}
+
+if __name__ == "__main__":
+    import json
+    # Configure logging for standalone testing
+    logging.basicConfig(level=logging.INFO)
+    # Test the scraper
+    scraper = DiningScrapers()
+    print(json.dumps(scraper.scrape_dining_halls(), indent=4))
+
