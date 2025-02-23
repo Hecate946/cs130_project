@@ -209,7 +209,7 @@ def test_process_library_data(app):
         db.session.add(lib)
         db.session.commit()
 
-        library_db = LibraryDatabase(db_manager=db)
+        library_db = LibraryDatabase()
         library_db.process_library_data(dummy_scraped_data, library_id=lib.id)
 
         # Query LibraryRoom table
@@ -239,7 +239,7 @@ def test_get_library_details(app):
         db.session.commit()
 
         # Instantiate the LibraryDatabase handler and retrieve details.
-        library_db = LibraryDatabase(db_manager=db)
+        library_db = LibraryDatabase()
         details = library_db.get_library_details("detail-library")
         assert details is not None
         assert details["name"] == "Detail Library"
@@ -269,7 +269,7 @@ def test_process_library_data_multiple_rooms(app):
             ]
         }
         
-        library_db = LibraryDatabase(db_manager=db)
+        library_db = LibraryDatabase()
         library_db.process_library_data(dummy_data, library_id=lib.id)
         
         # There should be two rooms based on the two unique itemIds.
@@ -301,7 +301,7 @@ def test_get_library_bookings_by_date_range(app):
             ]
         }
         
-        library_db = LibraryDatabase(db_manager=db)
+        library_db = LibraryDatabase()
         library_db.process_library_data(dummy_data, library_id=lib.id)
         
         # Query bookings on 2025-04-01: expecting 2 bookings.
@@ -550,7 +550,7 @@ def test_process_library_data_idempotent(app):
         db.session.add(lib)
         db.session.commit()
 
-        library_db = LibraryDatabase(db_manager=db)
+        library_db = LibraryDatabase()
         # Process data twice
         library_db.process_library_data(dummy_scraped_data, library_id=lib.id)
         library_db.process_library_data(dummy_scraped_data, library_id=lib.id)
@@ -612,7 +612,7 @@ def test_overlapping_booking_update(app):
                  'itemId': "500", 'checksum': 'upd1', 'className': 's-lc-eq-available'},
             ]
         }
-        library_db = LibraryDatabase(db_manager=db)
+        library_db = LibraryDatabase()
         # Process original data then updated (overlapping same time slot)
         library_db.process_library_data(dummy_data_original, library_id=lib.id)
         library_db.process_library_data(dummy_data_updated, library_id=lib.id)
@@ -634,7 +634,7 @@ def test_get_library_bookings_by_date_range_no_results(app):
         db.session.add(lib)
         db.session.commit()
 
-        library_db = LibraryDatabase(db_manager=db)
+        library_db = LibraryDatabase()
         # Process dummy data that does not include bookings for 2025-06-01.
         dummy_data = {
             "slots": [

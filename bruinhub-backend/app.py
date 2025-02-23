@@ -27,7 +27,7 @@ app.register_blueprint(api, url_prefix="/api")  # Add this line
 
 # Load configuration
 DB_URL = DATABASE_URL
-SCRAPE_INTERVAL = int(os.getenv("SCRAPE_INTERVAL", "15"))  # Default 5 minutes
+SCRAPE_INTERVAL = int(os.getenv("SCRAPE_INTERVAL", "300"))  # Default 5 minutes
 
 app.config["SQLALCHEMY_DATABASE_URI"] = DB_URL
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False

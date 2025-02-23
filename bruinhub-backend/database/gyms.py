@@ -1,44 +1,20 @@
 from typing import Dict, List, Optional
-import json
 import logging
 from datetime import datetime
-from models.gyms import Gym, GymCapacityHistory
+from sqlalchemy import desc
+from models.gyms import db, Gym, GymCapacityHistory
 from database.manager import DatabaseManager
 
 logger = logging.getLogger(__name__)
 
-
-
 class GymDatabase:
-    def __init__(self, db_manager: DatabaseManager):
-        self.db = db_manager
+    def __init__(self):
         logger.info("Initialized GymDatabase")
 
     def get_gym_by_slug(self, slug: str) -> Optional[Gym]:
         """Get gym information by slug."""
         logger.info(f"Getting gym info for slug: {slug}")
-
-
-        query = """
-            SELECT id, slug, regular_hours, special_hours, last_updated
-            FROM gyms
-            WHERE slug = %s
-        """
-        row = self.db.fetch_one(query, (slug,))
-
-
-        if row:
-            return Gym(
-                id=row[0],
-                slug=row[1],
-                regular_hours=row[2] if row[2] else {},
-                special_hours=row[3] if row[3] else None,
-                last_updated=row[4],
-            )
-
-
-        logger.warning(f"No gym found with slug: {slug}")
-        return None
+        return Gym.query.filter_by(slug=slug).first()
 
     def update_gym_hours(
         self,
@@ -52,18 +28,10 @@ class GymDatabase:
             logger.error(f"No gym found with slug {slug}")
             return False
 
-        update_query = """
-            UPDATE gyms
-            SET regular_hours = %s, special_hours = %s, last_updated = NOW()
-            WHERE id = %s
-        """
-        params = (
-            json.dumps(regular_hours),
-            json.dumps(special_hours) if special_hours else None,
-            gym.id,
-        )
-
-        self.db.execute(update_query, params)
+        gym.regular_hours = regular_hours
+        gym.special_hours = special_hours
+        db.session.commit()
+        
         logger.info(f"Successfully updated hours for gym: {slug}")
         return True
 
@@ -81,22 +49,30 @@ class GymDatabase:
             logger.error(f"No gym found with slug {slug}")
             return False
 
-        insert_query = """
-            INSERT INTO gym_capacity_history (gym_id, zone_name, capacity, percentage, last_updated)
-            VALUES (%s, %s, %s, %s, %s)
-            ON CONFLICT (gym_id, zone_name, capacity, percentage, last_updated) DO NOTHING
-            RETURNING id
-        """
-        params = (gym.id, zone_name, capacity, percentage, last_updated)
+        # Check for existing identical entry
+        existing = GymCapacityHistory.query.filter_by(
+            gym_id=gym.id,
+            zone_name=zone_name,
+            capacity=capacity,
+            percentage=percentage,
+            last_updated=last_updated
+        ).first()
 
-        capacity_id = self.db.fetch_one(insert_query, params)
-        if capacity_id:
-            logger.info(
-                f"Inserted gym capacity entry with ID: {capacity_id[0]}")
-            return True
+        if not existing:
+            new_capacity = GymCapacityHistory(
+                gym_id=gym.id,
+                zone_name=zone_name,
+                capacity=capacity,
+                percentage=percentage,
+                last_updated=last_updated
+            )
+            db.session.add(new_capacity)
+            db.session.commit()
+            logger.info(f"Inserted gym capacity entry for {slug} - {zone_name}")
         else:
             logger.info(f"Skipped duplicate capacity entry for {slug} - {zone_name}")
-            return True
+        
+        return True
 
     def get_latest_gym_capacity(self, slug: str) -> Optional[List[GymCapacityHistory]]:
         """Retrieves the most recent capacity data for each gym zone."""
@@ -105,35 +81,26 @@ class GymDatabase:
             logger.error(f"No gym found with slug {slug}")
             return None
 
-        query = """
-            WITH RankedCapacities AS (
-                SELECT id, gym_id, zone_name, capacity, percentage, last_updated,
-                       ROW_NUMBER() OVER (PARTITION BY gym_id, zone_name ORDER BY last_updated DESC) as rn
-                FROM gym_capacity_history
-                WHERE gym_id = %s
+        # Subquery to get the latest capacity for each zone
+        latest_capacities = db.session.query(
+            GymCapacityHistory.zone_name,
+            db.func.max(GymCapacityHistory.last_updated).label('max_date')
+        ).filter_by(gym_id=gym.id).group_by(GymCapacityHistory.zone_name).subquery()
+
+        # Query to get the full capacity records
+        capacities = GymCapacityHistory.query.join(
+            latest_capacities,
+            db.and_(
+                GymCapacityHistory.zone_name == latest_capacities.c.zone_name,
+                GymCapacityHistory.last_updated == latest_capacities.c.max_date
             )
-            SELECT id, gym_id, zone_name, capacity, percentage, last_updated
-            FROM RankedCapacities
-            WHERE rn = 1
-            ORDER BY zone_name
-        """
-        rows = self.db.fetch_all(query, (gym.id,))
+        ).filter_by(gym_id=gym.id).order_by(GymCapacityHistory.zone_name).all()
 
-        if rows:
-            return [
-                GymCapacityHistory(
-                    id=row[0],
-                    gym_id=row[1],
-                    zone_name=row[2],
-                    capacity=row[3],
-                    percentage=row[4],
-                    last_updated=row[5],
-                )
-                for row in rows
-            ]
+        if not capacities:
+            logger.warning(f"No capacity data found for gym: {slug}")
+            return None
 
-        logger.warning(f"No capacity data found for gym: {slug}")
-        return None
+        return capacities
 
     def get_gym_latest(self, slug: str) -> Dict:
         """Gets the latest data for a gym, including capacity per zone."""
@@ -142,18 +109,14 @@ class GymDatabase:
             return {}
 
         capacities = self.get_latest_gym_capacity(slug)
-        zones = (
-            {
-                cap.zone_name: {
-                    "capacity": cap.capacity,
-                    "percentage": cap.percentage,
-                    "last_updated": cap.last_updated.isoformat(),
-                }
-                for cap in capacities
+        zones = {
+            cap.zone_name: {
+                "capacity": cap.capacity,
+                "percentage": cap.percentage,
+                "last_updated": cap.last_updated.isoformat(),
             }
-            if capacities
-            else {}
-        )
+            for cap in capacities
+        } if capacities else {}
 
         return {
             "slug": gym.slug,

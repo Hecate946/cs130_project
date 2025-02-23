@@ -1,25 +1,22 @@
-from dataclasses import dataclass
-from datetime import datetime
-from typing import Dict, Optional
+from datetime import datetime, timezone
+from database.db import db
 
 
-@dataclass
-class DiningHall:
-    """Represents a dining hall with its latest data."""
+class DiningHall(db.Model):
+    __tablename__ = "dining_halls"
 
-    id: int
-    slug: str
-    menu: Dict[str, list]  # Station -> List of items
-    hours_today: Dict[str, str]
-    last_updated: datetime
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    slug = db.Column(db.String(255), unique=True, nullable=False)
+    menu = db.Column(db.JSON, nullable=False)  # requires JSON support; otherwise use db.Text
+    regular_hours = db.Column(db.JSON, nullable=False)
+    special_hours = db.Column(db.JSON, nullable=True)
+    last_updated = db.Column(db.DateTime, default=datetime.now(timezone.utc), onupdate=datetime.now(timezone.utc))
 
 
-@dataclass
-class DiningCapacityHistory:
-    """Tracks historical capacity and occupancy changes for a dining hall."""
+class DiningCapacityHistory(db.Model):
+    __tablename__ = "dining_capacity_history"
 
-    id: int
-    slug: str
-    occupants: int
-    capacity: int
-    last_updated: datetime
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    hall_id = db.Column(db.Integer, db.ForeignKey("dining_halls.id"), nullable=False)
+    capacity = db.Column(db.Integer, nullable=False)
+    last_updated = db.Column(db.DateTime, default=datetime.now(timezone.utc), onupdate=datetime.now(timezone.utc))

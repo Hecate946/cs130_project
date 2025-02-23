@@ -1,15 +1,22 @@
 import pytest
 from flask import Flask
 from routes import api  # Import the Flask Blueprint
-
+from database.db import db  # Import the SQLAlchemy instance
 
 @pytest.fixture
 def client():
     """Fixture to create a test client for Flask"""
     app = Flask(__name__)
-    app.register_blueprint(api)  # Register the API blueprint
     app.config["TESTING"] = True
-    return app.test_client()
+    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///:memory:"
+    app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+    db.init_app(app)
+    app.register_blueprint(api)  # Register the API blueprint
+    with app.app_context():
+        db.create_all()
+        yield app.test_client()
+        db.session.remove()
+        db.drop_all()
 
 
 # ------------------ Gym API Tests ------------------

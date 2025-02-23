@@ -12,10 +12,13 @@ logger = logging.getLogger(__name__)
 api = Blueprint("api", __name__)
 
 # Initialize database managers
-db_manager = DatabaseManager(DATABASE_URL)
-gym_db = GymDatabase(db_manager)
-dining_db = DiningDatabase(db_manager)
-library_db = LibraryDatabase(db_manager)
+# db_manager = DatabaseManager(DATABASE_URL)
+# gym_db = GymDatabase(db_manager)
+# dining_db = DiningDatabase(db_manager)
+# library_db = LibraryDatabase(db_manager)
+gym_db = GymDatabase()
+dining_db = DiningDatabase()
+library_db = LibraryDatabase()
 
 
 @api.route("/v1/gym/<slug>", methods=["GET"])

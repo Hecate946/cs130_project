@@ -17,7 +17,7 @@ def setup_library_tasks(database_url: str):
     global db_manager, library_db, scraper
     logger.info("Setting up library tasks with database and scrapers")
     db_manager = DatabaseManager(database_url)
-    library_db = LibraryDatabase(db_manager)
+    library_db = LibraryDatabase()
     scraper = LibraryScrapers()
 
 
