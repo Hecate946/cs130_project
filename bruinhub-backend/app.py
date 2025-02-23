@@ -70,4 +70,5 @@ if __name__ == "__main__":
     scrape_and_store_dining_data()
     scrape_and_store_library_data()
 
+    logger.info("Starting app...")
     app.run(debug=True, host="0.0.0.0", port=5001)

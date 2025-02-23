@@ -12,9 +12,9 @@ class DatabaseManager:
             raise ValueError("DATABASE_URL is not set!")
         logger.info(f"Connecting to database: {self.db_url}")
 
-        # Run the schema at startup
-        self.run_schema()
-        logger.info("Database schema updated.")
+        # Switched to ORM so don't run schema
+        # self.run_schema()
+        # logger.info("Database schema updated.")
 
     def run_schema(self):
         """Runs the schemas.sql script at startup."""
