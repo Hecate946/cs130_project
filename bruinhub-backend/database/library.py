@@ -10,8 +10,7 @@ from config import LIBRARY_EID_TO_NAME_MAP
 logger = logging.getLogger(__name__)
 
 class LibraryDatabase:
-    def __init__(self, db_manager: DatabaseManager):
-        self.db = db_manager
+    def __init__(self):
         logger.info("Initialized LibraryDatabase")
 
     def get_library_details(self, slug: str) -> Optional[Dict]:
@@ -141,48 +140,50 @@ class LibraryDatabase:
             
 
     def _get_or_create_room(self, library_id: int, room_id: int, name: str) -> LibraryRoom:
-        """Get an existing room or create a new one using raw SQL."""
-        result = db.session.execute(
-            text("SELECT id FROM library_rooms WHERE library_id = :library_id AND name = :name"),
-            {"library_id": library_id, "name": name}
-        ).fetchone()
-
-        if not result:
-            room_id_value = db.session.execute(
-                text("""
-                    INSERT INTO library_rooms (library_id, name, capacity)
-                    VALUES (:library_id, :name, :capacity)
-                    RETURNING id
-                """),
-                {"library_id": library_id, "name": name, "capacity": 1}  # Default capacity
-            ).fetchone()[0]
-        else:
-            room_id_value = result[0]
-
-        return LibraryRoom(id=room_id_value, library_id=library_id, name=name)
+        """Get an existing room or create a new one using SQLAlchemy ORM."""
+        room = LibraryRoom.query.filter_by(library_id=library_id, name=name).first()
+        
+        if not room:
+            room = LibraryRoom(
+                library_id=library_id,
+                name=name,
+                capacity=1  # Default capacity
+            )
+            db.session.add(room)
+            db.session.commit()
+        
+        return room
 
     def _process_room_slots(self, room_id: int, slots: List[Dict]):
-        """Process and store all time slots for a room using raw SQL."""
+        """Process and store all time slots for a room using SQLAlchemy ORM."""
         for slot in slots:
             # Clean the time strings by replacing ": " with ":"
             start = slot["start"].replace(": ", ":")
             end = slot["end"].replace(": ", ":")
             
-            # Convert strings to datetime objects with the correct format
+            # Convert strings to datetime objects
             start_time = datetime.strptime(start, "%Y-%m-%d %H:%M:%S")
             end_time = datetime.strptime(end, "%Y-%m-%d %H:%M:%S")
             status = "booked" if slot.get("className") == "s-lc-eq-checkout" else "available"
 
-            db.session.execute(
-                text("""
-                    INSERT INTO library_bookings (room_id, start_time, end_time, status)
-                    VALUES (:room_id, :start_time, :end_time, :status)
-                    ON CONFLICT (room_id, start_time, end_time)
-                    DO UPDATE SET status = EXCLUDED.status
-                """),
-                {"room_id": room_id, "start_time": start_time, "end_time": end_time, "status": status}
-            )
-            
+            # Try to find existing booking
+            booking = LibraryBooking.query.filter_by(
+                room_id=room_id,
+                start_time=start_time,
+                end_time=end_time
+            ).first()
+
+            if booking:
+                booking.status = status
+            else:
+                booking = LibraryBooking(
+                    room_id=room_id,
+                    start_time=start_time,
+                    end_time=end_time,
+                    status=status
+                )
+                db.session.add(booking)
+        
         db.session.commit()
         logger.info(f"Processed {len(slots)} slots for room ID {room_id}")
-        
+

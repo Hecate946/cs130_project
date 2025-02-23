@@ -42,8 +42,9 @@ CREATE TABLE IF NOT EXISTS libraries (
     id SERIAL PRIMARY KEY,
     name VARCHAR(100) UNIQUE,
     slug VARCHAR(50) UNIQUE,
+    location VARCHAR(200),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    location VARCHAR(200)
+    last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 -- Create the library_rooms table (stores individual rooms & capacity)
@@ -53,8 +54,8 @@ CREATE TABLE IF NOT EXISTS library_rooms (
     name VARCHAR(100) NOT NULL,
     capacity INT,
     accessibility_features TEXT,
-    last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     UNIQUE (library_id, name)
 );
 
@@ -66,6 +67,7 @@ CREATE TABLE IF NOT EXISTS library_bookings (
     end_time TIMESTAMP NOT NULL,
     status VARCHAR(20) CHECK (status IN ('available', 'booked')) NOT NULL DEFAULT 'available',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     UNIQUE (room_id, start_time, end_time)
 );
 

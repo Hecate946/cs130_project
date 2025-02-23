@@ -1,26 +1,32 @@
-from dataclasses import dataclass
-from datetime import datetime
-from typing import Dict, Optional
+from datetime import datetime, timezone
+from database.db import db
+
+class Gym(db.Model):
+    """Represents a gym and its latest schedule."""
+    __tablename__ = "gyms"
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    slug = db.Column(db.String(255), unique=True, nullable=False)
+    regular_hours = db.Column(db.JSON, nullable=False)  # requires JSON support; otherwise use db.Text
+    special_hours = db.Column(db.JSON, nullable=True)
+    last_updated = db.Column(
+        db.DateTime,
+        default=datetime.now(timezone.utc),
+        onupdate=datetime.now(timezone.utc)
+    )
 
 
-@dataclass
-class Gym:
-    """Represents a gym with its latest schedule."""
-
-    id: int
-    slug: str
-    regular_hours: Dict[str, str]
-    special_hours: Optional[Dict[str, str]]
-    last_updated: datetime
-
-
-@dataclass
-class GymCapacityHistory:
+class GymCapacityHistory(db.Model):
     """Tracks historical capacity changes for gym zones."""
+    __tablename__ = "gym_capacity_history"
 
-    id: int
-    gym_id: int
-    zone_name: str
-    capacity: int
-    percentage: int
-    last_updated: datetime
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    gym_id = db.Column(db.Integer, db.ForeignKey("gyms.id"), nullable=False)
+    zone_name = db.Column(db.String(255), nullable=False)
+    capacity = db.Column(db.Integer, nullable=False)
+    percentage = db.Column(db.Integer, nullable=False)
+    last_updated = db.Column(
+        db.DateTime,
+        default=datetime.now(timezone.utc),
+        onupdate=datetime.now(timezone.utc)
+    )
