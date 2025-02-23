@@ -1,11 +1,9 @@
 from datetime import datetime
 from typing import Dict, List, Optional
-import json
 import logging
 from sqlalchemy import text
-from flask import current_app
 
-from models.library import Library, LibraryRoom, LibraryBooking
+from models.library import db, Library, LibraryRoom, LibraryBooking
 from database.manager import DatabaseManager
 from config import LIBRARY_EID_TO_NAME_MAP
 
@@ -28,7 +26,14 @@ class LibraryDatabase:
                 "created_at": library.created_at.isoformat() if library.created_at else None
             }
         return None
-
+    
+    def get_library_id_by_name(self, name: str) -> Optional[int]:
+        """Return the ID of a library given its name."""
+        library = Library.query.filter_by(name=name).first()
+        if library:
+            return library.id
+        return None
+    
     def get_library_bookings(self, slug: str) -> Optional[List[Dict]]:
         """Return an array of booking dictionaries for the library identified by slug."""
         library = Library.query.filter_by(slug=slug).first()
@@ -124,19 +129,26 @@ class LibraryDatabase:
         for room_id, slots in rooms_slots.items():
             room_name = LIBRARY_EID_TO_NAME_MAP.get(room_id, f"Room {room_id}")
             # Ensure room exists in database
+            logger.info(f"Processing room {room_name} for library ID {library_id}")
             room = self._get_or_create_room(library_id, room_id, room_name)
+            if not room:
+                logger.error(f"Error creating room {room_name} for library ID {library_id}")
+                continue
             # Process all slots for this room
+            logger.info(f"Processing {len(slots)} slots for room {room_name}")
             self._process_room_slots(room.id, slots)
+        
+            
 
     def _get_or_create_room(self, library_id: int, room_id: int, name: str) -> LibraryRoom:
         """Get an existing room or create a new one using raw SQL."""
-        result = self.db.session.execute(
+        result = db.session.execute(
             text("SELECT id FROM library_rooms WHERE library_id = :library_id AND name = :name"),
             {"library_id": library_id, "name": name}
         ).fetchone()
 
         if not result:
-            room_id_value = self.db.session.execute(
+            room_id_value = db.session.execute(
                 text("""
                     INSERT INTO library_rooms (library_id, name, capacity)
                     VALUES (:library_id, :name, :capacity)
@@ -161,7 +173,7 @@ class LibraryDatabase:
             end_time = datetime.strptime(end, "%Y-%m-%d %H:%M:%S")
             status = "booked" if slot.get("className") == "s-lc-eq-checkout" else "available"
 
-            self.db.session.execute(
+            db.session.execute(
                 text("""
                     INSERT INTO library_bookings (room_id, start_time, end_time, status)
                     VALUES (:room_id, :start_time, :end_time, :status)
@@ -170,3 +182,7 @@ class LibraryDatabase:
                 """),
                 {"room_id": room_id, "start_time": start_time, "end_time": end_time, "status": status}
             )
+            
+        db.session.commit()
+        logger.info(f"Processed {len(slots)} slots for room ID {room_id}")
+        

@@ -6,10 +6,6 @@ load_dotenv()
 # Database configuration
 DATABASE_URL = os.getenv("DATABASE_URL")
 
-###############
-##### GYM #####
-###############
-
 # Facility IDs for UCLA Recreation API
 FACILITY_IDS = {"bfit": 803, "john-wooden-center": 802}
 
@@ -19,10 +15,6 @@ BFIT_URL = "https://recreation.ucla.edu/facilities/bfit"
 JWC_URL = "https://recreation.ucla.edu/facilities/jwc"
 
 
-
-###################
-##### LIBRARY #####
-###################
 POWELL = "Powell Library"
 YRL = "Young Research Library"
 MUSIC_LIBRARY = "Walter H. Rubsamen Music Library"
@@ -145,24 +137,5 @@ LIBRARY_EID_TO_NAME_MAP = {
     165441: "Room 6 (Capacity 4)"
 }
 
-
-###################
-###### DINING #####
-###################
-
-
-OCCUSPACE_PREFIX = "https://testing.occuspace.io/waitz/location"
-MENUS_PREFIX = "https://menu.dining.ucla.edu/Menus"
-
-RESTAURANTS = {
-    "bplate": "BruinPlate",
-    "deneve": "DeNeve",
-    "epicuria": "Epicuria"
-}
-
-# From https://testing.occuspace.io/waitz/customer/21/locations
-OCCUSPACE_IDS: dict[str, int] = {
-    "epicuria": 88,
-    "bplate": 77,
-    "deneve": 78,
-}
+OCCUSPACE_PREFIX = "https://testing.occuspace.io/waitz/location/"
+MENUS_PREFIX = "https://menu.dining.ucla.edu/Menus/"

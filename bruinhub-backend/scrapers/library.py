@@ -4,9 +4,9 @@ import requests
 from datetime import datetime, timedelta
 
 from config import (
-    ALL_LIBRARY_URLS,
     LIBRARY_GRID_ENDPOINT,
-    LIBRARY_URL_CONFIG
+    LIBRARY_URL_CONFIG,
+    ALL_LIBRARY_NAMES
 )
 
 logger = logging.getLogger(__name__)
@@ -26,8 +26,8 @@ class LibraryScrapers:
     def scrape_library_data():
         start_date, end_date = get_date_range()
         results = {}
-        for url in ALL_LIBRARY_URLS:
-            config = LIBRARY_URL_CONFIG.get(url)
+        for library_name in ALL_LIBRARY_NAMES:
+            config = LIBRARY_URL_CONFIG.get(library_name)
             if config:
                 params = config["params"]
                 headers = config["headers"]
@@ -36,16 +36,18 @@ class LibraryScrapers:
                 payload["end"] = end_date
             else:
                 logger.warning(
-                    f"No configuration found for {url}. Skipping...")
+                    f"No configuration found for {library_name}. Skipping...")
                 continue
 
             try:
-                logger.info(f"Fetching data from {url}...")
+                logger.info(f"Fetching data for {library_name}...")
                 response = requests.post(
                     LIBRARY_GRID_ENDPOINT, params=params, headers=headers, data=payload)
                 response.raise_for_status()
-                results[url] = response.json()
+                results[library_name] = response.json()
             except requests.exceptions.RequestException as e:
-                logger.error(f"Failed to fetch data from {url}")
+                logger.error(f"Failed to fetch data for {library_name}")
                 logger.error(e)
         return results
+
+# print(LibraryScrapers.scrape_library_data())
