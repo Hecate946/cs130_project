@@ -2,7 +2,7 @@ from typing import Dict
 import requests
 from bs4 import BeautifulSoup
 import logging
-from config import OCCUSPACE_PREFIX, MENUS_PREFIX, RESTAURANTS, OCCUSPACE_IDS
+from config.dining import OCCUSPACE_PREFIX, MENUS_PREFIX, RESTAURANTS, OCCUSPACE_IDS
 
 logger = logging.getLogger(__name__)
 

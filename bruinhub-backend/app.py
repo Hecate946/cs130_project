@@ -11,7 +11,8 @@ from tasks.library_tasks import setup_library_tasks, scrape_and_store_library_da
 from routes import api  # Add this import
 from models.library import db
 import logging
-from config import DATABASE_URL, RESTAURANTS
+from config.base import DATABASE_URL
+from config.dining import RESTAURANTS
 
 # Configure logging
 logging.basicConfig(
@@ -27,7 +28,7 @@ app.register_blueprint(api, url_prefix="/api")  # Add this line
 
 # Load configuration
 DB_URL = DATABASE_URL
-SCRAPE_INTERVAL = int(os.getenv("SCRAPE_INTERVAL", "15"))  # Default 5 minutes
+SCRAPE_INTERVAL = int(os.getenv("SCRAPE_INTERVAL", "300"))  # Default 5 minutes
 
 app.config["SQLALCHEMY_DATABASE_URI"] = DB_URL
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False

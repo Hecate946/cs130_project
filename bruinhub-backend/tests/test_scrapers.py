@@ -1,6 +1,6 @@
 import pytest
 from scrapers.gyms import GymScrapers
-from config import FACILITY_IDS
+from config.gyms import FACILITY_IDS
 from scrapers.dining import DiningScrapers
 
 

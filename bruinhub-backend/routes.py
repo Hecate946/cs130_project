@@ -5,7 +5,8 @@ from database.gyms import GymDatabase
 from database.dining import DiningDatabase
 from database.library import LibraryDatabase
 from database import DatabaseManager
-from config import DATABASE_URL, RESTAURANTS
+from config.base import DATABASE_URL
+from config.dining import RESTAURANTS
 
 logger = logging.getLogger(__name__)
 
