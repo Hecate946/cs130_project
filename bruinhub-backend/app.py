@@ -47,18 +47,23 @@ setup_library_tasks(DB_URL)
 # Health check endpoint
 @app.route("/health", methods=["GET"])
 def health_check():
-    if db_manager.test_connection():
+    try:
+        # Check if we can execute a simple query
+        db.session.execute('SELECT 1')
         return jsonify({
             "status": "healthy",
             "database": "connected",
+            "orm": "working",
             "timestamp": datetime.now().isoformat(),
         })
-    return jsonify({
-        "status": "unhealthy",
-        "database": "disconnected",
-        "timestamp": datetime.now().isoformat(),
-    }), 500
-
+    except Exception as e:
+        logger.error(f"Database health check failed: {str(e)}")
+        return jsonify({
+            "status": "unhealthy",
+            "database": "disconnected",
+            "error": str(e),
+            "timestamp": datetime.now().isoformat(),
+        }), 500
 
 
 if __name__ == "__main__":

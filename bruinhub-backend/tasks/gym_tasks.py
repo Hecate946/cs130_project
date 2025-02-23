@@ -16,7 +16,7 @@ def setup_gym_tasks(database_url: str):
     global db_manager, gym_db, scraper
     logger.info("Setting up gym tasks with database and scrapers")
     db_manager = DatabaseManager(database_url)
-    gym_db = GymDatabase(db_manager)
+    gym_db = GymDatabase()
     scraper = GymScrapers()
 
 

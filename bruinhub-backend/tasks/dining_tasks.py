@@ -17,7 +17,7 @@ def setup_dining_tasks(database_url: str):
     global db_manager, dining_db, scraper
     logger.info("Setting up dining tasks with database and scrapers")
     db_manager = DatabaseManager(database_url)
-    dining_db = DiningDatabase(db_manager)
+    dining_db = DiningDatabase()
     scraper = DiningScrapers()
 
 
