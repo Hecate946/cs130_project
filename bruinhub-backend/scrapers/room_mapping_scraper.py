@@ -10,12 +10,12 @@ driver = webdriver.Chrome(options=options)
 
 # Open the page
 urls = [
-    "https://calendar.library.ucla.edu/reserve/spaces/powell",
-    "https://calendar.library.ucla.edu/reserve/spaces/yrl",
-    "https://calendar.library.ucla.edu/reserve/spaces/musickits",
-    "https://calendar.library.ucla.edu/spaces?lid=6578",
-    "https://calendar.library.ucla.edu/reserve/spaces/SEL",
-    "https://calendar.library.ucla.edu/spaces?lid=19391",
+    "https://calendar.library.ucla.edu/spaces?lid=5567&gid=0&c=0",
+    "https://calendar.library.ucla.edu/spaces?lid=4361&gid=0&c=0",
+    "https://calendar.library.ucla.edu/spaces?lid=4752&gid=0&c=0",
+    "https://calendar.library.ucla.edu/spaces?lid=6578&gid=0&c=0",
+    "https://calendar.library.ucla.edu/spaces?lid=8312&gid=0&c=0",
+    "https://calendar.library.ucla.edu/spaces?lid=19391&gid=0&c=0",
 ]
 
 for url in urls:

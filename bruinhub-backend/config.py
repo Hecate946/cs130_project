@@ -95,11 +95,12 @@ LIBRARY_URL_CONFIG = {
             "Accept": "*/*",
             "Accept-Encoding": "gzip, deflate, br",
             "Origin": "https://calendar.library.ucla.edu",
-            "Referer": LIBRARY_NAME_TO_URL_MAP[library_name]
+            "Referer": f"https://calendar.library.ucla.edu?lid={LIBRARY_LID_MAP[library_name]}&gid=0"
         },
         "payload": {
             "lid": LIBRARY_LID_MAP[library_name],
-            "gid": LIBRARY_GID_MAP[library_name],
+            # "gid": LIBRARY_GID_MAP[library_name],
+            "gid": 0,
             "start": None,  # TODO: Update to be flexible input
             "end": None,  # TODO: Update to be flexible input
             "pageSize": 1
@@ -109,12 +110,21 @@ LIBRARY_URL_CONFIG = {
 }
 
 LIBRARY_EID_TO_NAME_MAP = {
-    29694: "Powell Group Study Room A (Capacity 8)",
-    29695: "Powell Group Study Room B (Capacity 8)",
-    29696: "Powell Group Study Room C (Capacity 8)",
-    29697: "Powell Group Study Room D (Capacity 8)",
-    29698: "Powell Group Study Room E (Capacity 8)",
-    29699: "Powell Group Study Room F (Capacity 8)",
+    29703: "YRL Group Study Room G01 (Capacity 8)",
+    29704: "YRL Group Study Room G02 (Capacity 8)",
+    29705: "YRL Group Study Room G03 (Capacity 8)",
+    29706: "YRL Group Study Room G04 (Capacity 8)",
+    29707: "YRL Group Study Room G05 (Capacity 8)",
+    29708: "YRL Group Study Room G06 (Capacity 8)",
+    29709: "YRL Group Study Room G07 (Capacity 8)",
+    29710: "YRL Group Study Room G08 (Capacity 8)",
+    29712: "YRL Group Study Room G09 (Capacity 8)",
+    29713: "YRL Group Study Room G10 (Capacity 8)",
+    29714: "YRL Group Study Room G11 (Capacity 8)",
+    29715: "YRL Group Study Room G12 (Capacity 8)",
+    29716: "YRL Group Study Room G13 (Capacity 8)",
+    29717: "YRL Group Study Room G14 (Capacity 8)",
+    29718: "YRL Group Study Room G15 (Capacity 8)",
     29719: "YRL Collaboration Pod R01 (Capacity 7)",
     29720: "YRL Collaboration Pod R02 (Capacity 7)",
     29721: "YRL Collaboration Pod R03 (Capacity 8)",
@@ -134,15 +144,25 @@ LIBRARY_EID_TO_NAME_MAP = {
     29736: "YRL Collaboration Pod R18 (Capacity 8)",
     29737: "YRL Collaboration Pod R19 (Capacity 8)",
     29738: "YRL Collaboration Pod R20 (Capacity 8)",
+    29694: "Powell Group Study Room A (Capacity 8)",
+    29695: "Powell Group Study Room B (Capacity 8)",
+    29696: "Powell Group Study Room C (Capacity 8)",
+    29697: "Powell Group Study Room D (Capacity 8)",
+    29698: "Powell Group Study Room E (Capacity 8)",
+    29699: "Powell Group Study Room F (Capacity 8)",
+    141964: "Loop Booth A (CLICC) (Capacity 1)",
+    141966: "Loop Booth B (CLICC) (Capacity 1)",
+    145998: "Energy Pod (CLICC) (Capacity 1)",
     55358: "Music Library Seminar Room (Capacity 20)",
     44647: "12-077E Group Study Room (Capacity 8)",
+    53897: "Collaboration Pod (Capacity 4)",
     55389: "Boelter 8251A - SEL/Research Commons (Capacity 8)",
     55390: "Geology 4697A - SEL/Geology Collection (Capacity 8)",
     55391: "Geology 4697B - SEL/Geology Collection (Capacity 4)",
     165438: "Room 2 (Capacity 4)",
     165439: "Room 3 (Capacity 4)",
     165440: "Room 5 (Capacity 4)",
-    165441: "Room 6 (Capacity 4)"
+    165441: "Room 6 (Capacity 4)",
 }
 
 

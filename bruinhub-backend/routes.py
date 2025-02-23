@@ -3,10 +3,9 @@ from flask import Blueprint, jsonify, request
 from datetime import datetime
 from database.gyms import GymDatabase
 from database.dining import DiningDatabase
-from database.library import LibraryDatabase  # New import for library API
+from database.library import LibraryDatabase
 from database import DatabaseManager
-import os
-from config import DATABASE_URL
+from config import DATABASE_URL, RESTAURANTS
 
 logger = logging.getLogger(__name__)
 
@@ -172,7 +171,3 @@ def get_library_bookings_by_date_range(slug: str):
         }), 404
 
     return jsonify({"data": data, "timestamp": datetime.now().isoformat()})
-
-# @api.route("/v1/test/restaurants", methods=["GET"])
-# def get_restaurants():
-
