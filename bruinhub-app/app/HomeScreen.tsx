@@ -1,7 +1,7 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Link } from "expo-router";
-import { ScrollView, StyleSheet, Text, View } from "react-native";
-import { Button, Searchbar } from "react-native-paper";
+import { ScrollView, StyleSheet, Text, View , Image } from "react-native";
+import { Button, Searchbar, IconButton } from "react-native-paper";
 import { useEffect, useState } from "react";
 import { CategoriesMap } from "@/constants/CategoriesMap";
 import HomeCard from "@/components/home/HomeCard";
@@ -89,14 +89,27 @@ export default function HomeScreen({ onFinish }: HomeScreenProps) {
   const filteredUnpinned = filteredItems.filter((item) => !pinnedItems.has(item.id));
 
   return (
-    <View
-      style={styles.container}
-    >
+    <View style={styles.container}>
       <ScrollView
         style={styles.scrollContainer}
         contentContainerStyle={styles.contentContainer}
         keyboardShouldPersistTaps="handled"
       >
+        <View style={styles.bannerContainer}>
+          <Image
+            source={require("../assets/images/BruinHub.png")} //TODO replace with SVG
+            style={{ width: 200, height: 50, borderRadius: 2 }}
+          />
+          <Link href="/NotificationsScreen" asChild>
+            <IconButton
+              icon="bell"
+              size={50}
+              iconColor={Colors.light.background}
+              containerColor={Colors.light.shade}
+              onPress={handleFinish}
+            />
+          </Link>
+        </View>
         <Searchbar
           placeholder="Search"
           onChangeText={setSearchQuery}
@@ -132,11 +145,6 @@ export default function HomeScreen({ onFinish }: HomeScreenProps) {
             Back to onboarding for dev purposes
           </Button>
         </Link>
-        <Link href="/NotificationsScreen" asChild>
-          <Button mode="contained">
-            To Notifs
-          </Button>
-        </Link>
       </ScrollView>
     </View>
   );
@@ -155,6 +163,13 @@ const styles = StyleSheet.create({
   scrollContainer: {
     flex: 1,
     width: "100%",
+  },
+
+  bannerContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    padding: 15,
   },
 
   contentContainer: {
