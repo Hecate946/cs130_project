@@ -1,6 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Link } from "expo-router";
-import { Pressable, SafeAreaView, ScrollView, StyleSheet, Text, View } from "react-native";
+import { Pressable, SafeAreaView, ScrollView, StyleSheet, Text, View, Image } from "react-native";
 import { Button, FAB } from "react-native-paper";
 import { Colors } from "@/constants/Colors";
 import * as Haptics from "expo-haptics";
@@ -35,6 +35,12 @@ export default function OnboardingScreen({ onFinish }: OnboardingScreenProps) {
         contentContainerStyle={styles.contentContainer}
         keyboardShouldPersistTaps="handled"
       >
+        <View style = {styles.logoContainer}>
+        <Image
+            source={require("../assets/images/BruinHub.png")} //TODO replace with SVG
+            style={{ width: 200, height: 50, borderRadius: 2 }}
+          />
+        </View>
         <View style={styles.welcomeContainer}>
           <Text style={styles.title}>Welcome</Text>
           <Text style={styles.text}>Choose your favorite spots to pin!</Text>
@@ -107,7 +113,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: Colors.light.background,
     width: "100%",
-    paddingTop: 80, // TODO CHANGE LATER
+    paddingTop: 70, // TODO CHANGE LATER
   },
 
   scrollContainer: {
@@ -119,6 +125,10 @@ const styles = StyleSheet.create({
     paddingBottom: 155,
     marginStart: 20,
     marginEnd: 20,
+  },
+
+  logoContainer: {
+    paddingBottom: 20,
   },
 
   welcomeContainer: {

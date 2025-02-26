@@ -1,7 +1,8 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Link } from "expo-router";
-import { ScrollView, StyleSheet, Text, View } from "react-native";
+import { ScrollView, StyleSheet, Text, View , Image, TouchableOpacity } from "react-native";
 import { Button, Searchbar } from "react-native-paper";
+import Feather from '@expo/vector-icons/Feather';
 import { useEffect, useState } from "react";
 import { CategoriesMap } from "@/constants/CategoriesMap";
 import HomeCard from "@/components/home/HomeCard";
@@ -89,14 +90,27 @@ export default function HomeScreen({ onFinish }: HomeScreenProps) {
   const filteredUnpinned = filteredItems.filter((item) => !pinnedItems.has(item.id));
 
   return (
-    <View
-      style={styles.container}
-    >
+    <View style={styles.container}>
       <ScrollView
         style={styles.scrollContainer}
         contentContainerStyle={styles.contentContainer}
         keyboardShouldPersistTaps="handled"
       >
+        <View style={styles.bannerContainer}>
+          <Image
+            source={require("../assets/images/BruinHub.png")} //TODO replace with SVG
+            style={{ width: 200, height: 50, borderRadius: 2 }}
+          />
+          <Link href="/NotificationsScreen" asChild>
+            <TouchableOpacity testID="notif-button">
+              <Feather
+                name="bell"
+                size={24}
+                color="black"
+              />
+            </TouchableOpacity>
+          </Link>
+        </View>
         <Searchbar
           placeholder="Search"
           onChangeText={setSearchQuery}
@@ -132,11 +146,6 @@ export default function HomeScreen({ onFinish }: HomeScreenProps) {
             Back to onboarding for dev purposes
           </Button>
         </Link>
-        <Link href="/NotificationsScreen" asChild>
-          <Button mode="contained">
-            To Notifs
-          </Button>
-        </Link>
       </ScrollView>
     </View>
   );
@@ -149,12 +158,21 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: Colors.light.background,
     width: "100%",
-    paddingTop: 80, // TODO CHANGE LATER
+    paddingTop: 70, // TODO CHANGE LATER
   },
 
   scrollContainer: {
     flex: 1,
     width: "100%",
+  },
+
+  bannerContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginStart: 10,
+    marginEnd: 10,
+    paddingBottom: 20,
   },
 
   contentContainer: {
