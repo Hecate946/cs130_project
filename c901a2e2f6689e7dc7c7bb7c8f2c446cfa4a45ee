@@ -1,0 +1,123 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "45c15ca6_6763794f",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2025-02-26T17:22:26Z",
+      "side": 1,
+      "message": "good work! a few changes requested!",
+      "revId": "c901a2e2f6689e7dc7c7bb7c8f2c446cfa4a45ee",
+      "serverId": "3c7ad661-7ce8-4163-af0d-ebc0f4c5b529"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "27241b65_74af219a",
+        "filename": "bruinhub-app/app/HomeScreen.tsx",
+        "patchSetId": 4
+      },
+      "lineNbr": 98,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2025-02-26T17:22:26Z",
+      "side": 1,
+      "message": "the logo also needs to be placed in OnboardingScreen. Might be worth it to create a logo component so it can be reused in both OnboardingScreen and HomeScreen (also makes it easier to change to SVG later/resize, if needed). If possible, add the logo to the OnboardingScreen in this same PR.",
+      "revId": "c901a2e2f6689e7dc7c7bb7c8f2c446cfa4a45ee",
+      "serverId": "3c7ad661-7ce8-4163-af0d-ebc0f4c5b529"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "48328a31_2335eb08",
+        "filename": "bruinhub-app/app/HomeScreen.tsx",
+        "patchSetId": 4
+      },
+      "lineNbr": 104,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2025-02-26T17:22:26Z",
+      "side": 1,
+      "message": "good work! however, I\u0027m wondering if we can use a different icon (one that\u0027s outlined, like in the figma). atm it looks a bit too cluttered. Also, i think the bell icon is a bit too big atm. Maybe try making it smaller and as close to the figma as possible!",
+      "revId": "c901a2e2f6689e7dc7c7bb7c8f2c446cfa4a45ee",
+      "serverId": "3c7ad661-7ce8-4163-af0d-ebc0f4c5b529"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "492e7e84_c795c4a9",
+        "filename": "bruinhub-app/app/HomeScreen.tsx",
+        "patchSetId": 4
+      },
+      "lineNbr": 106,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2025-02-26T17:22:26Z",
+      "side": 1,
+      "message": "i think a smaller size would look better! try to follow the figma as close as possible!",
+      "revId": "c901a2e2f6689e7dc7c7bb7c8f2c446cfa4a45ee",
+      "serverId": "3c7ad661-7ce8-4163-af0d-ebc0f4c5b529"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "865f6663_420a6e42",
+        "filename": "bruinhub-app/app/HomeScreen.tsx",
+        "patchSetId": 4
+      },
+      "lineNbr": 109,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2025-02-26T17:22:26Z",
+      "side": 1,
+      "message": "this handleFinish method should be changed. currently, it runs the function in line 67, which is not the intended callback method. a new method should be implemented for the handling finish of the notif icon.",
+      "revId": "c901a2e2f6689e7dc7c7bb7c8f2c446cfa4a45ee",
+      "serverId": "3c7ad661-7ce8-4163-af0d-ebc0f4c5b529"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "95ba7c4a_4094fddc",
+        "filename": "bruinhub-app/app/HomeScreen.tsx",
+        "patchSetId": 4
+      },
+      "lineNbr": 160,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2025-02-26T17:22:26Z",
+      "side": 1,
+      "message": "this value needs to be changed/removed now that the logo has been placed. try playing around with this value to see what makes the most sense. There\u0027s another place this paddingTop value exists with a comment in OnboardingScreen that needs to be changed accordingly, as well.",
+      "revId": "c901a2e2f6689e7dc7c7bb7c8f2c446cfa4a45ee",
+      "serverId": "3c7ad661-7ce8-4163-af0d-ebc0f4c5b529"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5a8e82a4_15026096",
+        "filename": "bruinhub-app/app/HomeScreen.tsx",
+        "patchSetId": 4
+      },
+      "lineNbr": 172,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2025-02-26T17:22:26Z",
+      "side": 1,
+      "message": "try to align the left and right sides with the width of the search bar (at least). it may look better once the icon itself is made smaller, too. atm we have too many differing levels of margins.",
+      "revId": "c901a2e2f6689e7dc7c7bb7c8f2c446cfa4a45ee",
+      "serverId": "3c7ad661-7ce8-4163-af0d-ebc0f4c5b529"
+    }
+  ]
+}
