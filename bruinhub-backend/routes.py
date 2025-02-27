@@ -84,23 +84,6 @@ def get_dining_hall(slug: str):
     })
 
 
-@api.route("/v1/library/<slug>", methods=["GET"])
-def get_library(slug: str):
-    """
-    Retrieve data for a specific library.
-
-    Example:
-    - `/v1/library/powell` → Returns details for Powell Library.
-    """
-    data = library_db.get_library_details(slug)  # Assumes this method exists.
-    if not data:
-        return jsonify(
-            {"error": "Library not found", "timestamp": datetime.now().isoformat()}
-        ), 404
-
-    return jsonify({"data": data, "timestamp": datetime.now().isoformat()})
-
-
 @api.route("/v1/library/<slug>/bookings", methods=["GET"])
 def get_library_bookings(slug: str):
     """
