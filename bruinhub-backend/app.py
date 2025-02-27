@@ -3,7 +3,7 @@ from flask_cors import CORS
 import os
 from database import DatabaseManager
 from routes import api
-from models.library import db
+from database.db import db
 import logging
 from config.base import DATABASE_URL
 

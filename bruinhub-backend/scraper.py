@@ -7,6 +7,7 @@ from tasks.dining_tasks import setup_dining_tasks, scrape_and_store_dining_data
 from tasks.library_tasks import setup_library_tasks, scrape_and_store_library_data
 import logging
 from config.base import DATABASE_URL
+from database.db import db
 
 # Configure logging
 logging.basicConfig(
@@ -20,8 +21,11 @@ app = Flask(__name__)
 DB_URL = DATABASE_URL
 SCRAPE_INTERVAL = int(os.getenv("SCRAPE_INTERVAL", "300"))  # Default 5 minutes
 
-# Initialize database manager
-db_manager = DatabaseManager(DB_URL)
+app.config["SQLALCHEMY_DATABASE_URI"] = DB_URL
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+db.init_app(app)
+app.app_context().push()
+db.create_all()
 
 # Setup tasks
 setup_gym_tasks(DB_URL)
