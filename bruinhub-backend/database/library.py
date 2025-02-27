@@ -5,7 +5,7 @@ from sqlalchemy import text
 
 from models.library import db, Library, LibraryRoom, LibraryBooking
 from database.manager import DatabaseManager
-from config import LIBRARY_EID_TO_NAME_MAP
+from config.library import LIBRARY_EID_TO_NAME_MAP
 
 logger = logging.getLogger(__name__)
 

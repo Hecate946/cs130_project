@@ -1,7 +1,7 @@
 from datetime import datetime
 from app import app
 from models.library import db, Library, LibraryRoom, LibraryBooking
-from config import (
+from config.library import (
     DATABASE_URL,
     POWELL,
     YRL,

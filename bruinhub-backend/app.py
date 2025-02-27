@@ -11,7 +11,8 @@ from tasks.library_tasks import setup_library_tasks, scrape_and_store_library_da
 from routes import api  # Add this import
 from models.library import db
 import logging
-from config import DATABASE_URL, RESTAURANTS
+from config.base import DATABASE_URL
+from config.dining import RESTAURANTS
 
 # Configure logging
 logging.basicConfig(

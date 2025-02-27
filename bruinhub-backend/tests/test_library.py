@@ -5,7 +5,7 @@ from models.library import db, Library, LibraryRoom, LibraryBooking
 from database.library import LibraryDatabase
 import requests
 from scrapers.library import LibraryScrapers, get_date_range
-from config import ALL_LIBRARY_URLS, LIBRARY_URL_CONFIG
+from config.library import ALL_LIBRARY_URLS, LIBRARY_URL_CONFIG
 from routes import api
 
 # Create a fixture that sets up a temporary in-memory database

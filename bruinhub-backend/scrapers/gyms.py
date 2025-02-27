@@ -2,8 +2,8 @@ from datetime import datetime
 from typing import Dict, List
 import logging
 import requests
-from config import FACILITY_COUNT_URL, BFIT_URL, JWC_URL, FACILITY_IDS
-import static
+from config.gyms import FACILITY_COUNT_URL, BFIT_URL, JWC_URL, FACILITY_IDS
+from config.gyms_static import GYM_HOURS
 
 logger = logging.getLogger(__name__)
 
@@ -78,4 +78,4 @@ class GymScrapers:
     @staticmethod
     def get_static_hours() -> Dict[str, Dict]:
         """Get static hours data (until we implement webpage scraping)"""
-        return static.GYM_HOURS
+        return GYM_HOURS

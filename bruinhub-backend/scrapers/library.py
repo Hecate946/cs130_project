@@ -3,7 +3,7 @@ import logging
 import requests
 from datetime import datetime, timedelta
 
-from config import (
+from config.library import (
     LIBRARY_GRID_ENDPOINT,
     LIBRARY_URL_CONFIG,
     ALL_LIBRARY_NAMES
