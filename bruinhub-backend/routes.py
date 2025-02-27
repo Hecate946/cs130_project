@@ -158,3 +158,77 @@ def get_library_bookings_by_date_range(slug: str):
         }), 404
 
     return jsonify({"data": data, "timestamp": datetime.now().isoformat()})
+
+
+@api.route("/v1/library/<slug>", methods=["GET", "POST"])
+def get_library_details(slug: str):
+    """
+    Get details for a specific library.
+    
+    Example:
+    - `/v1/library/powell` → Returns Powell Library details.
+    """
+    if request.method != "GET":
+        # This handles the method_not_allowed test
+        return jsonify({
+            "error": "Method not allowed",
+            "timestamp": datetime.now().isoformat()
+        }), 405
+        
+    logger.info(f"Fetching library details for {slug}")
+    
+    details = library_db.get_library_details(slug)
+    if not details:
+        # This handles the nonexistent_library_detail_route test
+        return jsonify({
+            "error": "Library not found",
+            "timestamp": datetime.now().isoformat()
+        }), 404
+    
+    # This handles the get_library_details_route test
+    return jsonify({
+        "data": details,
+        "timestamp": datetime.now().isoformat()
+    })
+
+
+@api.route("/v1/library", methods=["GET"])
+def get_all_libraries():
+    """
+    Retrieve all libraries.
+    
+    Example:
+    - `/v1/library` → Returns list of all libraries.
+    """
+    libraries = library_db.get_all_libraries()  # Ensure this method exists in LibraryDatabase
+    if not libraries:
+        return jsonify({
+            "error": "No libraries found",
+            "timestamp": datetime.now().isoformat()
+        }), 404
+
+    return jsonify({
+        "data": libraries,
+        "timestamp": datetime.now().isoformat()
+    })
+
+
+@api.route("/v1/library/rooms", methods=["GET"])
+def get_all_library_rooms():
+    """
+    Retrieve all library rooms along with their associated IDs.
+    
+    Example:
+    - `/v1/library/rooms` → Returns list of all library rooms.
+    """
+    rooms = library_db.get_all_library_rooms()  # Ensure this method exists in LibraryDatabase
+    if not rooms:
+        return jsonify({
+            "error": "No library rooms found",
+            "timestamp": datetime.now().isoformat()
+        }), 404
+
+    return jsonify({
+        "data": rooms,
+        "timestamp": datetime.now().isoformat()
+    })

@@ -81,12 +81,12 @@ VALUES
 ON CONFLICT (slug) DO NOTHING;
 
 -- Insert initial capacity history
-INSERT INTO dining_capacity_history (slug, occupants, capacity, last_updated)
-VALUES
-    ('epicuria', 0, 0, NOW()),
-    ('deneve', 0, 0, NOW()),
-    ('bplate', 0, 0, NOW())
-ON CONFLICT DO NOTHING;
+-- INSERT INTO dining_capacity_history (slug, occupants, capacity, last_updated)
+-- VALUES
+--     ('epicuria', 0, 0, NOW()),
+--     ('deneve', 0, 0, NOW()),
+--     ('bplate', 0, 0, NOW())
+-- ON CONFLICT (slug) DO NOTHING;
 
 -- Ensure initial gyms exist
 INSERT INTO gyms (slug, regular_hours, special_hours)

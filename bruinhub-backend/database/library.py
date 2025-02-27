@@ -16,22 +16,21 @@ class LibraryDatabase:
     def get_library_details(self, slug: str) -> Optional[Dict]:
         """Return a dictionary of library details given its slug."""
         library = Library.query.filter_by(slug=slug).first()
-        if library:
-            return {
-                "id": library.id,
-                "name": library.name,
-                "slug": library.slug,
-                "location": library.location,
-                "created_at": library.created_at.isoformat() if library.created_at else None
-            }
-        return None
+        if not library:
+            return None
+        return {
+            "id": library.id,
+            "name": library.name,
+            "slug": library.slug,
+            "location": library.location,
+            "created_at": library.created_at.isoformat() if library.created_at else None,
+            "last_updated": library.last_updated.isoformat() if library.last_updated else None
+        }
     
     def get_library_id_by_name(self, name: str) -> Optional[int]:
         """Return the ID of a library given its name."""
         library = Library.query.filter_by(name=name).first()
-        if library:
-            return library.id
-        return None
+        return library.id if library else None
     
     def get_library_bookings(self, slug: str) -> Optional[List[Dict]]:
         """Return an array of booking dictionaries for the library identified by slug."""
@@ -56,7 +55,10 @@ class LibraryDatabase:
         return results
 
     def get_library_rooms(self, slug: str) -> Optional[List[Dict]]:
-        """Return an array of room dictionaries (with booking info) for the library."""
+        """
+        Return an array of room dictionaries (with booking info) for the library 
+        identified by its slug.
+        """
         library = Library.query.filter_by(slug=slug).first()
         if not library:
             return None
@@ -69,8 +71,8 @@ class LibraryDatabase:
                 "name": room.name,
                 "capacity": room.capacity,
                 "accessibility_features": room.accessibility_features,
-                "last_updated": room.last_updated.isoformat() if room.last_updated else None,
                 "created_at": room.created_at.isoformat() if room.created_at else None,
+                "last_updated": room.last_updated.isoformat() if room.last_updated else None,
                 "bookings": []
             }
             bookings = LibraryBooking.query.filter_by(room_id=room.id).all()
@@ -186,4 +188,47 @@ class LibraryDatabase:
         
         db.session.commit()
         logger.info(f"Processed {len(slots)} slots for room ID {room_id}")
+
+    def get_all_libraries(self) -> List[Dict]:
+        """
+        Retrieve all libraries as a list of dictionaries.
+        """
+        libraries = Library.query.all()
+        results = []
+        for library in libraries:
+            results.append({
+                "id": library.id,
+                "name": library.name,
+                "slug": library.slug,
+                "location": library.location,
+                "created_at": library.created_at.isoformat() if library.created_at else None,
+                "last_updated": library.last_updated.isoformat() if library.last_updated else None
+            })
+        return results
+
+    def get_all_rooms(self) -> List[Dict]:
+        """
+        Retrieve all library rooms as a list of dictionaries.
+        """
+        rooms = LibraryRoom.query.all()
+        results = []
+        for room in rooms:
+            results.append({
+                "id": room.id,
+                "library_id": room.library_id,
+                "name": room.name,
+                "capacity": room.capacity,
+                "accessibility_features": room.accessibility_features,
+                "created_at": room.created_at.isoformat() if room.created_at else None,
+                "last_updated": room.last_updated.isoformat() if room.last_updated else None
+            })
+        return results
+
+    # This additional alias method is used by the route which calls get_all_library_rooms.
+    def get_all_library_rooms(self) -> List[Dict]:
+        """
+        Retrieve all library rooms. This method calls get_all_rooms to maintain
+        naming consistency with the routes.
+        """
+        return self.get_all_rooms()
 
