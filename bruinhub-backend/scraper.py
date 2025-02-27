@@ -1,6 +1,5 @@
 from flask import Flask
 import os
-from database import DatabaseManager
 from tasks import init_scheduler
 from tasks.gym_tasks import setup_gym_tasks, scrape_and_store_gym_data
 from tasks.dining_tasks import setup_dining_tasks, scrape_and_store_dining_data
@@ -21,6 +20,7 @@ app = Flask(__name__)
 DB_URL = DATABASE_URL
 SCRAPE_INTERVAL = int(os.getenv("SCRAPE_INTERVAL", "300"))  # Default 5 minutes
 
+# Configure SQLAlchemy
 app.config["SQLALCHEMY_DATABASE_URI"] = DB_URL
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 db.init_app(app)

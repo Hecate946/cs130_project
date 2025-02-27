@@ -1,7 +1,5 @@
 from flask import Flask
 from flask_cors import CORS
-import os
-from database import DatabaseManager
 from routes import api
 from database.db import db
 import logging
@@ -27,9 +25,6 @@ app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 db.init_app(app)
 app.app_context().push()
 db.create_all()
-
-# Initialize database manager
-db_manager = DatabaseManager(DB_URL)
 
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0", port=5001)

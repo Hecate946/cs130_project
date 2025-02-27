@@ -3,7 +3,6 @@ import logging
 from datetime import datetime
 from sqlalchemy import desc
 from models.gyms import db, Gym, GymCapacityHistory
-from database.manager import DatabaseManager
 
 logger = logging.getLogger(__name__)
 

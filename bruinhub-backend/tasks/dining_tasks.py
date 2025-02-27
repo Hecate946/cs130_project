@@ -1,5 +1,4 @@
 import logging
-from database import DatabaseManager
 from database.dining import DiningDatabase
 from scrapers.dining import DiningScrapers
 
@@ -7,16 +6,14 @@ logger = logging.getLogger(__name__)
 
 # Initialize global instances
 # These will be set by the setup function
-db_manager = None
 dining_db = None
 scraper = None
 
 
 def setup_dining_tasks(database_url: str):
     """Setup database connections and scrapers for dining tasks"""
-    global db_manager, dining_db, scraper
+    global dining_db, scraper
     logger.info("Setting up dining tasks with database and scrapers")
-    db_manager = DatabaseManager(database_url)
     dining_db = DiningDatabase()
     scraper = DiningScrapers()
 
@@ -38,16 +35,17 @@ def scrape_and_store_dining_data():
                 dining_db.update_dining_hall(
                     slug=hall_slug,
                     menu=hall_info["menu"],
-                    hours_today=hall_info["regular_hours"],  # Using regular_hours from scraper as hours_today
+                    hours_today=hall_info["hours_today"],
                 )
 
                 # Store historical capacity update
-                logger.info(f"Storing capacity update for {hall_slug}")
-                dining_db.insert_dining_capacity(
-                    slug=hall_slug,
-                    occupants=hall_info["occupants"],
-                    capacity=hall_info["capacity"]
-                )
+                if "occupants" in hall_info and "capacity" in hall_info:
+                    logger.info(f"Storing capacity update for {hall_slug}")
+                    dining_db.insert_dining_capacity(
+                        slug=hall_slug,
+                        occupants=hall_info["occupants"],
+                        capacity=hall_info["capacity"]
+                    )
 
             logger.info("Successfully completed dining data update")
         else:

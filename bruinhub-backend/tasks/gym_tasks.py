@@ -1,21 +1,18 @@
 import logging
-from database import DatabaseManager
 from database.gyms import GymDatabase
 from scrapers.gyms import GymScrapers
 
 logger = logging.getLogger(__name__)
 
 # Initialize global instances
-db_manager = None
 gym_db = None
 scraper = None
 
 
 def setup_gym_tasks(database_url: str):
     """Setup database connections and scrapers for gym tasks"""
-    global db_manager, gym_db, scraper
+    global gym_db, scraper
     logger.info("Setting up gym tasks with database and scrapers")
-    db_manager = DatabaseManager(database_url)
     gym_db = GymDatabase()
     scraper = GymScrapers()
 
@@ -42,17 +39,6 @@ def scrape_and_store_gym_data():
                             "last_updated"
                         ],  # This will be the LastUpdatedDateAndTime from the API
                     )
-
-        # Scrape hours
-        logger.info("Scraping hours")
-        hours_data = scraper.get_static_hours()
-        for slug, hours in hours_data.items():
-            logger.info(f"Updating hours for {slug}")
-            gym_db.update_gym_hours(
-                slug,
-                hours["regular_hours"],
-                hours.get("special_hours"),
-            )
 
     except Exception as e:
         logger.error(

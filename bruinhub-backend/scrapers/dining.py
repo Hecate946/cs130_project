@@ -74,7 +74,7 @@ class DiningScrapers:
                     "menu": DiningScrapers._get_menu(slug),
                     "capacity": capacity,
                     "occupants": occupants,
-                    "regular_hours": DiningScrapers._get_hours_today(slug)
+                    "hours_today": DiningScrapers._get_hours_today(slug)
                 }
                 
                 logger.info(f"Successfully scraped data for {slug}")

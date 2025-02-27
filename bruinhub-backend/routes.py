@@ -4,19 +4,13 @@ from datetime import datetime
 from database.gyms import GymDatabase
 from database.dining import DiningDatabase
 from database.library import LibraryDatabase
-from database import DatabaseManager
-from config.base import DATABASE_URL
 from config.dining import RESTAURANTS
 
 logger = logging.getLogger(__name__)
 
 api = Blueprint("api", __name__)
 
-# Initialize database managers
-# db_manager = DatabaseManager(DATABASE_URL)
-# gym_db = GymDatabase(db_manager)
-# dining_db = DiningDatabase(db_manager)
-# library_db = LibraryDatabase(db_manager)
+# Initialize database handlers
 gym_db = GymDatabase()
 dining_db = DiningDatabase()
 library_db = LibraryDatabase()

@@ -1,5 +1,4 @@
 import logging
-from database import DatabaseManager
 from database.library import LibraryDatabase
 from scrapers.library import LibraryScrapers
 
@@ -7,16 +6,14 @@ logger = logging.getLogger(__name__)
 
 # Initialize global instances
 # These will be set by the setup function
-db_manager = None
 library_db = None
 scraper = None
 
 
 def setup_library_tasks(database_url: str):
     """Setup database connections and scrapers for library tasks"""
-    global db_manager, library_db, scraper
+    global library_db, scraper
     logger.info("Setting up library tasks with database and scrapers")
-    db_manager = DatabaseManager(database_url)
     library_db = LibraryDatabase()
     scraper = LibraryScrapers()
 

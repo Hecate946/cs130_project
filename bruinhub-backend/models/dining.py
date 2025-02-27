@@ -11,12 +11,15 @@ class DiningHall(db.Model):
     hours_today = db.Column(db.JSON, nullable=True)
     last_updated = db.Column(db.DateTime, default=datetime.now(timezone.utc), onupdate=datetime.now(timezone.utc))
 
+    # Add relationship to capacity history
+    capacity_history = db.relationship("DiningCapacityHistory", backref="dining_hall", lazy=True, cascade="all, delete-orphan")
+
 
 class DiningCapacityHistory(db.Model):
     __tablename__ = "dining_capacity_history"
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    slug = db.Column(db.Integer, db.ForeignKey("dining_halls.id", ondelete="CASCADE"), nullable=False)
+    hall_id = db.Column(db.Integer, db.ForeignKey("dining_halls.id", ondelete="CASCADE"), nullable=False)
     occupants = db.Column(db.Integer, nullable=False)
     capacity = db.Column(db.Integer, nullable=False)
     last_updated = db.Column(db.DateTime, default=datetime.now(timezone.utc), onupdate=datetime.now(timezone.utc))

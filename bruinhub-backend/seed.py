@@ -1,8 +1,9 @@
 from datetime import datetime
 from app import app
 from models.library import db, Library, LibraryRoom, LibraryBooking
+from models.dining import DiningHall
+from models.gyms import Gym
 from config.library import (
-    DATABASE_URL,
     POWELL,
     YRL,
     MUSIC_LIBRARY,
@@ -10,10 +11,15 @@ from config.library import (
     SEL,
     MEDIA_LAB
 )
+from config.dining import RESTAURANTS
+from config.gyms import FACILITY_IDS
+from config.base import DATABASE_URL
+from scrapers.gyms import GymScrapers
 
 DB_URL = DATABASE_URL
 
 with app.app_context():
+    # Seed Libraries
     libraries_data = [
         {
             "name": POWELL,
@@ -47,6 +53,7 @@ with app.app_context():
         }
     ]
 
+    print("Seeding libraries...")
     for lib in libraries_data:
         # Check if a library with the given slug already exists
         existing = Library.query.filter_by(slug=lib["slug"]).first()
@@ -62,4 +69,45 @@ with app.app_context():
         else:
             print(f"Library '{lib['slug']}' already exists.")
 
-    print("Database seeded successfully.")
+    # Seed Dining Halls
+    print("\nSeeding dining halls...")
+    for slug in RESTAURANTS:  # Only need the slugs from RESTAURANTS
+        existing = DiningHall.query.filter_by(slug=slug).first()
+        if not existing:
+            new_dining = DiningHall(
+                slug=slug,
+                menu={},  # Empty JSON object
+                hours_today={}  # Empty JSON object
+            )
+            db.session.add(new_dining)
+            db.session.commit()
+            print(f"Dining hall '{slug}' created.")
+        else:
+            print(f"Dining hall '{slug}' already exists.")
+
+    # Seed Gyms
+    print("\nSeeding gyms...")
+    gym_scraper = GymScrapers()
+    hours_data = gym_scraper.get_static_hours()
+
+    for slug in FACILITY_IDS:  # Use FACILITY_IDS from config
+        existing = Gym.query.filter_by(slug=slug).first()
+        hours = hours_data.get(slug, {"regular_hours": {}, "special_hours": {}})
+        
+        if not existing:
+            new_gym = Gym(
+                slug=slug,
+                regular_hours=hours["regular_hours"],
+                special_hours=hours.get("special_hours", {})
+            )
+            db.session.add(new_gym)
+            db.session.commit()
+            print(f"Gym '{slug}' created with hours.")
+        else:
+            # Update hours for existing gyms
+            existing.regular_hours = hours["regular_hours"]
+            existing.special_hours = hours.get("special_hours", {})
+            db.session.commit()
+            print(f"Updated hours for existing gym '{slug}'.")
+
+    print("\nDatabase seeded successfully.")
