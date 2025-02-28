@@ -35,6 +35,24 @@
       "serverId": "3c7ad661-7ce8-4163-af0d-ebc0f4c5b529"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "a4579311_593fea6b",
+        "filename": "bruinhub-app/app/HomeScreen.tsx",
+        "patchSetId": 1
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2025-02-28T21:45:29Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "e3db334a_9c590aab",
+      "revId": "522089f927013fc62576e667da583e577d3afdcb",
+      "serverId": "3c7ad661-7ce8-4163-af0d-ebc0f4c5b529"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "6f25478b_b86b24ea",
@@ -48,6 +66,24 @@
       "writtenOn": "2025-02-28T20:13:53Z",
       "side": 1,
       "message": "Nit for the colors to use the color constants if applicable.",
+      "revId": "522089f927013fc62576e667da583e577d3afdcb",
+      "serverId": "3c7ad661-7ce8-4163-af0d-ebc0f4c5b529"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "6db7e6d6_a34a9c5e",
+        "filename": "bruinhub-app/components/FacilityModal.tsx",
+        "patchSetId": 1
+      },
+      "lineNbr": 115,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2025-02-28T21:45:29Z",
+      "side": 1,
+      "message": "Acknowledged",
+      "parentUuid": "6f25478b_b86b24ea",
       "revId": "522089f927013fc62576e667da583e577d3afdcb",
       "serverId": "3c7ad661-7ce8-4163-af0d-ebc0f4c5b529"
     },
@@ -69,6 +105,24 @@
       "serverId": "3c7ad661-7ce8-4163-af0d-ebc0f4c5b529"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "93b55a4d_0a8ac374",
+        "filename": "bruinhub-app/constants/CategoriesMap.ts",
+        "patchSetId": 1
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2025-02-28T21:45:29Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "066a622c_6c149732",
+      "revId": "522089f927013fc62576e667da583e577d3afdcb",
+      "serverId": "3c7ad661-7ce8-4163-af0d-ebc0f4c5b529"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "7f6a614a_11ebaa92",
@@ -86,6 +140,24 @@
       "serverId": "3c7ad661-7ce8-4163-af0d-ebc0f4c5b529"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "10a92027_f297837e",
+        "filename": "bruinhub-app/constants/CategoriesMap.ts",
+        "patchSetId": 1
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2025-02-28T21:45:29Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7f6a614a_11ebaa92",
+      "revId": "522089f927013fc62576e667da583e577d3afdcb",
+      "serverId": "3c7ad661-7ce8-4163-af0d-ebc0f4c5b529"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "8077d892_3c3b1cc1",
@@ -99,6 +171,24 @@
       "writtenOn": "2025-02-28T20:13:53Z",
       "side": 1,
       "message": "NIT: whitespace",
+      "revId": "522089f927013fc62576e667da583e577d3afdcb",
+      "serverId": "3c7ad661-7ce8-4163-af0d-ebc0f4c5b529"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "879fcc5b_4aaca992",
+        "filename": "bruinhub-app/constants/CategoriesMap.ts",
+        "patchSetId": 1
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2025-02-28T21:45:29Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "8077d892_3c3b1cc1",
       "revId": "522089f927013fc62576e667da583e577d3afdcb",
       "serverId": "3c7ad661-7ce8-4163-af0d-ebc0f4c5b529"
     }
