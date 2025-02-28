@@ -10,7 +10,7 @@ library_db = None
 scraper = None
 
 
-def setup_library_tasks(database_url: str):
+def setup_library_tasks():
     """Setup database connections and scrapers for library tasks"""
     global library_db, scraper
     logger.info("Setting up library tasks with database and scrapers")

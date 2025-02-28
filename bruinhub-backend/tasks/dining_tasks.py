@@ -10,7 +10,7 @@ dining_db = None
 scraper = None
 
 
-def setup_dining_tasks(database_url: str):
+def setup_dining_tasks():
     """Setup database connections and scrapers for dining tasks"""
     global dining_db, scraper
     logger.info("Setting up dining tasks with database and scrapers")

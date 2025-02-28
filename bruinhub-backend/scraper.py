@@ -28,9 +28,9 @@ app.app_context().push()
 db.create_all()
 
 # Setup tasks
-setup_gym_tasks(DB_URL)
-setup_dining_tasks(DB_URL)
-setup_library_tasks(DB_URL)
+setup_gym_tasks()
+setup_dining_tasks()
+setup_library_tasks()
 
 if __name__ == "__main__":
     # Initialize scheduler

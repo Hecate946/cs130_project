@@ -83,17 +83,19 @@ class GymDatabase:
         # Subquery to get the latest capacity for each zone
         latest_capacities = db.session.query(
             GymCapacityHistory.zone_name,
+            GymCapacityHistory.gym_id,
             db.func.max(GymCapacityHistory.last_updated).label('max_date')
-        ).filter_by(gym_id=gym.id).group_by(GymCapacityHistory.zone_name).subquery()
+        ).group_by(GymCapacityHistory.zone_name, GymCapacityHistory.gym_id).subquery()
 
         # Query to get the full capacity records
         capacities = GymCapacityHistory.query.join(
             latest_capacities,
             db.and_(
                 GymCapacityHistory.zone_name == latest_capacities.c.zone_name,
-                GymCapacityHistory.last_updated == latest_capacities.c.max_date
+                GymCapacityHistory.last_updated == latest_capacities.c.max_date,
+                GymCapacityHistory.gym_id == latest_capacities.c.gym_id
             )
-        ).filter_by(gym_id=gym.id).order_by(GymCapacityHistory.zone_name).all()
+        ).filter(GymCapacityHistory.gym_id == gym.id).order_by(GymCapacityHistory.zone_name).all()
 
         if not capacities:
             logger.warning(f"No capacity data found for gym: {slug}")

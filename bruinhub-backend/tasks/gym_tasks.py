@@ -9,7 +9,7 @@ gym_db = None
 scraper = None
 
 
-def setup_gym_tasks(database_url: str):
+def setup_gym_tasks():
     """Setup database connections and scrapers for gym tasks"""
     global gym_db, scraper
     logger.info("Setting up gym tasks with database and scrapers")

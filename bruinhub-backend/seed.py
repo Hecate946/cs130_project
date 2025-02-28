@@ -11,7 +11,7 @@ from config.library import (
     SEL,
     MEDIA_LAB
 )
-from config.dining import RESTAURANTS
+from config.dining import OCCUSPACE_IDS
 from config.gyms import FACILITY_IDS
 from config.base import DATABASE_URL
 from scrapers.gyms import GymScrapers
@@ -71,7 +71,7 @@ with app.app_context():
 
     # Seed Dining Halls
     print("\nSeeding dining halls...")
-    for slug in RESTAURANTS:  # Only need the slugs from RESTAURANTS
+    for slug in OCCUSPACE_IDS:  # Now using OCCUSPACE_IDS which contains all dining locations
         existing = DiningHall.query.filter_by(slug=slug).first()
         if not existing:
             new_dining = DiningHall(

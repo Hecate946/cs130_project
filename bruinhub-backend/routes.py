@@ -4,7 +4,7 @@ from datetime import datetime
 from database.gyms import GymDatabase
 from database.dining import DiningDatabase
 from database.library import LibraryDatabase
-from config.dining import RESTAURANTS
+from config.dining import OCCUSPACE_IDS
 
 logger = logging.getLogger(__name__)
 
@@ -45,7 +45,7 @@ def get_dining_halls():
     logger.info("Fetching all dining halls data")
     
     all_data = {}
-    for slug in RESTAURANTS:  # Import RESTAURANTS from config
+    for slug in OCCUSPACE_IDS:  # Use OCCUSPACE_IDS for all dining locations
         data = dining_db.get_dining_hall_latest(slug)
         if data:
             all_data[slug] = data
@@ -62,9 +62,15 @@ def get_dining_hall(slug: str):
     Get data for a specific dining hall.
     
     Example:
-    - `/v1/dining/epicuria` → Returns data for Epicuria.
+    - `/v1/dining/epicuria-covel` → Returns data for Epicuria at Covel.
     """
     logger.info(f"Fetching dining hall data for {slug}")
+    
+    if slug not in OCCUSPACE_IDS:
+        return jsonify({
+            "error": "Invalid dining hall slug",
+            "timestamp": datetime.now().isoformat()
+        }), 404
     
     data = dining_db.get_dining_hall_latest(slug)
     if not data:
