@@ -81,6 +81,10 @@ export const Categories = {
         key: "17",
         name: "YRL",
       },
+      {
+        key: "30",
+        name: "Media Lab"
+      },
     ],
 
     reslifeStudy: [

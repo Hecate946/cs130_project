@@ -1,11 +1,8 @@
 export const CategoriesMap = new Map([
-    ["diningHalls", new Map([
+    ["dining", new Map([
       ["0", "BPlate"],
       ["1", "De Neve"],
       ["2", "Epicuria"],
-    ])],
-  
-    ["takeout", new Map([
       ["3", "Feast"],
       ["4", "BCafe"],
       ["5", "Cafe 1919"],
@@ -15,20 +12,21 @@ export const CategoriesMap = new Map([
       ["9", "Epic at Ackerman"],
       ["10", "Food Trucks"],
     ])],
-  
+
     ["gym", new Map([
       ["11", "BFit"],
       ["12", "Wooden"],
     ])],
-  
-    ["libraries", new Map([
+
+    ["library", new Map([
       ["13", "Powell"],
       ["14", "Science and Engineering"],
       ["15", "Music"],
       ["16", "Biomedical"],
       ["17", "YRL"],
+      ["30", "Media Lab"],
     ])],
-  
+
     ["reslifeStudy", new Map([
       ["18", "De Neve"],
       ["19", "Gayley Heights"],
@@ -38,7 +36,7 @@ export const CategoriesMap = new Map([
       ["23", "Sproul"],
       ["24", "Tipuana, Laurel, PV"],
     ])],
-  
+
     ["reslifeSpaces", new Map([
       ["25", "Hedrick Movement Studio"],
       ["26", "Hedrick Music"],
