@@ -1,11 +1,8 @@
 export const CategoriesMap = new Map([
-    ["diningHalls", new Map([
+    ["dining", new Map([
       ["0", "BPlate"],
       ["1", "De Neve"],
       ["2", "Epicuria"],
-    ])],
-  
-    ["takeout", new Map([
       ["3", "Feast"],
       ["4", "BCafe"],
       ["5", "Cafe 1919"],
@@ -21,12 +18,13 @@ export const CategoriesMap = new Map([
       ["12", "Wooden"],
     ])],
   
-    ["libraries", new Map([
+    ["library", new Map([
       ["13", "Powell"],
       ["14", "Science and Engineering"],
       ["15", "Music"],
       ["16", "Biomedical"],
       ["17", "YRL"],
+      ["30", "Media Lab"],
     ])],
   
     ["reslifeStudy", new Map([

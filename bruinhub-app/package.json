@@ -14,7 +14,9 @@
   "jest": {
     "preset": "jest-expo",
     "testEnvironment": "jsdom",
-    "setupFilesAfterEnv": ["./jest.setup.js"],
+    "setupFilesAfterEnv": [
+      "./jest.setup.js"
+    ],
     "collectCoverage": true,
     "collectCoverageFrom": [
       "**/*.{ts,tsx,js,jsx}",
@@ -47,6 +49,7 @@
     "react-dom": "18.3.1",
     "react-native": "0.76.6",
     "react-native-gesture-handler": "~2.20.2",
+    "react-native-modal": "^13.0.1",
     "react-native-paper": "^5.13.1",
     "react-native-reanimated": "~3.16.1",
     "react-native-safe-area-context": "^4.12.0",

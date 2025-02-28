@@ -13,15 +13,17 @@ interface HomeCardProps {
   description: string,
   isPinned: boolean,
   pinCallback: () => void,
+  onPress: () => void,
 }
 
-export default function HomeCard({ name, description, isPinned, pinCallback }: HomeCardProps) {
+export default function HomeCard({ name, description, isPinned, pinCallback, onPress }: HomeCardProps) {
   const handlePress = async () => {
     await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    onPress();
   };
 
   return (
-    <Card onPress={() => handlePress()} style={styles.card}>
+    <Card onPress={handlePress} style={styles.card}>
       <View style={styles.imageContainer}>
         {/* <Image source={{ uri: imageUrl }} style={styles.image} /> */}
         <TouchableOpacity onPress={pinCallback} testID="pin-button">

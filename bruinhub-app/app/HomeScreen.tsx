@@ -1,6 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Link } from "expo-router";
-import { ScrollView, StyleSheet, Text, View , Image, TouchableOpacity } from "react-native";
+import { ScrollView, StyleSheet, Text, View, Image, TouchableOpacity } from "react-native";
 import { Button, Searchbar } from "react-native-paper";
 import Feather from '@expo/vector-icons/Feather';
 import { useEffect, useState } from "react";
@@ -10,6 +10,7 @@ import * as Haptics from "expo-haptics";
 import { Colors } from "@/constants/Colors";
 import Divider from "@/components/Divider";
 import Fuse from "fuse.js"; // Fuzzy searching!!!
+import FacilityModal from "@/components/FacilityModal";
 
 interface HomeScreenProps {
   onFinish: () => void;
@@ -19,6 +20,8 @@ export default function HomeScreen({ onFinish }: HomeScreenProps) {
   const [pinnedItems, setPinnedItems] = useState<Set<string>>(new Set());
   const [allItems, setAllItems] = useState<{ id: string; name: string }[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
+  const [selectedFacility, setSelectedFacility] = useState("");
+  const [modalVisible, setModalVisible] = useState(false);
 
   const loadPinnedItems = async () => {
     try {
@@ -61,6 +64,11 @@ export default function HomeScreen({ onFinish }: HomeScreenProps) {
     loadPinnedItems();
     loadAllItems();
   }, []);
+
+  const handleOpenModal = (facilityName: string) => {
+    setSelectedFacility(facilityName);
+    setModalVisible(true);
+  };
 
   // TODO: REMOVE this function and onFinish prop
   // FOR TESTING/DEV PURPOSES -- RETURN TO ONBOARDING SCREEN
@@ -126,6 +134,7 @@ export default function HomeScreen({ onFinish }: HomeScreenProps) {
               isPinned={true}
               pinCallback={() => togglePin(item.id)}
               key={item.id}
+              onPress={() => handleOpenModal(item.name)}
             />
           ))
         }
@@ -138,6 +147,7 @@ export default function HomeScreen({ onFinish }: HomeScreenProps) {
               isPinned={false}
               pinCallback={() => togglePin(item.id)}
               key={item.id}
+              onPress={() => handleOpenModal(item.name)}
             />
           ))
         }
@@ -146,6 +156,11 @@ export default function HomeScreen({ onFinish }: HomeScreenProps) {
             Back to onboarding for dev purposes
           </Button>
         </Link>
+        <FacilityModal
+          visible={modalVisible}
+          onClose={() => setModalVisible(false)}
+          facility={selectedFacility}
+        />
       </ScrollView>
     </View>
   );
