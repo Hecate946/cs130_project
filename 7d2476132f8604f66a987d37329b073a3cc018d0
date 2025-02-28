@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "bae21b5e_e21b2583",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000003
+      },
+      "writtenOn": "2025-02-28T21:47:09Z",
+      "side": 1,
+      "message": "LGTM! Thanks for fixing the nits!",
+      "revId": "7d2476132f8604f66a987d37329b073a3cc018d0",
+      "serverId": "3c7ad661-7ce8-4163-af0d-ebc0f4c5b529"
+    }
+  ]
+}
