@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "48ceaf6e_0d703a82",
+        "filename": "bruinhub-app/components/CapacityComponent.tsx",
+        "patchSetId": 1
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2025-03-01T06:21:04Z",
+      "side": 1,
+      "message": "wut does this mean LOL how does padding make the color go away",
+      "revId": "2a0aad84e1bb4a90968c5b4b46ad665c169143ca",
+      "serverId": "3c7ad661-7ce8-4163-af0d-ebc0f4c5b529"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f8006b15_acad5c54",
+        "filename": "bruinhub-app/components/CapacityComponent.tsx",
+        "patchSetId": 1
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2025-03-01T06:21:04Z",
+      "side": 1,
+      "message": "nit whitespace",
+      "revId": "2a0aad84e1bb4a90968c5b4b46ad665c169143ca",
+      "serverId": "3c7ad661-7ce8-4163-af0d-ebc0f4c5b529"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "71fdc995_6870b1fc",
+        "filename": "bruinhub-app/components/NotificationBellComponent.tsx",
+        "patchSetId": 1
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2025-03-01T06:21:04Z",
+      "side": 1,
+      "message": "remove all console logs prior to pushing",
+      "revId": "2a0aad84e1bb4a90968c5b4b46ad665c169143ca",
+      "serverId": "3c7ad661-7ce8-4163-af0d-ebc0f4c5b529"
+    }
+  ]
+}
