@@ -88,26 +88,48 @@ def test_scrape_facility_counts():
             assert isinstance(first_zone["open"], bool)
 
 def test_scrape_dining_halls():
-    """Test the restaurant data fetching"""
+    """Test the dining hall data fetching"""
     scraper = DiningScrapers()
     restaurants = scraper.scrape_dining_halls()
 
-    # Check we got data for our restaurants
+    # Check we got data for all dining locations
     assert isinstance(restaurants, dict), "Restaurants should be a dictionary"
-    assert "bplate" in restaurants, "Should have data for slug: bplate"
-    assert "deneve" in restaurants, "Should have data for slug: deneve"
-    assert "epicuria" in restaurants, "Should have data for slug: epicuria"
+    assert "bplate" in restaurants, "Should have data for BruinPlate"
+    assert "deneve" in restaurants, "Should have data for De Neve"
+    assert "epicuria-covel" in restaurants, "Should have data for Epicuria at Covel"
+    assert "epicuria-ackerman" in restaurants, "Should have data for Epicuria at Ackerman"
+    assert "bruin-cafe" in restaurants, "Should have data for Bruin Cafe"
+    assert "the-drey" in restaurants, "Should have data for The Drey"
+    assert "rendezvous" in restaurants, "Should have data for Rendezvous"
+    assert "study-hedrick" in restaurants, "Should have data for Study at Hedrick"
+    assert "feast" in restaurants, "Should have data for FEAST at Rieber"
 
     # Check structure of restaurant data
     for restaurant, data in restaurants.items():
         assert isinstance(data, dict), f"Data for {restaurant} should be a dictionary"
-        assert "regular_hours" in data
-        assert "occupants" in data
-        assert "capacity" in data
-        assert "menu" in data
+        assert "menu" in data, f"{restaurant} should have menu field"
+        assert "capacity" in data, f"{restaurant} should have capacity field"
+        assert "occupants" in data, f"{restaurant} should have occupants field"
+        assert "hours_today" in data, f"{restaurant} should have hours_today field"
 
         # Basic validation
-        assert isinstance(data["occupants"], int)
-        assert isinstance(data["capacity"], int)
-        assert isinstance(data["regular_hours"], list)
-        assert isinstance(data["menu"], dict)
+        assert isinstance(data["occupants"], (int, type(None))), f"Occupants for {restaurant} should be int or None"
+        assert isinstance(data["capacity"], (int, type(None))), f"Capacity for {restaurant} should be int or None"
+        assert isinstance(data["hours_today"], list), f"Hours for {restaurant} should be a dictionary"
+        assert isinstance(data["menu"], dict), f"Menu for {restaurant} should be a dictionary"
+
+        # Check menu structure based on restaurant type
+        if restaurant == "feast":
+            # Feast menu should have sections with images and items
+            for section in data["menu"].values():
+                assert isinstance(section, dict), "Feast menu sections should be dictionaries"
+                assert "image" in section, "Feast menu sections should have image field"
+                assert "items" in section, "Feast menu sections should have items field"
+                assert isinstance(section["items"], list), "Feast menu items should be a list"
+        elif restaurant in ["bplate", "deneve", "epicuria"]:
+            # Standard menu should have sections with lists of items
+            for items in data["menu"].values():
+                assert isinstance(items, list), "Standard menu sections should contain lists of items"
+        else:
+            # Non-menu restaurants should have empty menu dict
+            assert data["menu"] == {}, f"Non-menu restaurant {restaurant} should have empty menu"

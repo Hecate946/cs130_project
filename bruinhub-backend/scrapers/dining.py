@@ -40,6 +40,23 @@ class DiningScrapers:
             logger.error(f"Error fetching occupancy for {slug}: {str(e)}")
             return None, None
 
+    def _get_menu(self, slug: str) -> Dict[str, list[str]]:
+        """Returns the menu for any restaurant based on its scraper type."""
+        if not supports_menu_scraping(slug):
+            return {}
+
+        menu_info = get_menu_info(slug)
+        scraper_type = menu_info["scraper_type"]
+        menu_name = menu_info["menu_name"]
+
+        if scraper_type == "standard":
+            return self._get_standard_menu(menu_name)
+        elif scraper_type == "feast":
+            return self._get_feast_menu(menu_name)
+        else:
+            logger.error(f"Unknown scraper type: {scraper_type}")
+            return {}
+        
     @staticmethod
     def _get_standard_menu(menu_name: str) -> Dict[str, list[str]]:
         """Returns the menu for restaurants using standard menu format."""
@@ -123,23 +140,6 @@ class DiningScrapers:
             return sections
         except Exception as e:
             logger.error(f"Error fetching menu for {menu_name}: {str(e)}")
-            return {}
-
-    def _get_menu(self, slug: str) -> Dict[str, list[str]]:
-        """Returns the menu for any restaurant based on its scraper type."""
-        if not supports_menu_scraping(slug):
-            return {}
-
-        menu_info = get_menu_info(slug)
-        scraper_type = menu_info["scraper_type"]
-        menu_name = menu_info["menu_name"]
-
-        if scraper_type == "standard":
-            return self._get_standard_menu(menu_name)
-        elif scraper_type == "feast":
-            return self._get_feast_menu(menu_name)
-        else:
-            logger.error(f"Unknown scraper type: {scraper_type}")
             return {}
 
     def scrape_dining_halls(self) -> Dict:

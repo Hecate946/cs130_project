@@ -63,4 +63,4 @@ def test_get_invalid_dining_hall(client):
     response = client.get("/v1/dining/non-existent-hall")
     assert response.status_code == 404
     data = response.get_json()
-    assert data["error"] == "Dining hall not found"
+    assert data["error"] == "Invalid dining hall slug"
