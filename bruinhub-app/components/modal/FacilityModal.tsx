@@ -1,0 +1,357 @@
+import React, { useEffect, useState, useRef, useCallback } from "react";
+import { View, Text, StyleSheet, ScrollView, Platform, Dimensions, PanResponder, Animated } from "react-native";
+import { ActivityIndicator, Button } from "react-native-paper";
+import Modal from "react-native-modal";
+import { CategoriesMap } from "@/constants/CategoriesMap";
+import { SlugMap } from "@/constants/SlugMap";
+import { Colors } from "@/constants/Colors";
+import MenuComponent from "./MenuComponent";
+import CapacityComponent from "./CapacityComponent";
+import DateFormatter from "./DateComponent";
+import OperatingHoursComponent from "./OperatingHoursComponent";
+import GymOperatingHoursComponent from "./GymOperatingHoursComponent";
+import GymZonesComponent from "./GymZonesComponent";
+
+interface FacilityModalProps {
+  visible: boolean;
+  onClose: () => void;
+  facility: string | null;
+}
+
+interface FacilityData {
+  data: object,
+}
+
+// TODO change lol
+const URL = "http://172.23.40.132:5001/api/v1/";
+
+const { height: SCREEN_HEIGHT } = Dimensions.get("window");
+const SWIPE_THRESHOLD = 100;
+const DRAG_INDICATOR_ZONE_HEIGHT = 50;
+
+function getCategoryFromFacility(facilityName: string): string | undefined {
+  for (const [category, facilityMap] of CategoriesMap.entries()) {
+    for (const facility of facilityMap.values()) {
+      if (facility === facilityName) {
+        return category;
+      }
+    }
+  }
+  return undefined;
+}
+
+export default function FacilityModal({ visible, onClose, facility }: FacilityModalProps) {
+  const [facilityData, setFacilityData] = useState<FacilityData>(null);
+  const [loading, setLoading] = useState(false);
+  const [isModalReady, setIsModalReady] = useState(false);
+  const [isClosing, setIsClosing] = useState(false);
+
+  const translateY = useRef(new Animated.Value(0)).current;
+  const isDraggingHeader = useRef(false);
+  const scrollViewRef = useRef(null);
+
+  useEffect(() => {
+    if (visible) {
+      setIsClosing(false);
+      setTimeout(() => setIsModalReady(true), 100);
+      translateY.setValue(0);
+    } else {
+      setTimeout(() => setIsModalReady(false), 100);
+    }
+  }, [visible]);
+
+  const animatedCloseModal = useCallback(() => {
+    setIsClosing(true);
+    setFacilityData(null);
+    Animated.timing(translateY, {
+      toValue: SCREEN_HEIGHT,
+      duration: 200,
+      useNativeDriver: true,
+    }).start(() => {
+      onClose();
+    });
+  }, [translateY, onClose]);
+
+  const handleClosePress = useCallback(() => {
+    animatedCloseModal();
+  }, [animatedCloseModal]);
+
+  const handleBackdropPress = useCallback(() => {
+    animatedCloseModal();
+  }, [animatedCloseModal]);
+
+  const dragIndicatorPanResponder = useRef(
+    PanResponder.create({
+      onStartShouldSetPanResponder: () => true,
+      onMoveShouldSetPanResponder: () => true,
+      onPanResponderGrant: () => {
+        isDraggingHeader.current = true;
+        translateY.setOffset(0);
+        translateY.setValue(0);
+      },
+      onPanResponderMove: (_, gestureState) => {
+        if (gestureState.dy > 0) {
+          translateY.setValue(gestureState.dy);
+        }
+      },
+      onPanResponderRelease: (_, gestureState) => {
+        isDraggingHeader.current = false;
+
+        if (gestureState.dy > SWIPE_THRESHOLD) {
+          animatedCloseModal();
+        } else {
+          Animated.spring(translateY, {
+            toValue: 0,
+            friction: 8,
+            tension: 40,
+            useNativeDriver: true,
+          }).start();
+        }
+      },
+      onPanResponderTerminate: () => {
+        isDraggingHeader.current = false;
+        Animated.spring(translateY, {
+          toValue: 0,
+          friction: 8,
+          tension: 40,
+          useNativeDriver: true,
+        }).start();
+      },
+    })
+  ).current;
+
+  const fetchFacilityData = useCallback(async () => {
+    if (!facility) return;
+
+    setLoading(true);
+    try {
+      const category = getCategoryFromFacility(facility);
+      const slug = SlugMap.get(facility);
+
+      if (!category || !slug) {
+        console.error("Invalid facility data", { facility, category, slug });
+        setLoading(false);
+        return;
+      }
+
+      const specificURL = `${URL}${category}/${slug}`;
+      console.log(specificURL); // TODO remove
+
+      const response = await fetch(specificURL);
+      const data = await response.json();
+      setFacilityData(data);
+    } catch (error) {
+      console.error("Error fetching facility data:", error);
+    } finally {
+      setLoading(false);
+    }
+  }, [facility]);
+
+  useEffect(() => {
+    if (visible && facility && isModalReady) {
+      fetchFacilityData();
+    }
+  }, [visible, facility, isModalReady, fetchFacilityData]);
+
+  if (!visible || !facility) {
+    return null;
+  }
+
+  return (
+    <Modal
+      isVisible={visible && isModalReady}
+      onBackdropPress={handleBackdropPress}
+      useNativeDriver
+      animationIn="slideInUp"
+      animationOut="slideOutDown"
+      animationInTiming={300}
+      animationOutTiming={300}
+      backdropTransitionInTiming={300}
+      backdropTransitionOutTiming={300}
+      style={styles.modal}
+      backdropOpacity={0.5}
+      statusBarTranslucent
+      hideModalContentWhileAnimating
+      swipeDirection={undefined}
+      propagateSwipe={false}
+    >
+      <Animated.View
+        style={[
+          styles.modalContent,
+          { transform: [{ translateY }] }
+        ]}
+      >
+        <View
+          style={styles.dragIndicatorZone}
+          {...dragIndicatorPanResponder.panHandlers}
+        >
+          <View style={styles.dragIndicator} />
+        </View>
+
+        {loading ? (
+          <View style={styles.loadingBanner}>
+            <ActivityIndicator size="small" color="#2774AE" />
+          </View>
+        ) : facilityData ? (
+          <ScrollView
+            ref={scrollViewRef}
+            contentContainerStyle={styles.scrollViewContent}
+            showsVerticalScrollIndicator={false}
+            nestedScrollEnabled
+            bounces
+            scrollEnabled={!isDraggingHeader.current}
+            keyboardShouldPersistTaps="handled"
+          >
+            <Text style={styles.title}>{facility}</Text>
+
+            {/* Hours Display */}
+            {
+              getCategoryFromFacility(facility) === 'dining' &&
+              <OperatingHoursComponent hoursToday={facilityData?.data?.hours_today} />
+            }
+            {
+              getCategoryFromFacility(facility) === 'gym' &&
+              <GymOperatingHoursComponent
+                regularHours={facilityData?.data?.regular_hours}
+                specialHours={facilityData?.data?.special_hours}
+              />
+            }
+
+            {/* Occupancy Data */}
+            {
+              facilityData?.data?.occupants != null && facilityData?.data?.capacity > 0 && (
+                <CapacityComponent
+                  percentage={facilityData.data.occupants / facilityData.data.capacity}
+                />
+              )
+            }
+            {
+              getCategoryFromFacility(facility) === 'gym' &&
+              <GymZonesComponent zones={facilityData?.data?.zones} />
+            }
+
+            {/* Menu Display */}
+            {
+              facilityData?.data?.menu &&
+              Object.keys(facilityData.data.menu).length > 0 &&
+              <MenuComponent sections={facilityData?.data?.menu} />
+            }
+
+            <View style={styles.dateView}>
+              <Text style={styles.dateText}>Last updated:</Text>
+              <DateFormatter isoString={facilityData?.data?.last_updated} />
+            </View>
+
+            <View style={styles.buttonView}>
+              <Button
+                onPress={handleClosePress}
+                mode="contained"
+                style={styles.button}
+                contentStyle={styles.buttonContent}
+                labelStyle={styles.buttonLabel}
+              >
+                Close
+              </Button>
+            </View>
+          </ScrollView>
+        ) : null}
+      </Animated.View>
+    </Modal>
+  );
+}
+
+const styles = StyleSheet.create({
+  modal: {
+    justifyContent: "flex-end",
+    margin: 0,
+  },
+  dragIndicatorZone: {
+    width: '100%',
+    height: DRAG_INDICATOR_ZONE_HEIGHT,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingTop: 25,
+    paddingBottom: 20,
+  },
+  dragIndicator: {
+    width: 40,
+    height: 5,
+    backgroundColor: Colors.light.shade,
+    borderRadius: 3,
+  },
+  loadingBanner: {
+    width: "100%",
+    padding: 20,
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  scrollViewContent: {
+    flexGrow: 1,
+    paddingBottom: 30,
+    width: "100%",
+  },
+  modalContent: {
+    height: "85%",
+    backgroundColor: Colors.light.background,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    padding: 25,
+    paddingTop: 0,
+    width: "100%",
+    overflow: 'hidden',
+    ...Platform.select({
+      ios: {
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: -3 },
+        shadowOpacity: 0.1,
+        shadowRadius: 3,
+      },
+      android: {
+        elevation: 5,
+      },
+    }),
+  },
+  title: {
+    fontSize: 32,
+    fontWeight: "bold",
+    width: "100%",
+    paddingTop: 15,
+    paddingBottom: 10,
+  },
+  description: {
+    marginVertical: 15,
+    textAlign: "left",
+    fontSize: 16,
+    width: "100%",
+  },
+  dateText: {
+    textAlign: "left",
+    fontSize: 16,
+    fontStyle: "italic",
+  },
+  dateView: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  buttonView: {
+    alignItems: "center",
+  },
+  button: {
+    marginTop: 30,
+    width: "60%",
+    backgroundColor: Colors.light.shade,
+    borderRadius: 60,
+  },
+  buttonLabel: {
+    fontSize: 18,
+    color: Colors.light.background,
+    textTransform: "uppercase",
+    width: "100%",
+  },
+  buttonContent: {
+    justifyContent: "center",
+    alignItems: "center",
+    height: 50,
+  },
+});
