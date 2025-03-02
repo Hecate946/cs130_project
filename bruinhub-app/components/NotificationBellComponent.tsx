@@ -8,13 +8,13 @@ interface NotificationBellProps {
   facilityName: string;
 }
 
-export default function NotificationBell ({ facilityName }: NotificationBellProps) {
+export default function NotificationBell({ facilityName }: NotificationBellProps) {
   const [hasNotifications, setHasNotifications] = useState(false);
 
   const checkNotifications = async () => {
     try {
-        console.log("-------------------------")
-        console.log("curr facility", facilityName)
+      console.log("-------------------------")
+      console.log("curr facility", facilityName)
       const keys = await AsyncStorage.getAllKeys();
       console.log("all keys", keys)
       const facilityKeys = keys.filter((key) => key.startsWith(`notification_${facilityName}`));
@@ -42,7 +42,7 @@ export default function NotificationBell ({ facilityName }: NotificationBellProp
         name={hasNotifications ? "bell-check-outline" : "bell-off-outline"}
         size={32}
         color="black"
-        />
+      />
     </TouchableOpacity>
   );
 };

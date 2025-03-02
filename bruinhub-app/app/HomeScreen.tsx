@@ -1,5 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Link } from "expo-router";
+import { Link, useRouter } from "expo-router";
 import { ScrollView, StyleSheet, Text, View, Image, TouchableOpacity } from "react-native";
 import { Button, Searchbar } from "react-native-paper";
 import Feather from '@expo/vector-icons/Feather';
@@ -10,7 +10,7 @@ import { CategoriesMap } from "@/constants/CategoriesMap";
 import { Colors } from "@/constants/Colors";
 import HomeCard from "@/components/home/HomeCard";
 import Divider from "@/components/Divider";
-import FacilityModal from "@/components/FacilityModal";
+import FacilityModal from "@/components/modal/FacilityModal";
 
 import Fuse from "fuse.js"; // Fuzzy searching!!!
 
@@ -99,6 +99,11 @@ export default function HomeScreen({ onFinish }: HomeScreenProps) {
   const filteredPinned = filteredItems.filter((item) => pinnedItems.has(item.id));
   const filteredUnpinned = filteredItems.filter((item) => !pinnedItems.has(item.id));
 
+  const router = useRouter();
+  const goToNotifications = () => {
+    router.push("/NotificationsScreen");
+  }
+
   return (
     <View style={styles.container}>
       <ScrollView
@@ -111,15 +116,13 @@ export default function HomeScreen({ onFinish }: HomeScreenProps) {
             source={require("../assets/images/BruinHub.png")} //TODO replace with SVG
             style={{ width: 200, height: 50, borderRadius: 2 }}
           />
-          <Link href="/NotificationsScreen" asChild>
-            <TouchableOpacity testID="notif-button">
-              <Feather
-                name="bell"
-                size={24}
-                color="black"
-              />
-            </TouchableOpacity>
-          </Link>
+          <TouchableOpacity testID="notif-button" onPress={goToNotifications}>
+            <Feather
+              name="bell"
+              size={24}
+              color="black"
+            />
+          </TouchableOpacity>
         </View>
         <Searchbar
           placeholder="Search"

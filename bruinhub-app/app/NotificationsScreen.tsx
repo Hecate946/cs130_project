@@ -1,5 +1,5 @@
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
-import { Link } from "expo-router";
+import { Link, useRouter } from "expo-router";
 import { Colors } from "@/constants/Colors";
 import { Button } from "react-native-paper";
 import * as Haptics from "expo-haptics";import { Categories } from "@/constants/Categories";
@@ -18,9 +18,11 @@ interface NotificationsScreenProps {
 };
 
 export default function NotificationsScreen({ onFinish }: NotificationsScreenProps) {
+  const router = useRouter();
 
   const handleFinish = async () => {
     await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
+    router.back();
     onFinish();
   };
 
@@ -80,17 +82,16 @@ export default function NotificationsScreen({ onFinish }: NotificationsScreenPro
 
       </ScrollView>
       <View style={{ position: "absolute", bottom: 50 }}>
-        <Link href="/" asChild>
           <Button
             style={styles.button}
             onPress={handleFinish}
             uppercase={true}
             mode="elevated"
             labelStyle={styles.buttonLabel}
+            contentStyle={styles.buttonContent}
           >
             Done
           </Button>
-        </Link>
       </View>
     </View>
   );
@@ -135,10 +136,6 @@ const styles = StyleSheet.create({
   },
 
   button: {
-    marginTop: 20,
-    padding: 10,
-    height: 64,
-    width: 200,
     backgroundColor: Colors.light.icon,
     borderRadius: 60,
   },
@@ -146,6 +143,13 @@ const styles = StyleSheet.create({
   buttonLabel: {
     fontSize: 18,
     color: Colors.light.text,
+    alignItems: "center",
+  },
+
+  buttonContent: {
+    height: 64,
+    width: 180,
+    justifyContent: "center",
     alignItems: "center",
   },
 
