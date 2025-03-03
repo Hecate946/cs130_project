@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "21f0173e_ec17f262",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000003
+      },
+      "writtenOn": "2025-03-03T00:40:41Z",
+      "side": 1,
+      "message": "LGTM for now -- we can remove console logs in the future once we ensure everything works.",
+      "revId": "49fe56e5f38cfc2291c8747834d9a2c4191eab6b",
+      "serverId": "3c7ad661-7ce8-4163-af0d-ebc0f4c5b529"
+    }
+  ]
+}
