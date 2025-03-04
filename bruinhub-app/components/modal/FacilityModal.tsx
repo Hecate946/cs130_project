@@ -11,6 +11,8 @@ import DateFormatter from "./DateComponent";
 import OperatingHoursComponent from "./OperatingHoursComponent";
 import GymOperatingHoursComponent from "./GymOperatingHoursComponent";
 import GymZonesComponent from "./GymZonesComponent";
+import LibraryReservationComponent from "./LibraryReservationComponent";
+import FeastMenuComponent from "./FeastMenuComponent";
 
 interface FacilityModalProps {
   visible: boolean;
@@ -23,7 +25,7 @@ interface FacilityData {
 }
 
 // TODO change lol
-const URL = "http://172.23.40.132:5001/api/v1/";
+const URL = "http://149.142.131.102:5001/api/v1/";
 
 const { height: SCREEN_HEIGHT } = Dimensions.get("window");
 const SWIPE_THRESHOLD = 100;
@@ -134,10 +136,34 @@ export default function FacilityModal({ visible, onClose, facility }: FacilityMo
         return;
       }
 
-      const specificURL = `${URL}${category}/${slug}`;
+      let specificURL = "";
+      let response;
+      const now = new Date();
+      const start = now.getFullYear() + '-' + 
+                    String(now.getMonth() + 1).padStart(2, '0') + '-' + 
+                    String(now.getDate()).padStart(2, '0') + 'T' + 
+                    String(now.getHours()).padStart(2, '0') + ':' + 
+                    String(now.getMinutes()).padStart(2, '0') + ':' + 
+                    String(now.getSeconds()).padStart(2, '0');
+      
+      const endOfDay = new Date();
+      endOfDay.setHours(23, 59, 59, 0); // Set to the end of the current day (local time)
+      const end = endOfDay.getFullYear() + '-' + 
+                  String(endOfDay.getMonth() + 1).padStart(2, '0') + '-' + 
+                  String(endOfDay.getDate()).padStart(2, '0') + 'T' + 
+                  String(endOfDay.getHours()).padStart(2, '0') + ':' + 
+                  String(endOfDay.getMinutes()).padStart(2, '0') + ':' + 
+                  String(endOfDay.getSeconds()).padStart(2, '0');
+      
+      if (category === "library") {
+        specificURL = `${URL}${category}/${slug}/bookings/range?start=${start}&end=${end}`;
+      } else {
+        specificURL = `${URL}${category}/${slug}`;
+      }
+      
       console.log(specificURL); // TODO remove
-
-      const response = await fetch(specificURL);
+      
+      response = await fetch(specificURL);
       const data = await response.json();
       setFacilityData(data);
     } catch (error) {
@@ -232,9 +258,18 @@ export default function FacilityModal({ visible, onClose, facility }: FacilityMo
 
             {/* Menu Display */}
             {
-              facilityData?.data?.menu &&
-              Object.keys(facilityData.data.menu).length > 0 &&
-              <MenuComponent sections={facilityData?.data?.menu} />
+              (facilityData?.data?.menu &&
+              Object.keys(facilityData.data.menu).length > 0) ?
+              facility === "Feast" ?
+              <FeastMenuComponent menuData={facilityData.data.menu} /> :
+              <MenuComponent sections={facilityData?.data?.menu} /> :
+              null
+            }
+
+            {/* Library Reservation Display, only shows the reservations for the rest of the day */}
+            {
+              (getCategoryFromFacility(facility) === 'library' && facilityData.data) &&
+              <LibraryReservationComponent roomsData={facilityData?.data} />
             }
 
             <View style={styles.dateView}>

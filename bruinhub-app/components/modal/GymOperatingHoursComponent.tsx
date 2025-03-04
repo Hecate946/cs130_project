@@ -35,14 +35,14 @@ export default function GymOperatingHoursComponent({ regularHours, specialHours 
         hoursToday = specialHoursToday;
         const [start, end] = hoursToday.split(" - ");
         startMinutes = timeToMinutes(start);
-        endMinutes = getEndMinutes(end);
+        endMinutes = getEndMinutes(end, startMinutes);
         setIsOpen(currentMinutes >= startMinutes && currentMinutes < endMinutes);
       }
     } else {
       hoursToday = regularHours[currentDay];
       const [start, end] = hoursToday.split(" - ");
       startMinutes = timeToMinutes(start);
-      endMinutes = getEndMinutes(end);
+      endMinutes = getEndMinutes(end, startMinutes);
       setIsOpen(currentMinutes >= startMinutes && currentMinutes < endMinutes);
     }
 
@@ -54,6 +54,7 @@ export default function GymOperatingHoursComponent({ regularHours, specialHours 
       setStatusMessage(`Closed until ${formatMinutesToTime(startMinutes)}`);
     }
   }, [specialHours, regularHours, currentDay, currentMinutes, specialDateKey, isOpen]);
+
 
   return (
     <View style={styles.container}>
@@ -88,19 +89,26 @@ const timeToMinutes = (timeStr: string) => {
   return hours * 60 + minutes;
 };
 
-const formatMinutesToTime = (minutes: number) => {
-  const hours = Math.floor(minutes / 60);
-  const mins = minutes % 60;
+const formatMinutesToTime = (minutes: number, startMinutes?: number) => {
+  let adjustedMinutes = minutes;
+  if (startMinutes !== undefined && minutes < startMinutes) {
+    adjustedMinutes += 24 * 60;
+  }
+
+  const totalHours = Math.floor(adjustedMinutes / 60);
+  const hours = totalHours % 24;
+  const mins = adjustedMinutes % 60;
   const period = hours >= 12 ? 'PM' : 'AM';
   const formattedHours = hours % 12 || 12;
   return `${formattedHours}:${mins.toString().padStart(2, '0')}${period.toLowerCase()}`;
 };
 
-const getEndMinutes = (end: string) => {
-  const endMinutes = timeToMinutes(end);
 
-  if (endMinutes < 300) {
-    return endMinutes + 24 * 60;
+const getEndMinutes = (end: string, startMinutes: number) => {
+  let endMinutes = timeToMinutes(end);
+
+  if (endMinutes < startMinutes) {
+    endMinutes += 24 * 60;
   }
 
   return endMinutes;

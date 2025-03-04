@@ -74,7 +74,7 @@ export default function OnboardingScreen({ onFinish }: OnboardingScreenProps) {
           ))}
         </View>
 
-        <Divider name="ResLife Study Rooms" />
+        {/* <Divider name="ResLife Study Rooms" />
         <View style={styles.chipContainer}>
           {ReslifeStudy.map((item) => (
             <SelectableChip name={item.name} key={item.key} id={item.key}/>
@@ -86,7 +86,7 @@ export default function OnboardingScreen({ onFinish }: OnboardingScreenProps) {
           {ReslifeSpaces.map((item) => (
             <SelectableChip name={item.name} key={item.key} id={item.key}/>
           ))}
-        </View>
+        </View> */}
       </ScrollView>
       <View style={{ position: "absolute", bottom: 50 }}>
         <Link href="/" asChild>
