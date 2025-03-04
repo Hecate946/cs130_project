@@ -36,6 +36,12 @@
     ],
     "experiments": {
       "typedRoutes": true
-    }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "2447ecc9-bfe6-44a8-a4be-c69168498fda"
+      }
+    },
+    "owner": "nathanzzhang"
   }
 }
