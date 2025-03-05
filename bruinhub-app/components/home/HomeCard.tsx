@@ -35,8 +35,8 @@ export default function HomeCard({ name, description, isPinned, pinCallback, onP
         </TouchableOpacity>
       </View>
       <View style={styles.content}>
-        <Title style={styles.title}>{name}</Title>
-        <Paragraph>{description}</Paragraph>
+        <Title style={[styles.title, { color: Colors.light.text }]}>{name}</Title>
+        <Paragraph style={{ color: Colors.light.text }}>{description}</Paragraph>
       </View>
     </Card>
   )
