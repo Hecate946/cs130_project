@@ -176,7 +176,6 @@ class DiningScrapers:
             except Exception as e:
                 logger.error(f"Error scraping data for {slug}: {str(e)}")
                 continue
-
         return dining_data
 
 

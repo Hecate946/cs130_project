@@ -1,4 +1,3 @@
-import pytest
 from scrapers.gyms import GymScrapers
 from config.gyms import FACILITY_IDS
 from scrapers.dining import DiningScrapers
@@ -96,12 +95,13 @@ def test_scrape_dining_halls():
     assert isinstance(restaurants, dict), "Restaurants should be a dictionary"
     assert "bplate" in restaurants, "Should have data for slug: bplate"
     assert "deneve" in restaurants, "Should have data for slug: deneve"
-    assert "epicuria" in restaurants, "Should have data for slug: epicuria"
+    assert "epicuria-covel" in restaurants, "Should have data for slug: epicuria-covel"
+    assert "epicuria-ackerman" in restaurants, "Should have data for slug: epicuria-ackerman"
 
     # Check structure of restaurant data
     for restaurant, data in restaurants.items():
         assert isinstance(data, dict), f"Data for {restaurant} should be a dictionary"
-        assert "regular_hours" in data
+        assert "hours_today" in data
         assert "occupants" in data
         assert "capacity" in data
         assert "menu" in data
@@ -109,5 +109,5 @@ def test_scrape_dining_halls():
         # Basic validation
         assert isinstance(data["occupants"], int)
         assert isinstance(data["capacity"], int)
-        assert isinstance(data["regular_hours"], list)
+        assert isinstance(data["hours_today"], list)
         assert isinstance(data["menu"], dict)
