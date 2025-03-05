@@ -17,6 +17,7 @@ export const SlugMap: SlugMapType = new Map([
   ["Music", "music-library"],
   ["Biomedical", "biomedical"],
   ["Media Lab", "media-lab"],
+  ["YRL", "yrl"],
 ]);
 
 // TODO Food Trucks

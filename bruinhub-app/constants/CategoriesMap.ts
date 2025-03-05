@@ -5,7 +5,7 @@ export const CategoriesMap = new Map([
       ["2", "Epicuria"],
       ["3", "Feast"],
       ["4", "BCafe"],
-      ["5", "Cafe 1919"],
+      // ["5", "Cafe 1919"],
       ["6", "Rendezvous"],
       ["7", "The Study"],
       ["8", "The Drey"],
@@ -27,21 +27,21 @@ export const CategoriesMap = new Map([
       ["30", "Media Lab"],
     ])],
 
-    ["reslifeStudy", new Map([
-      ["18", "De Neve"],
-      ["19", "Gayley Heights"],
-      ["20", "Hedrick"],
-      ["21", "Olympic"],
-      ["22", "Rieber"],
-      ["23", "Sproul"],
-      ["24", "Tipuana, Laurel, PV"],
-    ])],
+    // ["reslifeStudy", new Map([
+    //   ["18", "De Neve"],
+    //   ["19", "Gayley Heights"],
+    //   ["20", "Hedrick"],
+    //   ["21", "Olympic"],
+    //   ["22", "Rieber"],
+    //   ["23", "Sproul"],
+    //   ["24", "Tipuana, Laurel, PV"],
+    // ])],
 
-    ["reslifeSpaces", new Map([
-      ["25", "Hedrick Movement Studio"],
-      ["26", "Hedrick Music"],
-      ["27", "Hitch Kitchen"],
-      ["28", "Rieber Music"],
-      ["29", "Sproul Music"],
-    ])],
+    // ["reslifeSpaces", new Map([
+    //   ["25", "Hedrick Movement Studio"],
+    //   ["26", "Hedrick Music"],
+    //   ["27", "Hitch Kitchen"],
+    //   ["28", "Rieber Music"],
+    //   ["29", "Sproul Music"],
+    // ])],
   ]);

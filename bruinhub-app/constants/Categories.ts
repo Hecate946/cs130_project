@@ -23,10 +23,10 @@ export const Categories = {
         key: "4",
         name: "BCafe",
       },
-      {
-        key: "5",
-        name: "Cafe 1919",
-      },
+      // {
+      //   key: "5",
+      //   name: "Cafe 1919",
+      // },
       {
         key: "6",
         name: "Rendezvous",
@@ -87,57 +87,57 @@ export const Categories = {
       },
     ],
 
-    reslifeStudy: [
-      {
-        key: "18",
-        name: "De Neve",
-      },
-      {
-        key: "19",
-        name: "Gayley Heights",
-      },
-      {
-        key: "20",
-        name: "Hedrick",
-      },
-      {
-        key: "21",
-        name: "Olympic",
-      },
-      {
-        key: "22",
-        name: "Rieber",
-      },
-      {
-        key: "23",
-        name: "Sproul",
-      },
-      {
-        key: "24",
-        name: "Tipuana, Laurel, PV",
-      },
-    ],
+    // reslifeStudy: [
+    //   {
+    //     key: "18",
+    //     name: "De Neve",
+    //   },
+    //   {
+    //     key: "19",
+    //     name: "Gayley Heights",
+    //   },
+    //   {
+    //     key: "20",
+    //     name: "Hedrick",
+    //   },
+    //   {
+    //     key: "21",
+    //     name: "Olympic",
+    //   },
+    //   {
+    //     key: "22",
+    //     name: "Rieber",
+    //   },
+    //   {
+    //     key: "23",
+    //     name: "Sproul",
+    //   },
+    //   {
+    //     key: "24",
+    //     name: "Tipuana, Laurel, PV",
+    //   },
+    // ],
 
-    reslifeSpaces: [
-      {
-        key: "25",
-        name: "Hedrick Movement Studio",
-      },
-      {
-        key: "26",
-        name: "Hedrick Music",
-      },
-      {
-        key: "27",
-        name: "Hitch Kitchen",
-      },
-      {
-        key: "28",
-        name: "Rieber Music",
-      },
-      {
-        key: "29",
-        name: "Sproul Music",
-      },
-    ],
+    // reslifeSpaces: [
+    //   {
+    //     key: "25",
+    //     name: "Hedrick Movement Studio",
+    //   },
+    //   {
+    //     key: "26",
+    //     name: "Hedrick Music",
+    //   },
+    //   {
+    //     key: "27",
+    //     name: "Hitch Kitchen",
+    //   },
+    //   {
+    //     key: "28",
+    //     name: "Rieber Music",
+    //   },
+    //   {
+    //     key: "29",
+    //     name: "Sproul Music",
+    //   },
+    // ],
 };

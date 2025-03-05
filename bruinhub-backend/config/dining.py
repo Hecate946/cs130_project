@@ -2,6 +2,8 @@ OCCUSPACE_PREFIX = "https://testing.occuspace.io/waitz/location"
 MENUS_PREFIX = "https://menu.dining.ucla.edu/Menus"
 
 # Dining locations that support menu scraping
+# 
+# WARNING: Keys are not canonical slugs, but rather the slugs used in the menu URL
 MENU_ENABLED_RESTAURANTS = {
     "bplate": {
         "menu_name": "BruinPlate",  # Name used in menu URL
@@ -22,6 +24,8 @@ MENU_ENABLED_RESTAURANTS = {
 }
 
 # Occuspace IDs for all dining locations
+# 
+# Keys are canonical slugs
 OCCUSPACE_IDS = {
     "bplate": 77,
     "deneve": 78,

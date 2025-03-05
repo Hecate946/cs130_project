@@ -42,14 +42,14 @@ def get_dining_hall(slug: str):
     
     if slug not in OCCUSPACE_IDS:
         return jsonify({
-            "error": "Invalid dining hall slug",
+            "error": "Dining hall not found",
             "timestamp": datetime.now().isoformat()
         }), 404
     
     data = dining_db.get_dining_hall_latest(slug)
     if not data:
         return jsonify({
-            "error": "Dining hall not found",
+            "error": "No data for dining hall",
             "timestamp": datetime.now().isoformat()
         }), 404
     

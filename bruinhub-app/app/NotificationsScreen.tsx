@@ -66,7 +66,7 @@ export default function NotificationsScreen({ onFinish }: NotificationsScreenPro
           ))}
         </View>
 
-        <Divider name="ResLife Study Rooms" />
+        {/* <Divider name="ResLife Study Rooms" />
         <View>
           {ReslifeStudy.map((item) => (
             <NotificationItem name={item.name} key={item.key} id={item.key}/>
@@ -78,7 +78,7 @@ export default function NotificationsScreen({ onFinish }: NotificationsScreenPro
           {ReslifeSpaces.map((item) => (
             <NotificationItem name={item.name} key={item.key} id={item.key}/>
           ))}
-        </View>
+        </View> */}
 
       </ScrollView>
       <View style={{ position: "absolute", bottom: 50 }}>

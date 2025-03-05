@@ -23,8 +23,8 @@ class GymCapacityHistory(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     gym_id = db.Column(db.Integer, db.ForeignKey("gyms.id"), nullable=False)
     zone_name = db.Column(db.String(255), nullable=False)
+    occupants = db.Column(db.Integer, nullable=False)
     capacity = db.Column(db.Integer, nullable=False)
-    percentage = db.Column(db.Integer, nullable=False)
     last_updated = db.Column(
         db.DateTime,
         default=datetime.now(timezone.utc),
