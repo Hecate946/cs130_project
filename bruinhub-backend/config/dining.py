@@ -24,6 +24,8 @@ MENU_ENABLED_RESTAURANTS = {
 }
 
 # Occuspace IDs for all dining locations
+# 
+# Keys are canonical slugs
 OCCUSPACE_IDS = {
     "bplate": 77,
     "deneve": 78,
