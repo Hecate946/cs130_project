@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef, useCallback } from "react";
 import { View, Text, StyleSheet, ScrollView, Platform, Dimensions, PanResponder, Animated } from "react-native";
 import { ActivityIndicator, Button } from "react-native-paper";
 import Modal from "react-native-modal";
+import { Categories } from "@/constants/Categories";
 import { CategoriesMap } from "@/constants/CategoriesMap";
 import { SlugMap } from "@/constants/SlugMap";
 import { Colors } from "@/constants/Colors";
@@ -13,6 +14,7 @@ import GymOperatingHoursComponent from "./GymOperatingHoursComponent";
 import GymZonesComponent from "./GymZonesComponent";
 import LibraryReservationComponent from "./LibraryReservationComponent";
 import FeastMenuComponent from "./FeastMenuComponent";
+import NotificationBell from "../NotificationBellComponent";
 
 interface FacilityModalProps {
   visible: boolean;
@@ -31,11 +33,29 @@ const { height: SCREEN_HEIGHT } = Dimensions.get("window");
 const SWIPE_THRESHOLD = 100;
 const DRAG_INDICATOR_ZONE_HEIGHT = 50;
 
+const Restaurants = Categories.diningHalls;
+const Takeout = Categories.takeout;
+const Gyms = Categories.gym;
+const Libraries = Categories.libraries;
+const ReslifeStudy = Categories.reslifeStudy;
+const ReslifeSpaces = Categories.reslifeSpaces;
+
 function getCategoryFromFacility(facilityName: string): string | undefined {
   for (const [category, facilityMap] of CategoriesMap.entries()) {
     for (const facility of facilityMap.values()) {
       if (facility === facilityName) {
         return category;
+      }
+    }
+  }
+  return undefined;
+}
+
+function getFacilityId(facilityName: string): number | undefined {
+  for (const [, facilityMap] of CategoriesMap.entries()) {
+    for (const [id, name] of facilityMap.entries()) {
+      if (name === facilityName) {
+        return parseInt(id, 10);
       }
     }
   }
@@ -228,7 +248,10 @@ export default function FacilityModal({ visible, onClose, facility }: FacilityMo
             scrollEnabled={!isDraggingHeader.current}
             keyboardShouldPersistTaps="handled"
           >
-            <Text style={styles.title}>{facility}</Text>
+            <View style={styles.titleContainer}>
+              <Text style={styles.title}>{facility}</Text>
+              <NotificationBell facilityId={getFacilityId(facility)} style={styles.bell} />
+            </View>
 
             {/* Hours Display */}
             {
@@ -347,12 +370,19 @@ const styles = StyleSheet.create({
       },
     }),
   },
+  titleContainer: {
+    flexDirection: "row",
+    width: "90%", //TODO 100% width causes notif bell to go off screen.
+  },
   title: {
     fontSize: 32,
     fontWeight: "bold",
     width: "100%",
-    paddingTop: 15,
+    paddingTop: 10,
     paddingBottom: 10,
+  },
+  bell: {
+    marginTop: 10, //TODO move the bell lower somehow.
   },
   description: {
     marginVertical: 15,

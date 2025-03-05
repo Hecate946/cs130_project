@@ -5,19 +5,19 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFocusEffect } from "@react-navigation/native";
 
 interface NotificationBellProps {
-  facilityName: string;
+  facilityId: number;
 }
 
-export default function NotificationBell({ facilityName }: NotificationBellProps) {
+export default function NotificationBell({ facilityId }: NotificationBellProps) {
   const [hasNotifications, setHasNotifications] = useState(false);
 
   const checkNotifications = async () => {
     try {
       console.log("-------------------------")
-      console.log("curr facility", facilityName)
+      console.log("curr facility", facilityId)
       const keys = await AsyncStorage.getAllKeys();
       console.log("all keys", keys)
-      const facilityKeys = keys.filter((key) => key.startsWith(`notification_${facilityName}`));
+      const facilityKeys = keys.filter((key) => key.startsWith(`notification_${facilityId}`));
       console.log("facility keys", keys)
       const values = await AsyncStorage.multiGet(facilityKeys);
       console.log("values", values)
@@ -33,7 +33,7 @@ export default function NotificationBell({ facilityName }: NotificationBellProps
   useFocusEffect(
     useCallback(() => {
       checkNotifications();
-    }, [facilityName])
+    }, [facilityId])
   );
 
   return (
