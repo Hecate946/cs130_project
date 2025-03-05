@@ -132,6 +132,7 @@ export default function HomeScreen({ onFinish }: HomeScreenProps) {
         />
         <Divider name="Pinned" />
         {
+          filteredPinned.length > 0 ? (
           filteredPinned.map((item) => (
             <HomeCard
               name={item.name}
@@ -141,7 +142,8 @@ export default function HomeScreen({ onFinish }: HomeScreenProps) {
               key={item.id}
               onPress={() => handleOpenModal(item.name)}
             />
-          ))
+          ))) :
+          <Text style={styles.pinText}>Pin your favorite spots!</Text>
         }
         <Divider name="The Rest" />
         {
@@ -195,9 +197,14 @@ const styles = StyleSheet.create({
     paddingBottom: 20,
   },
 
+  pinText: {
+    fontStyle: "italic",
+    alignSelf: "center",
+  },
+
   contentContainer: {
     flexGrow: 1,
-    paddingBottom: 155,
+    paddingBottom: 40,
     marginStart: 20,
     marginEnd: 20,
   },
