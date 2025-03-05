@@ -28,6 +28,8 @@ export default function NotificationItem({name, id} : NotificationItemProps) {
     setIsSwitchOn(!isSwitchOn);
 
     await AsyncStorage.setItem(`notification_${id}`, newValue);
+    console.log("notif name", name)
+    console.log("notif id", id)
     await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
   };
 
