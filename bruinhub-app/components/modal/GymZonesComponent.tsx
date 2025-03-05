@@ -5,8 +5,8 @@ import { Colors } from '@/constants/Colors';
 
 type Zone = {
   capacity: number;
+  occupants: number;
   last_updated: string;
-  percentage: number;
 };
 
 interface GymZonesComponentProps {
@@ -21,7 +21,7 @@ export default function GymZonesComponent({ zones }: GymZonesComponentProps) {
       {Object.entries(zones).map(([zoneName, zoneData]) => (
         <View key={zoneName} style={styles.zoneContainer}>
           <Text style={styles.zoneName}>{zoneName}</Text>
-          <CapacityComponent percentage={zoneData.percentage / 100} />
+          <CapacityComponent percentage={zoneData.occupants / zoneData.capacity} />
         </View>
       ))}
     </View>

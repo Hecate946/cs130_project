@@ -1,4 +1,5 @@
 import logging
+
 from database.gyms import GymDatabase
 from scrapers.gyms import GymScrapers
 
@@ -28,18 +29,16 @@ def scrape_and_store_gym_data():
         for slug, zones in facility_counts.items():
             if zones:  # Only store if we got data
                 for zone in zones:
-                    logger.info(
-                        f"Storing capacity for {slug} - {zone['zone_name']}")
+                    logger.info(f"Storing capacity for {slug} - {zone['zone_name']}")
                     gym_db.insert_gym_capacity(
                         slug,
                         zone["zone_name"],
-                        zone["last_count"],
-                        zone["percentage"],
+                        zone["occupants"],
+                        zone["capacity"],
                         zone[
                             "last_updated"
                         ],  # This will be the LastUpdatedDateAndTime from the API
                     )
 
     except Exception as e:
-        logger.error(
-            f"Error in periodic gym data scraping: {e}", exc_info=True)
+        logger.error(f"Error in periodic gym data scraping: {e}", exc_info=True)

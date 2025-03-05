@@ -1,8 +1,8 @@
-from datetime import datetime
-from typing import Dict, List
 import logging
+from typing import Dict, List
+
 import requests
-from config.gyms import FACILITY_COUNT_URL, BFIT_URL, JWC_URL, FACILITY_IDS
+from config.gyms import FACILITY_COUNT_URL, FACILITY_IDS
 from config.gyms_static import GYM_HOURS
 
 logger = logging.getLogger(__name__)
@@ -10,7 +10,7 @@ logger = logging.getLogger(__name__)
 
 class GymScrapers:
     @staticmethod
-    def get_facility_counts() -> Dict:
+    def get_facility_counts() -> List[Dict]:
         """Get raw facility count data from UCLA's API"""
         try:
             response = requests.get(FACILITY_COUNT_URL)
@@ -18,7 +18,7 @@ class GymScrapers:
             return response.json()
         except Exception as e:
             logger.error(f"Error fetching facility counts: {e}")
-            return {}
+            return [{}]
 
     @staticmethod
     def filter_facility_zones(data: List[Dict], facility_id: int) -> List[Dict]:
@@ -27,21 +27,15 @@ class GymScrapers:
             zones = []
             for zone in data:
                 if zone.get("FacilityId") == facility_id:
-                    # Calculate percentage ourselves
                     last_count = zone["LastCount"]
                     total_capacity = zone["TotalCapacity"]
-                    percentage = (
-                        round((last_count / total_capacity) * 100)
-                        if total_capacity > 0
-                        else 0
-                    )
 
                     zones.append(
                         {
                             "zone_name": zone["LocationName"],
                             "open": not zone["IsClosed"],
-                            "last_count": last_count,
-                            "percentage": percentage,
+                            "occupants": last_count,
+                            "capacity": total_capacity,
                             "last_updated": zone["LastUpdatedDateAndTime"],
                         }
                     )
@@ -64,8 +58,7 @@ class GymScrapers:
             # Get counts for each facility
             results = {}
             for slug, facility_id in FACILITY_IDS.items():
-                zones = GymScrapers.filter_facility_zones(
-                    facility_data, facility_id)
+                zones = GymScrapers.filter_facility_zones(facility_data, facility_id)
                 logger.info(f"Found {len(zones)} zones for {slug}")
                 results[slug] = zones
 

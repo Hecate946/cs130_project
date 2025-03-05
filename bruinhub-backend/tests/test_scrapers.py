@@ -53,8 +53,8 @@ def test_filter_facility_zones():
 
     zone = bfit_zones[0]
     assert zone["zone_name"] == "Weight Room"
-    assert zone["last_count"] == 30
-    assert zone["percentage"] == 60  # 30/50 * 100
+    assert zone["occupants"] == 30
+    assert zone["capacity"] == 50
     assert zone["open"] is True
     assert zone["last_updated"] == "2024-02-19T23:55:03.003"
 
@@ -75,15 +75,14 @@ def test_scrape_facility_counts():
         if zones:  # If we got any zones
             first_zone = zones[0]
             assert "zone_name" in first_zone
-            assert "last_count" in first_zone
-            assert "percentage" in first_zone
+            assert "occupants" in first_zone
+            assert "capacity" in first_zone
             assert "open" in first_zone
             assert "last_updated" in first_zone
 
             # Basic validation
-            assert isinstance(first_zone["percentage"], int)
-            assert 0 <= first_zone["percentage"] <= 100
-            assert isinstance(first_zone["last_count"], int)
+            assert isinstance(first_zone["capacity"], int)
+            assert isinstance(first_zone["occupants"], int)
             assert isinstance(first_zone["open"], bool)
 
 def test_scrape_dining_halls():
