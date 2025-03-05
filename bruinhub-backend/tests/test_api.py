@@ -1,7 +1,9 @@
 import pytest
+from config import FACILITY_IDS, OCCUSPACE_IDS
+from database.db import db  # Import the SQLAlchemy instance
 from flask import Flask
 from routes import api  # Import the Flask Blueprint
-from database.db import db  # Import the SQLAlchemy instance
+
 
 @pytest.fixture
 def client():
@@ -47,8 +49,7 @@ def test_get_invalid_gym(client):
 
 def test_get_specific_dining_hall(client):
     """Test fetching a specific dining hall"""
-    response = client.get(
-        "/v1/dining/epicuria")  # Assuming 'epicuria' is a valid slug
+    response = client.get("/v1/dining/epicuria")  # Assuming 'epicuria' is a valid slug
     assert response.status_code in [200, 404]
     data = response.get_json()
     if response.status_code == 200:
@@ -64,3 +65,28 @@ def test_get_invalid_dining_hall(client):
     assert response.status_code == 404
     data = response.get_json()
     assert data["error"] == "Dining hall not found"
+
+
+# ------------------ Hours and Occupany API Tests ------------------
+
+
+def test_get_occupancy(client):
+    """Test fetching occupancy data"""
+    response = client.get("/v1/hours-and-occupancy")
+    assert response.status_code == 200
+    data = response.get_json()
+
+    for facility in data["data"]:
+        # Gyms
+        if facility in FACILITY_IDS:
+            assert "hours" in data["data"][facility]
+            for zone in data["data"][facility]:
+                assert "occupants" in data["data"][facility][zone]
+                assert "capacity" in data["data"][facility][zone]
+        # Dining halls
+        elif facility in OCCUSPACE_IDS:
+            assert "hours" in data["data"][facility]
+            assert "occupants" in data["data"][facility]
+            assert "capacity" in data["data"][facility]
+        else:
+            assert False, f"Unknown facility: {facility}"

@@ -38,8 +38,8 @@ class GymDatabase:
         self,
         slug: str,
         zone_name: str,
+        occupants: int,
         capacity: int,
-        percentage: int,
         last_updated: str,
     ) -> bool:
         """Inserts or updates capacity for a specific gym zone."""
@@ -52,8 +52,8 @@ class GymDatabase:
         existing = GymCapacityHistory.query.filter_by(
             gym_id=gym.id,
             zone_name=zone_name,
+            occupants=occupants,
             capacity=capacity,
-            percentage=percentage,
             last_updated=last_updated
         ).first()
 
@@ -61,8 +61,8 @@ class GymDatabase:
             new_capacity = GymCapacityHistory(
                 gym_id=gym.id,
                 zone_name=zone_name,
+                occupants=occupants,
                 capacity=capacity,
-                percentage=percentage,
                 last_updated=last_updated
             )
             db.session.add(new_capacity)
@@ -112,8 +112,8 @@ class GymDatabase:
         capacities = self.get_latest_gym_capacity(slug)
         zones = {
             cap.zone_name: {
+                "occupants": cap.occupants,
                 "capacity": cap.capacity,
-                "percentage": cap.percentage,
                 "last_updated": cap.last_updated.isoformat(),
             }
             for cap in capacities
