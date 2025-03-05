@@ -94,3 +94,58 @@ class DiningDatabase:
             "capacity": capacity.capacity if capacity else 0,
             "last_updated": hall.last_updated.isoformat()
         }
+
+    def get_historical_capacity(self, slug: str) -> Dict[int, Dict[str, float]]:
+        """
+        Calculate historical capacity averages by hour for a dining hall.
+        
+        Returns:
+            Dict[int, Dict[str, float]]: A dictionary mapping hours (6-1) to their average capacity data:
+            {
+                6: {"occupants": 50.5, "capacity": 100.0},
+                7: {"occupants": 75.2, "capacity": 100.0},
+                ...
+            }
+            Hours with no data will return {"occupants": 0.0, "capacity": 0.0}
+        """
+        hall = self.get_dining_hall_by_slug(slug)
+        if not hall:
+            return {}
+
+        # Get all capacity records for this hall
+        capacities = DiningCapacityHistory.query.filter_by(
+            hall_id=hall.id
+        ).order_by(
+            DiningCapacityHistory.last_updated
+        ).all()
+
+        if not capacities:
+            # Return all hours with zero values if no data
+            return {
+                hour: {"occupants": 0.0, "capacity": 0.0}
+                for hour in range(6, 26)  # 6am to 1am
+            }
+
+        # Initialize hourly counters
+        hourly_data = {hour: {"occupants": 0.0, "capacity": 0.0, "count": 0} for hour in range(6, 26)}  # 6am to 1am
+
+        # Aggregate data by hour
+        for capacity in capacities:
+            hour = capacity.last_updated.hour
+            if hour in hourly_data:
+                hourly_data[hour]["occupants"] += capacity.occupants
+                hourly_data[hour]["capacity"] += capacity.capacity
+                hourly_data[hour]["count"] += 1
+
+        # Calculate averages, return 0 for hours with no data
+        result = {}
+        for hour, data in hourly_data.items():
+            if data["count"] > 0:
+                result[hour] = {
+                    "occupants": round(data["occupants"] / data["count"], 1),
+                    "capacity": round(data["capacity"] / data["count"], 1)
+                }
+            else:
+                result[hour] = {"occupants": 0.0, "capacity": 0.0}
+
+        return result

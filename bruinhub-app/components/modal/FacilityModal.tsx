@@ -25,7 +25,7 @@ interface FacilityData {
 }
 
 // TODO change lol
-const URL = "http://149.142.131.102:5001/api/v1/";
+const URL = "http://192.168.216.35:5001/api/v1/";
 
 const { height: SCREEN_HEIGHT } = Dimensions.get("window");
 const SWIPE_THRESHOLD = 100;
@@ -164,10 +164,18 @@ export default function FacilityModal({ visible, onClose, facility }: FacilityMo
       console.log(specificURL); // TODO remove
       
       response = await fetch(specificURL);
-      const data = await response.json();
+      console.log("Response status:", response.status);
+      const responseText = await response.text();
+      console.log("Response text:", responseText);
+      const data = JSON.parse(responseText);
       setFacilityData(data);
     } catch (error) {
       console.error("Error fetching facility data:", error);
+      console.error("Full error details:", {
+        message: error.message,
+        stack: error.stack,
+        response: error.response
+      });
     } finally {
       setLoading(false);
     }
