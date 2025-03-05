@@ -1,0 +1,72 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d8615e41_dd03b926",
+        "filename": "bruinhub-app/components/modal/FacilityModal.tsx",
+        "patchSetId": 1
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2025-03-05T18:22:18Z",
+      "side": 1,
+      "message": "is this used anywhere? if not, remove :D",
+      "revId": "d26f926834b0510b9ad55001256f869a32e62c3d",
+      "serverId": "3c7ad661-7ce8-4163-af0d-ebc0f4c5b529"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2274e2aa_b70a3e86",
+        "filename": "bruinhub-app/components/modal/FacilityModal.tsx",
+        "patchSetId": 1
+      },
+      "lineNbr": 161,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2025-03-05T18:22:18Z",
+      "side": 1,
+      "message": "remove :D",
+      "revId": "d26f926834b0510b9ad55001256f869a32e62c3d",
+      "serverId": "3c7ad661-7ce8-4163-af0d-ebc0f4c5b529"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f8fd64d7_f3040566",
+        "filename": "bruinhub-app/components/modal/FacilityModal.tsx",
+        "patchSetId": 1
+      },
+      "lineNbr": 344,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2025-03-05T18:22:18Z",
+      "side": 1,
+      "message": "hmm i think we should try to resolve this todo before merging in, might have to do w a parent container",
+      "revId": "d26f926834b0510b9ad55001256f869a32e62c3d",
+      "serverId": "3c7ad661-7ce8-4163-af0d-ebc0f4c5b529"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5b99a112_35d55ed4",
+        "filename": "bruinhub-app/components/modal/FacilityModal.tsx",
+        "patchSetId": 1
+      },
+      "lineNbr": 354,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2025-03-05T18:22:18Z",
+      "side": 1,
+      "message": "try to resolve this todo before merging in",
+      "revId": "d26f926834b0510b9ad55001256f869a32e62c3d",
+      "serverId": "3c7ad661-7ce8-4163-af0d-ebc0f4c5b529"
+    }
+  ]
+}
