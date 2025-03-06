@@ -3,6 +3,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import { TouchableOpacity } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFocusEffect } from "@react-navigation/native";
+import * as Haptics from "expo-haptics";
 
 interface NotificationBellProps {
   facilityId: number;
@@ -13,22 +14,16 @@ export default function NotificationBell({ facilityId }: NotificationBellProps) 
 
   const checkNotifications = async () => {
     try {
-      console.log("-------------------------")
-      console.log("curr facility", facilityId)
-      const keys = await AsyncStorage.getAllKeys();
-      console.log("all keys", keys)
-      const facilityKeys = keys.filter((key) => key.startsWith(`notification_${facilityId}`));
-      console.log("facility keys", keys)
-      const values = await AsyncStorage.multiGet(facilityKeys);
-      console.log("values", values)
-      const anyOn = values.some(([, value]) => value === "on");
-      console.log("any on", anyOn)
-
-      setHasNotifications(anyOn);
+      const storedValue = await AsyncStorage.getItem(`notification_${facilityId}`);
+      setHasNotifications(storedValue === "on");
     } catch (error) {
       console.error("Error checking notifications:", error);
     }
   };
+
+  useEffect(() => {
+    checkNotifications();
+  }, []);
 
   useFocusEffect(
     useCallback(() => {
@@ -36,8 +31,20 @@ export default function NotificationBell({ facilityId }: NotificationBellProps) 
     }, [facilityId])
   );
 
+  const toggleNotification = async () => {
+    try {
+      const newValue = !hasNotifications ? "on" : "off";
+      setHasNotifications(!hasNotifications);
+      await AsyncStorage.setItem(`notification_${facilityId}`, newValue);
+
+      await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    } catch (error) {
+      console.error("Error updating notification status:", error);
+    }
+  };
+
   return (
-    <TouchableOpacity onPress={checkNotifications}> //TODO fix when combine with modal.
+    <TouchableOpacity onPress={toggleNotification}>
       <MaterialCommunityIcons
         name={hasNotifications ? "bell-check-outline" : "bell-off-outline"}
         size={32}
@@ -45,4 +52,4 @@ export default function NotificationBell({ facilityId }: NotificationBellProps) 
       />
     </TouchableOpacity>
   );
-};
+}
