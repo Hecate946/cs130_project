@@ -2,7 +2,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Link, useRouter } from "expo-router";
 import { ScrollView, StyleSheet, Text, View, Image, TouchableOpacity } from "react-native";
 import { Button, Searchbar } from "react-native-paper";
-import Feather from '@expo/vector-icons/Feather';
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { useEffect, useState } from "react";
 import * as Haptics from "expo-haptics";
 import * as Notifications from 'expo-notifications';
@@ -313,10 +313,10 @@ export default function HomeScreen({ onFinish }: HomeScreenProps) {
             source={require("../assets/images/BruinHub.png")} //TODO replace with SVG
             style={{ width: 200, height: 50, borderRadius: 2 }}
           />
-          <TouchableOpacity testID="notif-button" onPress={goToNotifications}>
-            <Feather
-              name="bell"
-              size={24}
+          <TouchableOpacity testID="home-screen-notif-button" onPress={goToNotifications}>
+            <MaterialCommunityIcons
+              name={"bell-outline"}
+              size={32}
               color="black"
             />
           </TouchableOpacity>
