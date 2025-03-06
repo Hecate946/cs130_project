@@ -15,7 +15,7 @@ class RecUser(db.Model):
     __tablename__ = "recreation_users"
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    party_id = db.Column(db.String(36), unique=True, nullable=False)  # UUID for the user
+    device_id = db.Column(db.String(36), unique=True, nullable=False)  # UUID for the user
     aspnet_cookie = db.Column(db.String(2048), nullable=False)         # Authentication cookie
     last_login = db.Column(db.DateTime, default=datetime.now(timezone.utc), nullable=False)
 

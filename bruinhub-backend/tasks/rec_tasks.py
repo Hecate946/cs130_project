@@ -30,27 +30,28 @@ def check_and_refresh_sessions():
             response = requests.get(AUTH_CHECK_URL, cookies=cookies)
 
             if response.status_code == 200 and response.json().get("IsAuthenticated", False):
-                logger.info(f"✅ User {user.party_id} is authenticated.")
+                logger.info(f"✅ User with device_id {user.device_id} is authenticated.")
                 
                 # Check if a new cookie was issued
                 new_cookie = response.cookies.get(".AspNet.ApplicationCookie")
                 if new_cookie:
-                    rec_db.update_session_cookie(user.party_id, new_cookie)
+                    rec_db.update_session_cookie(user.device_id, new_cookie)
 
                 # Verify session validity
                 verify_response = requests.get(VERIFY_URL, cookies=cookies)
                 if verify_response.status_code == 200:
-                    logger.info(f"🔹 Session for {user.party_id} is valid.")
+                    logger.info(f"🔹 Session for device_id {user.device_id} is valid.")
                 else:
-                    logger.warning(f"⚠️ Session verification failed for {user.party_id}.")
+                    logger.warning(f"⚠️ Session verification failed for device_id {user.device_id}.")
                     rec_db.mark_session_invalid(user.id)
 
             else:
-                logger.warning(f"❌ User {user.party_id} is NOT authenticated. Marking session as invalid.")
+                logger.warning(f"❌ User with device_id {user.device_id} is NOT authenticated. Marking session as invalid.")
                 rec_db.mark_session_invalid(user.id)
 
         except requests.RequestException as e:
-            logger.error(f"⚠️ Error checking session for {user.party_id}: {e}")
+            logger.error(f"⚠️ Error checking session for device_id {user.device_id}: {e}")
+
 
 def attempt_reservations():
     """Processes scheduled reservation tasks at their exact scheduled time."""
@@ -63,7 +64,7 @@ def attempt_reservations():
         if task.schedule_at > now:
             continue  # Skip tasks that are scheduled for the future
 
-        user = rec_db.get_user_by_party_id(task.user_id)
+        user = rec_db.get_user_by_device_id(task.device_id)
         if not user:
             logger.error(f"⚠️ No user found for reservation task {task.id}. Skipping.")
             continue
@@ -73,7 +74,7 @@ def attempt_reservations():
 
         # Ensure user session is valid
         if not RecScrapers.is_user_authenticated(aspnet_cookie):
-            logger.error(f"❌ User {user.party_id} is not authenticated. Skipping task {task.id}.")
+            logger.error(f"❌ User with device_id {user.device_id} is not authenticated. Skipping task {task.id}.")
             rec_db.mark_session_invalid(user.id)
             continue
 
