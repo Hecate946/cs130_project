@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e1e15aa5_1e05a660",
+        "filename": "bruinhub-app/__tests__/components/modal/CapacityComponent-test.tsx",
+        "patchSetId": 1
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1000003
+      },
+      "writtenOn": "2025-03-06T00:40:38Z",
+      "side": 1,
+      "message": "NIT: whitespaces.",
+      "revId": "f94b5433b911a5625f1782797ee097e9feec5f96",
+      "serverId": "3c7ad661-7ce8-4163-af0d-ebc0f4c5b529"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2456074b_8f92ac7f",
+        "filename": "bruinhub-app/__tests__/components/modal/CapacityComponent-test.tsx",
+        "patchSetId": 1
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 1000003
+      },
+      "writtenOn": "2025-03-06T00:40:38Z",
+      "side": 1,
+      "message": "NIT: remove more obvious comments.",
+      "range": {
+        "startLine": 10,
+        "startChar": 0,
+        "endLine": 10,
+        "endChar": 29
+      },
+      "revId": "f94b5433b911a5625f1782797ee097e9feec5f96",
+      "serverId": "3c7ad661-7ce8-4163-af0d-ebc0f4c5b529"
+    }
+  ]
+}
