@@ -8,7 +8,7 @@ import { SlugMap } from "@/constants/SlugMap";
 import { Colors } from "@/constants/Colors";
 import MenuComponent from "./MenuComponent";
 import CapacityComponent from "./CapacityComponent";
-import DateFormatter from "./DateComponent";
+import DateFormatter from "./DateFormatter";
 import OperatingHoursComponent from "./OperatingHoursComponent";
 import GymOperatingHoursComponent from "./GymOperatingHoursComponent";
 import GymZonesComponent from "./GymZonesComponent";
@@ -27,18 +27,11 @@ interface FacilityData {
 }
 
 // TODO change lol
-const URL = "http://192.168.216.35:5001/api/v1/";
+const URL = "http://131.179.39.156:5001/api/v1/";
 
 const { height: SCREEN_HEIGHT } = Dimensions.get("window");
 const SWIPE_THRESHOLD = 100;
 const DRAG_INDICATOR_ZONE_HEIGHT = 50;
-
-const Restaurants = Categories.diningHalls;
-const Takeout = Categories.takeout;
-const Gyms = Categories.gym;
-const Libraries = Categories.libraries;
-const ReslifeStudy = Categories.reslifeStudy;
-const ReslifeSpaces = Categories.reslifeSpaces;
 
 function getCategoryFromFacility(facilityName: string): string | undefined {
   for (const [category, facilityMap] of CategoriesMap.entries()) {
@@ -243,7 +236,7 @@ export default function FacilityModal({ visible, onClose, facility }: FacilityMo
         </View>
 
         {loading ? (
-          <View style={styles.loadingBanner}>
+          <View style={styles.loadingBanner} testID="loading-indicator">
             <ActivityIndicator size="small" color="#2774AE" />
           </View>
         ) : facilityData ? (
@@ -255,6 +248,7 @@ export default function FacilityModal({ visible, onClose, facility }: FacilityMo
             bounces
             scrollEnabled={!isDraggingHeader.current}
             keyboardShouldPersistTaps="handled"
+            testID="drag-indicator"
           >
             <View style={styles.titleContainer}>
               <Text style={styles.title}>{facility}</Text>
