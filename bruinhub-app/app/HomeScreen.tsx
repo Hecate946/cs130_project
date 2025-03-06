@@ -158,6 +158,11 @@ export default function HomeScreen({ onFinish }: HomeScreenProps) {
             />
           ))
         }
+        <Link href="/RecreationScreen" asChild>
+          <Button mode="contained">
+            Reserve Tennis and Pickleball Courts
+          </Button>
+        </Link>
         <Link href="/" asChild>
           <Button mode="contained" onPress={handleFinish}>
             Back to onboarding for dev purposes

@@ -1,0 +1,14 @@
+Step 1:
+npm install
+
+Step 2:
+npx expo prebuild
+
+Step 3: (this takes awhile the first time ~ 10mins ish)
+ios: (I cant do this cause on linux, lmk if you get errors)
+npx expo run:ios
+android:
+npx expo run:android for me 
+
+IMPORTANT: 
+don't use expo go. Won't work cause won't have native module for cookies.
