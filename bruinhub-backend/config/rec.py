@@ -4,4 +4,6 @@ REC_FACILITIES = [
     {"id": "73dc0950-4702-467d-ac49-792e7b2beab6", "name": "Sycamore Tennis"},
 ]
 
-REFRESH_INTERVAL = 900  # 15 minutes
+REFRESH_INTERVAL = 30  # 15 minutes
+AUTH_CHECK_URL = "https://secure.recreation.ucla.edu/account/IsAuthenticated"
+VERIFY_URL = "https://secure.recreation.ucla.edu/api/issuspended/booking"
