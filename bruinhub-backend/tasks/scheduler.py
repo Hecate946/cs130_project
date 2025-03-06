@@ -34,7 +34,8 @@ def init_scheduler(app, scrape_interval: int, refresh_interval: int) -> Backgrou
     scheduler.add_job(library_job, 'interval', seconds=scrape_interval)
 
     scheduler.add_job(session_refresh_job, 'interval', seconds=refresh_interval, id="session_refresh")
-    # TODO: scheduler.add_job(reservation_attempt_job, 'interval', seconds=reservation_interval, id="reservation_attempt")
+    
+    scheduler.add_job(reservation_attempt_job, 'interval', seconds=5, id="reservation_attempt")
 
     scheduler.start()
     return scheduler
