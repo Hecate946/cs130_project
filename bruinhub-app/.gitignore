@@ -39,3 +39,6 @@ app-example
 
 # code coverage reports
 coverage/
+
+# snapshots
+*.snap
