@@ -5,8 +5,6 @@ from config import FACILITY_IDS, OCCUSPACE_IDS
 from database.dining import DiningDatabase
 from database.gyms import GymDatabase
 from flask import Blueprint, jsonify
-from models.dining import DiningHall
-from models.gyms import Gym
 
 logger = logging.getLogger(__name__)
 
@@ -26,14 +24,14 @@ def get_hours():
     data = {}
 
     logger.info("Fetching hours and occupancy for dining halls")
-    halls = DiningHall.query.all()
     for slug in OCCUSPACE_IDS:
-        hall = dining_db.get_latest_dining_capacity(slug)
-        if hall:
+        hall_occupancy = dining_db.get_latest_dining_capacity(slug)
+        hall_hours = dining_db.get_dining_hall_latest(slug)["hours_today"]
+        if hall_occupancy:
             data[slug] = {
-                "hours": halls[slug]["hours_today"],
-                "occupants": hall.occupants,
-                "capacity": hall.capacity,
+                "hours": hall_hours,
+                "occupants": hall_occupancy.occupants,
+                "capacity": hall_occupancy.capacity,
             }
         else:
             return jsonify(
@@ -44,18 +42,18 @@ def get_hours():
             ), 404
 
     logger.info("Fetching hours and occupancy for gyms")
-    gyms = Gym.query.all()
     for slug in FACILITY_IDS:
-        gym = gym_db.get_latest_gym_capacity(slug)
-        if gym:
-            data[slug] = {"hours": gyms[slug]["regular_hours"]}
+        gym_occupancy = gym_db.get_latest_gym_capacity(slug)
+        gym_hours = gym_db.get_gym_latest(slug)["regular_hours"]
+        if gym_occupancy:
+            data[slug] = {"hours": gym_hours}
             data[slug].update(
                 {
                     zone.zone_name: {
                         "occupants": zone.occupants,
                         "capacity": zone.capacity,
                     }
-                    for zone in gym
+                    for zone in gym_occupancy
                 }
             )
         else:
