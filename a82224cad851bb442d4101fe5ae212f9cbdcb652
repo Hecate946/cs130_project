@@ -35,6 +35,24 @@
       "serverId": "3c7ad661-7ce8-4163-af0d-ebc0f4c5b529"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "48c32385_b3751a12",
+        "filename": "bruinhub-app/components/modal/FacilityModal.tsx",
+        "patchSetId": 1
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2025-03-07T19:51:30Z",
+      "side": 1,
+      "message": "i think it\u0027s diff per person anyway (needs to be changed either way)",
+      "parentUuid": "d85fb600_b08fc2a4",
+      "revId": "a82224cad851bb442d4101fe5ae212f9cbdcb652",
+      "serverId": "3c7ad661-7ce8-4163-af0d-ebc0f4c5b529"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "962f0ba3_8954722f",
@@ -58,6 +76,30 @@
       "serverId": "3c7ad661-7ce8-4163-af0d-ebc0f4c5b529"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "df4b81f8_41cc81fd",
+        "filename": "bruinhub-app/components/modal/HistoricalDataComponent.tsx",
+        "patchSetId": 1
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2025-03-07T19:51:30Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "962f0ba3_8954722f",
+      "range": {
+        "startLine": 15,
+        "startChar": 0,
+        "endLine": 15,
+        "endChar": 18
+      },
+      "revId": "a82224cad851bb442d4101fe5ae212f9cbdcb652",
+      "serverId": "3c7ad661-7ce8-4163-af0d-ebc0f4c5b529"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "1d3dc788_64246776",
@@ -71,6 +113,30 @@
       "writtenOn": "2025-03-07T19:17:18Z",
       "side": 1,
       "message": "same here, just clean the comments in this file.",
+      "range": {
+        "startLine": 76,
+        "startChar": 0,
+        "endLine": 76,
+        "endChar": 18
+      },
+      "revId": "a82224cad851bb442d4101fe5ae212f9cbdcb652",
+      "serverId": "3c7ad661-7ce8-4163-af0d-ebc0f4c5b529"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "8d5c218e_2642700e",
+        "filename": "bruinhub-app/components/modal/HistoricalDataComponent.tsx",
+        "patchSetId": 1
+      },
+      "lineNbr": 76,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2025-03-07T19:51:30Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1d3dc788_64246776",
       "range": {
         "startLine": 76,
         "startChar": 0,
