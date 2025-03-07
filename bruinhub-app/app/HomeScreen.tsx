@@ -36,8 +36,6 @@ export default function HomeScreen({ onFinish }: HomeScreenProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedFacility, setSelectedFacility] = useState("");
   const [modalVisible, setModalVisible] = useState(false);
-  const [expoPushToken, setExpoPushToken] = useState<string>('');
-  const [notificationStatus, setNotificationStatus] = useState<string>('');
 
   const loadPinnedItems = async () => {
     try {
@@ -76,190 +74,8 @@ export default function HomeScreen({ onFinish }: HomeScreenProps) {
     }
   };
 
-  // Register for push notifications
-  const registerForPushNotificationsAsync = async () => {
-    try {
-      let token;
-      
-      if (Platform.OS === 'android') {
-        await Notifications.setNotificationChannelAsync('default', {
-          name: 'default',
-          importance: Notifications.AndroidImportance.MAX,
-          vibrationPattern: [0, 250, 250, 250],
-          lightColor: '#FF231F7C',
-        });
-      }
-      
-      const { status: existingStatus } = await Notifications.getPermissionsAsync();
-      let finalStatus = existingStatus;
-      
-      if (existingStatus !== 'granted') {
-        const { status } = await Notifications.requestPermissionsAsync();
-        finalStatus = status;
-      }
-      
-      if (finalStatus !== 'granted') {
-        setNotificationStatus('Permission not granted for notifications');
-        return;
-      }
-      
-      token = await Notifications.getExpoPushTokenAsync({
-        projectId: Constants.expoConfig?.extra?.eas?.projectId,
-      });
-      
-      setExpoPushToken(token.data);
-      setNotificationStatus('Permission granted! Token: ' + token.data);
-      
-      // Store token in AsyncStorage for future use
-      await AsyncStorage.setItem('expoPushToken', token.data);
-      
-      // Register this token with our notification service
-      try {
-        const response = await fetch('http://192.168.216.35:5002/api/notifications/register', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            pushToken: token.data,
-            deviceType: Platform.OS,
-            preferences: {
-              capacity: { enabled: true, threshold: 50 },
-              closing: { enabled: true, minutes_before: 30 }
-            }
-          }),
-        });
-        
-        const data = await response.json();
-        
-        if (response.ok) {
-          setNotificationStatus('Token registered with notification service!');
-          console.log('Registration successful:', data);
-        } else {
-          setNotificationStatus('Failed to register with notification service: ' + data.error);
-          console.error('Registration failed:', data);
-        }
-      } catch (err) {
-        console.error('Error registering with notification service:', err);
-        setNotificationStatus('Error registering with notification service');
-      }
-      
-    } catch (error) {
-      console.log('Error getting push token', error);
-      setNotificationStatus('Error: ' + error);
-    }
-  };
-
-  // Send a test notification from the backend
-  const sendTestNotification = async () => {
-    try {
-      if (!expoPushToken) {
-        setNotificationStatus('No push token available. Request permission first.');
-        return;
-      }
-      
-      // Send test notification using our notification service
-      const response = await fetch('http://192.168.216.35:5002/api/notifications/send-test', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          pushToken: expoPushToken,
-          title: 'BruinHub Test',
-          message: 'This is a test notification from BruinHub Notification Service!',
-          data: {
-            screen: 'NotificationsScreen',
-            id: Date.now().toString()
-          }
-        }),
-      });
-      
-      const data = await response.json();
-      
-      if (response.ok) {
-        setNotificationStatus('Notification sent successfully!');
-        console.log('Notification sent:', data);
-      } else {
-        setNotificationStatus('Failed to send notification: ' + data.error);
-        console.error('Notification failed:', data);
-      }
-    } catch (error) {
-      console.log('Error sending notification', error);
-      setNotificationStatus('Error sending notification: ' + error);
-    }
-  };
-
-  // Simulate capacity notification event
-  const simulateCapacityEvent = async () => {
-    try {
-      const response = await fetch('http://192.168.216.35:5002/api/notifications/simulate-event', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          eventType: 'capacity',
-          facilityName: 'BFit Gym',
-          currentCapacity: 40
-        }),
-      });
-      
-      const data = await response.json();
-      
-      if (response.ok) {
-        setNotificationStatus(`Simulated capacity event. Sent ${data.notifications_sent} notifications.`);
-        console.log('Simulation result:', data);
-      } else {
-        setNotificationStatus('Failed to simulate event: ' + data.error);
-        console.error('Simulation failed:', data);
-      }
-    } catch (error) {
-      console.log('Error simulating event', error);
-      setNotificationStatus('Error simulating event: ' + error);
-    }
-  };
-  
-  // Simulate closing notification event
-  const simulateClosingEvent = async () => {
-    try {
-      const response = await fetch('http://192.168.216.35:5002/api/notifications/simulate-event', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          eventType: 'closing',
-          facilityName: 'Wooden Center',
-          minutesUntilClose: 15
-        }),
-      });
-      
-      const data = await response.json();
-      
-      if (response.ok) {
-        setNotificationStatus(`Simulated closing event. Sent ${data.notifications_sent} notifications.`);
-        console.log('Simulation result:', data);
-      } else {
-        setNotificationStatus('Failed to simulate event: ' + data.error);
-        console.error('Simulation failed:', data);
-      }
-    } catch (error) {
-      console.log('Error simulating event', error);
-      setNotificationStatus('Error simulating event: ' + error);
-    }
-  };
-
-  // Load token from AsyncStorage on component mount
+  // Load data on component mount
   useEffect(() => {
-    const loadToken = async () => {
-      const token = await AsyncStorage.getItem('expoPushToken');
-      if (token) {
-        setExpoPushToken(token);
-      }
-    };
-    
-    loadToken();
     loadPinnedItems();
     loadAllItems();
   }, []);
@@ -364,47 +180,6 @@ export default function HomeScreen({ onFinish }: HomeScreenProps) {
           </Button>
         </Link>
         
-        <View style={styles.devButtonsContainer}>
-          <Text style={styles.devTitle}>Push Notification Dev Tools</Text>
-          
-          <Button 
-            mode="contained" 
-            onPress={registerForPushNotificationsAsync}
-            style={styles.devButton}
-          >
-            Request Push Notification Permission
-          </Button>
-          
-          <Button 
-            mode="contained" 
-            onPress={sendTestNotification}
-            style={styles.devButton}
-            disabled={!expoPushToken}
-          >
-            Send Test Notification
-          </Button>
-          
-          <Button 
-            mode="contained" 
-            onPress={simulateCapacityEvent}
-            style={styles.devButton}
-            disabled={!expoPushToken}
-          >
-            Simulate Capacity Notification
-          </Button>
-          
-          <Button 
-            mode="contained" 
-            onPress={simulateClosingEvent}
-            style={styles.devButton}
-            disabled={!expoPushToken}
-          >
-            Simulate Closing Notification
-          </Button>
-          
-          <Text style={styles.statusText}>{notificationStatus}</Text>
-        </View>
-        
         <FacilityModal
           visible={modalVisible}
           onClose={() => setModalVisible(false)}
@@ -422,7 +197,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: Colors.light.background,
     width: "100%",
-    paddingTop: 70, // TODO CHANGE LATER
+    paddingTop: 70,
   },
 
   scrollContainer: {
@@ -459,29 +234,5 @@ const styles = StyleSheet.create({
     fontSize: 16,
     paddingVertical: 0,
     minHeight: 10,
-  },
-
-  devButtonsContainer: {
-    marginTop: 20,
-    paddingTop: 20,
-    borderTopWidth: 1,
-    borderTopColor: Colors.light.icon,
-  },
-  
-  devTitle: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginBottom: 10,
-  },
-  
-  devButton: {
-    marginVertical: 5,
-  },
-  
-  statusText: {
-    marginTop: 10,
-    fontSize: 12,
-    color: 'gray',
-    textAlign: 'center',
   },
 });

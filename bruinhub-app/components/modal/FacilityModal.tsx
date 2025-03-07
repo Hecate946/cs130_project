@@ -28,7 +28,7 @@ interface FacilityData {
 }
 
 // TODO change lol
-const URL = "http://192.168.1.38:5001/api/v1/";
+const URL = "http://192.168.216.35:5001/api/v1/";
 
 const { height: SCREEN_HEIGHT } = Dimensions.get("window");
 const SWIPE_THRESHOLD = 100;
@@ -262,7 +262,10 @@ export default function FacilityModal({ visible, onClose, facility }: FacilityMo
           >
             <View style={styles.titleContainer}>
               <Text style={styles.title}>{facility}</Text>
-              <NotificationBell facilityId={getFacilityId(facility)} />
+              <NotificationBell 
+                facilityId={getFacilityId(facility)} 
+                facilityName={facility}
+              />
             </View>
 
             {/* Hours Display */}

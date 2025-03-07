@@ -6,7 +6,10 @@ from flask_cors import CORS
 from database.db import db
 from models.notifications import DeviceToken
 from services.notification_service import NotificationService
+from services.notification_scheduler import NotificationScheduler
 from config.base import DATABASE_URL
+from apscheduler.schedulers.background import BackgroundScheduler
+from datetime import datetime
 
 # Configure logging
 logging.basicConfig(
@@ -24,70 +27,32 @@ app.config["SQLALCHEMY_DATABASE_URI"] = DB_URL
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 db.init_app(app)
 
+# Initialize scheduler
+scheduler = BackgroundScheduler()
+
 @app.route('/health', methods=['GET'])
 def health_check():
     """Simple health check endpoint"""
     return jsonify({"status": "ok", "service": "notifications"})
 
-@app.route('/api/notifications/register', methods=['POST'])
-def register_device():
-    """Register a new device for push notifications"""
+@app.route('/api/notifications/check-now', methods=['POST'])
+def trigger_notification_check():
+    """
+    Manually trigger a notification check for testing purposes.
+    This endpoint will immediately run the capacity check for all facilities.
+    """
     try:
-        data = request.get_json()
-        
-        if not data or "pushToken" not in data:
-            return jsonify({"error": "Missing required data: pushToken"}), 400
-        
-        push_token = data["pushToken"]
-        device_type = data.get("deviceType", "unknown")
-        user_id = data.get("userId")
-        preferences = data.get("preferences")
-        
-        device = NotificationService.register_device(
-            push_token=push_token,
-            device_type=device_type,
-            user_id=user_id,
-            preferences=preferences
-        )
-        
+        NotificationScheduler.check_and_notify()
         return jsonify({
-            "message": "Device registered successfully",
-            "deviceId": device.id,
-            "preferences": device.preferences
+            "message": "Notification check triggered successfully",
+            "timestamp": datetime.now().isoformat()
         })
-        
     except Exception as e:
-        logger.error(f"Error registering device: {str(e)}")
-        return jsonify({"error": str(e)}), 500
-
-@app.route('/api/notifications/update-preferences', methods=['POST'])
-def update_preferences():
-    """Update notification preferences for a device"""
-    try:
-        data = request.get_json()
-        
-        if not data or "pushToken" not in data or "preferences" not in data:
-            return jsonify({"error": "Missing required data: pushToken or preferences"}), 400
-        
-        push_token = data["pushToken"]
-        preferences = data["preferences"]
-        
-        device = NotificationService.update_preferences(
-            push_token=push_token,
-            preferences=preferences
-        )
-        
-        if not device:
-            return jsonify({"error": "Device not found"}), 404
-            
+        logger.error(f"Error triggering notification check: {str(e)}")
         return jsonify({
-            "message": "Preferences updated successfully",
-            "preferences": device.preferences
-        })
-        
-    except Exception as e:
-        logger.error(f"Error updating preferences: {str(e)}")
-        return jsonify({"error": str(e)}), 500
+            "error": str(e),
+            "timestamp": datetime.now().isoformat()
+        }), 500
 
 @app.route('/api/notifications/send-test', methods=['POST'])
 def send_test():
@@ -119,65 +84,29 @@ def send_test():
         logger.error(f"Error sending test notification: {str(e)}")
         return jsonify({"error": str(e)}), 500
 
-@app.route('/api/notifications/simulate-event', methods=['POST'])
-def simulate_event():
-    """
-    Simulate a notification event (capacity change or closing time)
-    This endpoint is used for testing the notification triggers
-    """
-    try:
-        data = request.get_json()
-        
-        if not data or "eventType" not in data or "facilityName" not in data:
-            return jsonify({"error": "Missing required data: eventType or facilityName"}), 400
-        
-        event_type = data["eventType"]
-        facility_name = data["facilityName"]
-        
-        if event_type == "capacity":
-            if "currentCapacity" not in data:
-                return jsonify({"error": "Missing required data: currentCapacity"}), 400
-                
-            current_capacity = data["currentCapacity"]
-            responses = NotificationService.check_capacity_trigger(
-                facility_name=facility_name,
-                current_capacity=current_capacity
-            )
-            
-            return jsonify({
-                "message": f"Capacity event simulated for {facility_name}",
-                "notifications_sent": len(responses),
-                "responses": responses
-            })
-            
-        elif event_type == "closing":
-            if "minutesUntilClose" not in data:
-                return jsonify({"error": "Missing required data: minutesUntilClose"}), 400
-                
-            minutes_until_close = data["minutesUntilClose"]
-            responses = NotificationService.check_closing_trigger(
-                facility_name=facility_name,
-                minutes_until_close=minutes_until_close
-            )
-            
-            return jsonify({
-                "message": f"Closing event simulated for {facility_name}",
-                "notifications_sent": len(responses),
-                "responses": responses
-            })
-            
-        else:
-            return jsonify({"error": f"Invalid event type: {event_type}"}), 400
-            
-    except Exception as e:
-        logger.error(f"Error simulating event: {str(e)}")
-        return jsonify({"error": str(e)}), 500
+def init_scheduler():
+    """Initialize the notification scheduler"""
+    logger.info("Initializing notification scheduler")
+    
+    # Add job to check capacities every 5 minutes
+    scheduler.add_job(
+        func=lambda: app.app_context().push() and NotificationScheduler.check_and_notify(),
+        trigger='interval',
+        minutes=5,
+        id='check_capacities'
+    )
+    
+    scheduler.start()
+    logger.info("Notification scheduler started")
 
 if __name__ == "__main__":
     # Create the tables
     with app.app_context():
         db.create_all()
         logger.info("Database tables created")
+    
+    # Initialize and start the scheduler
+    init_scheduler()
     
     # Run the app
     app.run(debug=True, host="0.0.0.0", port=5002)  # Different port from main API 

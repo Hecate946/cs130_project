@@ -17,7 +17,7 @@ class NotificationService:
     
     @staticmethod
     def register_device(push_token: str, device_type: str, user_id: Optional[int] = None, 
-                       preferences: Optional[Dict[str, Any]] = None) -> DeviceToken:
+                       preferences: Optional[Dict[str, Any]] = None, is_active: bool = True) -> DeviceToken:
         """
         Register or update a device token in the database.
         
@@ -26,6 +26,7 @@ class NotificationService:
             device_type: The device type (ios, android)
             user_id: Optional user ID if available
             preferences: Optional notification preferences
+            is_active: Whether notifications are globally enabled for this device
             
         Returns:
             The created or updated DeviceToken instance
@@ -41,7 +42,7 @@ class NotificationService:
                 if preferences:
                     existing_token.preferences = preferences
                 existing_token.device_type = device_type
-                existing_token.is_active = True
+                existing_token.is_active = is_active
                 db.session.commit()
                 logger.info(f"Updated existing device token: {push_token[:10]}...")
                 return existing_token
@@ -51,7 +52,8 @@ class NotificationService:
                     push_token=push_token,
                     device_type=device_type,
                     user_id=user_id,
-                    preferences=preferences
+                    preferences=preferences,
+                    is_active=is_active
                 )
                 db.session.add(new_token)
                 db.session.commit()
