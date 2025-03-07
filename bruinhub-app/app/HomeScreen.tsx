@@ -1,6 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Link, useRouter } from "expo-router";
-import { ScrollView, StyleSheet, Text, View, Image, TouchableOpacity } from "react-native";
+import { ScrollView, StyleSheet, Text, View, Image, TouchableOpacity, Keyboard } from "react-native";
 import { Button, Searchbar } from "react-native-paper";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { useEffect, useState } from "react";
@@ -267,6 +267,8 @@ export default function HomeScreen({ onFinish }: HomeScreenProps) {
   const handleOpenModal = (facilityName: string) => {
     setSelectedFacility(facilityName);
     setModalVisible(true);
+    Keyboard.dismiss();
+    setSearchQuery("");
   };
 
   // TODO: REMOVE this function and onFinish prop
@@ -310,7 +312,7 @@ export default function HomeScreen({ onFinish }: HomeScreenProps) {
       >
         <View style={styles.bannerContainer}>
           <Image
-            source={require("../assets/images/BruinHub.png")} //TODO replace with SVG
+            source={require("../assets/images/BruinHub.png")}
             style={{ width: 200, height: 50, borderRadius: 2 }}
           />
           <TouchableOpacity testID="home-screen-notif-button" onPress={goToNotifications}>
@@ -325,7 +327,8 @@ export default function HomeScreen({ onFinish }: HomeScreenProps) {
           placeholder="Search"
           onChangeText={setSearchQuery}
           value={searchQuery}
-          style={styles.search}
+          style={styles.searchBar}
+          inputStyle={styles.searchBarInput}
         />
         <Divider name="Pinned" />
         {
@@ -333,7 +336,7 @@ export default function HomeScreen({ onFinish }: HomeScreenProps) {
           filteredPinned.map((item) => (
             <HomeCard
               name={item.name}
-              description={item.id}
+              description={null}
               isPinned={true}
               pinCallback={() => togglePin(item.id)}
               key={item.id}
@@ -347,7 +350,7 @@ export default function HomeScreen({ onFinish }: HomeScreenProps) {
           filteredUnpinned.map((item) => (
             <HomeCard
               name={item.name}
-              description={item.id}
+              description={null}
               isPinned={false}
               pinCallback={() => togglePin(item.id)}
               key={item.id}
@@ -431,8 +434,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    marginStart: 10,
-    marginEnd: 10,
     paddingBottom: 20,
   },
 
@@ -448,8 +449,16 @@ const styles = StyleSheet.create({
     marginEnd: 20,
   },
 
-  search: {
+  searchBar: {
     backgroundColor: Colors.light.icon,
+    borderRadius: 40,
+    elevation: 1,
+  },
+
+  searchBarInput: {
+    fontSize: 16,
+    paddingVertical: 0,
+    minHeight: 10,
   },
 
   devButtonsContainer: {

@@ -10,13 +10,18 @@ export default function CapacityComponent({ percentage }: CapacityComponentProps
   const roundedPercentage = Math.round(percentage * 100);
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>Current Occupancy: {roundedPercentage}%</Text>
-      <ProgressBar
-        animatedValue={percentage}
-        visible={true}
-        color={Colors.light.shade}
-        style={styles.progressBar}
-      />
+      {/*<Text style={styles.title}>Current Occupancy</Text>*/}
+      <View style={styles.progressContainer}>
+        <View style={styles.progressBarWrapper}>
+          <ProgressBar
+            animatedValue={percentage}
+            visible={true}
+            color={Colors.light.shade}
+            style={styles.progressBar}
+          />
+        </View>
+        <Text style={styles.percentageText}>{roundedPercentage}%</Text>
+      </View>
     </View>
   );
 }
@@ -29,9 +34,9 @@ const styles = StyleSheet.create({
     paddingBottom: 15,
   },
 
-  text: {
-    fontSize: 16,
-    fontWeight: "400",
+  title: {
+    fontSize: 18,
+    fontWeight: 500,
     paddingBottom: 5,
     textAlign: "left",
   },
@@ -39,8 +44,24 @@ const styles = StyleSheet.create({
   progressBar: {
     height: 20,
     borderRadius: 10,
-    width: "100%",
     backgroundColor: Colors.light.icon,
-    // padding: 12, //TODO Padding makes the color go away.
+    width: "100%",
   },
+
+  progressBarWrapper: {
+    marginRight: 10,
+    flex: 1,
+  },
+
+  progressContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+
+  percentageText: {
+    fontSize: 18,
+    fontWeight: 400,
+    textAlign: "right",
+  }
 });

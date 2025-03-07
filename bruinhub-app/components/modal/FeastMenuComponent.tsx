@@ -39,9 +39,7 @@ export default function FeastMenuComponent({ menuData }: FeastMenuComponentProps
 const styles = StyleSheet.create({
   text: {
     fontSize: 24,
-    textTransform: "uppercase",
     fontWeight: 600,
-    paddingBottom: 5,
     paddingTop: 10,
   },
 });

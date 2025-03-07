@@ -43,10 +43,10 @@ export const Categories = {
         key: "9",
         name: "Epic at Ackerman",
       },
-      {
-        key: "10",
-        name: "Food Trucks",
-      },
+      // {
+      //   key: "10",
+      //   name: "Food Trucks",
+      // },
     ],
 
     gym: [
