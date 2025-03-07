@@ -1,0 +1,84 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "cbe793d6_e1c4a3f5",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000003
+      },
+      "writtenOn": "2025-03-07T19:17:18Z",
+      "side": 1,
+      "message": "Some minor nits.",
+      "revId": "a82224cad851bb442d4101fe5ae212f9cbdcb652",
+      "serverId": "3c7ad661-7ce8-4163-af0d-ebc0f4c5b529"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d85fb600_b08fc2a4",
+        "filename": "bruinhub-app/components/modal/FacilityModal.tsx",
+        "patchSetId": 1
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 1000003
+      },
+      "writtenOn": "2025-03-07T19:17:18Z",
+      "side": 1,
+      "message": "Maybe we can just keep the URL that is there right now, since every time we reconnect we have to change it anyway.",
+      "revId": "a82224cad851bb442d4101fe5ae212f9cbdcb652",
+      "serverId": "3c7ad661-7ce8-4163-af0d-ebc0f4c5b529"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "962f0ba3_8954722f",
+        "filename": "bruinhub-app/components/modal/HistoricalDataComponent.tsx",
+        "patchSetId": 1
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 1000003
+      },
+      "writtenOn": "2025-03-07T19:17:18Z",
+      "side": 1,
+      "message": "NIT: remove, self-explanatory.",
+      "range": {
+        "startLine": 15,
+        "startChar": 0,
+        "endLine": 15,
+        "endChar": 18
+      },
+      "revId": "a82224cad851bb442d4101fe5ae212f9cbdcb652",
+      "serverId": "3c7ad661-7ce8-4163-af0d-ebc0f4c5b529"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1d3dc788_64246776",
+        "filename": "bruinhub-app/components/modal/HistoricalDataComponent.tsx",
+        "patchSetId": 1
+      },
+      "lineNbr": 76,
+      "author": {
+        "id": 1000003
+      },
+      "writtenOn": "2025-03-07T19:17:18Z",
+      "side": 1,
+      "message": "same here, just clean the comments in this file.",
+      "range": {
+        "startLine": 76,
+        "startChar": 0,
+        "endLine": 76,
+        "endChar": 18
+      },
+      "revId": "a82224cad851bb442d4101fe5ae212f9cbdcb652",
+      "serverId": "3c7ad661-7ce8-4163-af0d-ebc0f4c5b529"
+    }
+  ]
+}
