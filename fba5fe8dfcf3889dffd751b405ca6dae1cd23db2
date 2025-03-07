@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "311cdc57_a1f06311",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2025-03-07T08:00:24Z",
+      "side": 1,
+      "message": "changes requested! also, not too confident about merging this feature in atm.",
+      "revId": "fba5fe8dfcf3889dffd751b405ca6dae1cd23db2",
+      "serverId": "3c7ad661-7ce8-4163-af0d-ebc0f4c5b529"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a12b6214_d6f38602",
+        "filename": "bruinhub-app/components/recreation/LoginWebView.tsx",
+        "patchSetId": 1
+      },
+      "lineNbr": 112,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2025-03-07T08:00:24Z",
+      "side": 1,
+      "message": "can we remove these console logs before pushing",
+      "revId": "fba5fe8dfcf3889dffd751b405ca6dae1cd23db2",
+      "serverId": "3c7ad661-7ce8-4163-af0d-ebc0f4c5b529"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0f32be26_63f73381",
+        "filename": "bruinhub-app/components/recreation/ReservationScreen.tsx",
+        "patchSetId": 1
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2025-03-07T08:00:24Z",
+      "side": 1,
+      "message": "seems like this is used in many places. consider using a constant elsewhere",
+      "revId": "fba5fe8dfcf3889dffd751b405ca6dae1cd23db2",
+      "serverId": "3c7ad661-7ce8-4163-af0d-ebc0f4c5b529"
+    }
+  ]
+}
