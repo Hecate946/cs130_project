@@ -1,24 +1,341 @@
+import React from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { Link, useRouter } from "expo-router";
 import { Colors } from "@/constants/Colors";
-import { Button } from "react-native-paper";
-import * as Haptics from "expo-haptics";import { Categories } from "@/constants/Categories";
+import { Button, Switch } from "react-native-paper";
+import * as Haptics from "expo-haptics";
+import * as Notifications from 'expo-notifications';
+import Constants from 'expo-constants';
+import { Platform } from 'react-native';
+import { Categories } from "@/constants/Categories";
+import { SlugMap } from "@/constants/SlugMap";
 import NotificationItem from "@/components/notifications/NotificationItem";
 import Divider from "@/components/Divider";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useState, useEffect } from "react";
 
 const Restaurants = Categories.diningHalls;
 const Takeout = Categories.takeout;
 const Gyms = Categories.gym;
 const Libraries = Categories.libraries;
-const ReslifeStudy = Categories.reslifeStudy;
-const ReslifeSpaces = Categories.reslifeSpaces;
 
 interface NotificationsScreenProps {
   onFinish: () => void;
-};
+}
 
 export default function NotificationsScreen({ onFinish }: NotificationsScreenProps) {
   const router = useRouter();
+  const [expoPushToken, setExpoPushToken] = useState<string>('');
+  const [allEnabled, setAllEnabled] = useState(false);
+
+  // Load push token and sync with backend on mount
+  useEffect(() => {
+    const loadTokenAndSync = async () => {
+      try {
+        // Load push token
+        const token = await AsyncStorage.getItem('expoPushToken');
+        if (token) {
+          setExpoPushToken(token);
+        }
+
+        // Load allEnabled state
+        const allEnabledValue = await AsyncStorage.getItem('notifications_all_enabled');
+        if (allEnabledValue !== null) {
+          const parsedValue = JSON.parse(allEnabledValue);
+          setAllEnabled(parsedValue);
+          
+          // Only sync with backend if we have a token, but don't update local state
+          if (token) {
+            await syncPreferencesWithBackend(token, parsedValue);
+          }
+        }
+      } catch (error) {
+        console.error('Error in loadTokenAndSync:', error);
+      }
+    };
+    loadTokenAndSync();
+  }, []);
+
+  const registerForPushNotifications = async () => {
+    try {
+      let token;
+      
+      if (Platform.OS === 'android') {
+        await Notifications.setNotificationChannelAsync('default', {
+          name: 'default',
+          importance: Notifications.AndroidImportance.MAX,
+          vibrationPattern: [0, 250, 250, 250],
+          lightColor: '#FF231F7C',
+        });
+      }
+      
+      const { status: existingStatus } = await Notifications.getPermissionsAsync();
+      let finalStatus = existingStatus;
+      
+      if (existingStatus !== 'granted') {
+        const { status } = await Notifications.requestPermissionsAsync();
+        finalStatus = status;
+      }
+      
+      if (finalStatus !== 'granted') {
+        console.log('Failed to get push notification permission');
+        return;
+      }
+      
+      token = await Notifications.getExpoPushTokenAsync({
+        projectId: Constants.expoConfig?.extra?.eas?.projectId,
+      });
+      
+      setExpoPushToken(token.data);
+      await AsyncStorage.setItem('expoPushToken', token.data);
+      
+      // Register with backend
+      await registerWithBackend(token.data);
+      
+    } catch (error) {
+      console.error('Error getting push token:', error);
+    }
+  };
+
+  const registerWithBackend = async (token: string) => {
+    try {
+      // Initialize all facilities with disabled preferences
+      const facilities = [...Restaurants, ...Takeout, ...Gyms, ...Libraries];
+      const capacityPreferences: { [key: string]: any } = {};
+      
+      for (const facility of facilities) {
+        const slug = SlugMap.get(facility.name);
+        if (slug) {
+          capacityPreferences[slug] = {
+            enabled: false,
+            threshold: 50
+          };
+        }
+      }
+
+      const response = await fetch('http://192.168.216.35:5001/api/v1/notifications/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          pushToken: token,
+          deviceType: Platform.OS,
+          preferences: {
+            capacity: capacityPreferences
+          },
+          is_active: true
+        }),
+      });
+      
+      if (!response.ok) {
+        throw new Error('Failed to register with backend');
+      }
+      
+      const data = await response.json();
+      setAllEnabled(data.is_active);
+
+      // Also initialize AsyncStorage with disabled preferences
+      for (const facility of facilities) {
+        await AsyncStorage.setItem(`notification_${facility.key}`, JSON.stringify({
+          enabled: false,
+          threshold: 50
+        }));
+      }
+      
+    } catch (error) {
+      console.error('Error registering with backend:', error);
+    }
+  };
+
+  const syncPreferencesWithBackend = async (token: string, currentAllEnabled: boolean) => {
+    try {
+      // Get all notification preferences from AsyncStorage
+      const keys = await AsyncStorage.getAllKeys();
+      const notificationKeys = keys.filter(key => key.startsWith('notification_'));
+      const preferences: { [key: string]: any } = {};
+      
+      for (const key of notificationKeys) {
+        const value = await AsyncStorage.getItem(key);
+        if (value) {
+          preferences[key] = JSON.parse(value);
+        }
+      }
+      
+      // Convert to backend format
+      const capacityPreferences: { [key: string]: any } = {};
+      for (const [key, value] of Object.entries(preferences)) {
+        const id = key.replace('notification_', '');
+        const name = [...Restaurants, ...Takeout, ...Gyms, ...Libraries]
+          .find(item => item.key === id)?.name;
+        
+        if (name) {
+          const slug = SlugMap.get(name);
+          if (slug) {
+            capacityPreferences[slug] = {
+              enabled: value.enabled,
+              threshold: value.threshold
+            };
+          }
+        }
+      }
+
+      const requestPayload = {
+        pushToken: token,
+        preferences: {
+          capacity: capacityPreferences
+        },
+        is_active: currentAllEnabled  // Use the current local state
+      };
+
+      console.log('Sending preferences to backend:', JSON.stringify(requestPayload, null, 2));
+      
+      // Send to backend
+      const response = await fetch('http://192.168.216.35:5001/api/v1/notifications/update-preferences', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(requestPayload),
+      });
+      
+      const responseData = await response.json();
+      console.log('Backend response:', JSON.stringify(responseData, null, 2));
+      
+      if (!response.ok) {
+        throw new Error(`Failed to sync preferences with backend: ${responseData.error || 'Unknown error'}`);
+      }
+      
+      // Don't update allEnabled from backend response
+      
+    } catch (error) {
+      console.error('Error syncing preferences with backend:', error);
+      if (error instanceof Error) {
+        console.error('Error details:', error.message);
+      }
+      throw error;
+    }
+  };
+
+  const handlePreferenceChange = async (slug: string, enabled: boolean, threshold: number) => {
+    try {
+      if (!expoPushToken) {
+        await registerForPushNotifications();
+        return;
+      }
+
+      // Get all current preferences from AsyncStorage
+      const keys = await AsyncStorage.getAllKeys();
+      const notificationKeys = keys.filter(key => key.startsWith('notification_'));
+      const preferences: { [key: string]: any } = {};
+      
+      for (const key of notificationKeys) {
+        const value = await AsyncStorage.getItem(key);
+        if (value) {
+          preferences[key] = JSON.parse(value);
+        }
+      }
+      
+      // Convert to backend format
+      const capacityPreferences: { [key: string]: any } = {};
+      for (const [key, value] of Object.entries(preferences)) {
+        const id = key.replace('notification_', '');
+        const name = [...Restaurants, ...Takeout, ...Gyms, ...Libraries]
+          .find(item => item.key === id)?.name;
+        
+        if (name) {
+          const slug = SlugMap.get(name);
+          if (slug) {
+            capacityPreferences[slug] = {
+              enabled: value.enabled,
+              threshold: value.threshold
+            };
+          }
+        }
+      }
+
+      // Send to backend
+      const requestPayload = {
+        pushToken: expoPushToken,
+        preferences: {
+          capacity: capacityPreferences
+        },
+        is_active: allEnabled
+      };
+      
+      const response = await fetch('http://192.168.216.35:5001/api/v1/notifications/update-preferences', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(requestPayload),
+      });
+      
+      if (!response.ok) {
+        const responseData = await response.json();
+        throw new Error(`Failed to sync preferences with backend: ${responseData.error || 'Unknown error'}`);
+      }
+    } catch (error) {
+      console.error('Error in handlePreferenceChange:', error);
+    }
+  };
+
+  const handleToggleAll = async () => {
+    const newValue = !allEnabled;
+    setAllEnabled(newValue);
+    
+    // Store the new value in AsyncStorage
+    await AsyncStorage.setItem('notifications_all_enabled', JSON.stringify(newValue));
+    
+    // Update all facilities
+    const facilities = [...Restaurants, ...Takeout, ...Gyms, ...Libraries];
+    const capacityPreferences: { [key: string]: any } = {};
+    
+    // If disabling all, ensure all preferences are set to disabled
+    for (const facility of facilities) {
+      const prefs = {
+        enabled: false,  // Always set to false when toggling off
+        threshold: 50
+      };
+      
+      // Store in AsyncStorage
+      await AsyncStorage.setItem(`notification_${facility.key}`, JSON.stringify(prefs));
+      
+      // Update backend preferences
+      const slug = SlugMap.get(facility.name);
+      if (slug) {
+        capacityPreferences[slug] = prefs;
+      }
+    }
+    
+    await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    
+    if (!expoPushToken) {
+      await registerForPushNotifications();
+    } else {
+      // Send to backend
+      const requestPayload = {
+        pushToken: expoPushToken,
+        preferences: {
+          capacity: capacityPreferences
+        },
+        is_active: newValue
+      };
+      
+      const response = await fetch('http://192.168.216.35:5001/api/v1/notifications/update-preferences', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(requestPayload),
+      });
+      
+      if (!response.ok) {
+        const responseData = await response.json();
+        throw new Error(`Failed to sync preferences with backend: ${responseData.error || 'Unknown error'}`);
+      }
+    }
+  };
 
   const handleFinish = async () => {
     await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
@@ -35,50 +352,68 @@ export default function NotificationsScreen({ onFinish }: NotificationsScreenPro
         <View style={styles.notificationsContainer}>
           <Text style={styles.title}>Notifications</Text>
           <Text style={styles.text}>Select the facilities you'd like to receive
-            notifications for, including hours updates and holiday reminders.</Text>
+            notifications for, including capacity updates and closing times.</Text>
+          <View style={styles.toggleAllContainer}>
+            <Text style={styles.toggleAllText}>Enable All Notifications</Text>
+            <Switch
+              value={allEnabled}
+              onValueChange={handleToggleAll}
+              color={Colors.light.tint}
+            />
+          </View>
         </View>
 
-        <Divider name="Restaurants" />
-        <View>
-          {Restaurants.map((item) => (
-            <NotificationItem name={item.name} key={item.key} id={item.key}/>
-          ))}
-        </View>
+        {allEnabled && (
+          <>
+            <Divider name="Restaurants" />
+            <View>
+              {Restaurants.map((item) => (
+                <NotificationItem 
+                  name={item.name} 
+                  key={item.key} 
+                  id={item.key}
+                  onPreferenceChange={handlePreferenceChange}
+                />
+              ))}
+            </View>
 
-        <Divider name="Takeout" />
-        <View>
-          {Takeout.map((item) => (
-            <NotificationItem name={item.name} key={item.key} id={item.key}/>
-          ))}
-        </View>
+            <Divider name="Takeout" />
+            <View>
+              {Takeout.map((item) => (
+                <NotificationItem 
+                  name={item.name} 
+                  key={item.key} 
+                  id={item.key}
+                  onPreferenceChange={handlePreferenceChange}
+                />
+              ))}
+            </View>
 
-        <Divider name="Gyms" />
-        <View>
-          {Gyms.map((item) => (
-            <NotificationItem name={item.name} key={item.key} id={item.key}/>
-          ))}
-        </View>
+            <Divider name="Gyms" />
+            <View>
+              {Gyms.map((item) => (
+                <NotificationItem 
+                  name={item.name} 
+                  key={item.key} 
+                  id={item.key}
+                  onPreferenceChange={handlePreferenceChange}
+                />
+              ))}
+            </View>
 
-        <Divider name="Libraries" />
-        <View>
-          {Libraries.map((item) => (
-            <NotificationItem name={item.name} key={item.key} id={item.key}/>
-          ))}
-        </View>
-
-        {/* <Divider name="ResLife Study Rooms" />
-        <View>
-          {ReslifeStudy.map((item) => (
-            <NotificationItem name={item.name} key={item.key} id={item.key}/>
-          ))}
-        </View>
-
-        <Divider name="ResLife Spaces" />
-        <View>
-          {ReslifeSpaces.map((item) => (
-            <NotificationItem name={item.name} key={item.key} id={item.key}/>
-          ))}
-        </View> */}
+            <Divider name="Libraries" />
+            <View>
+              {Libraries.map((item) => (
+                <NotificationItem 
+                  name={item.name} 
+                  key={item.key} 
+                  id={item.key}
+                  onPreferenceChange={handlePreferenceChange}
+                />
+              ))}
+            </View>
+          </>
+        )}
 
       </ScrollView>
       <View style={{ position: "absolute", bottom: 50 }}>
@@ -100,11 +435,11 @@ export default function NotificationsScreen({ onFinish }: NotificationsScreenPro
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "flex-start", //puts in center of screen up/down wise.
-    alignItems: "center",//alignItems: "flex-start", //aligns actual text and buttons to center left/right wise.
+    justifyContent: "flex-start",
+    alignItems: "center",
     backgroundColor: Colors.light.background,
     width: "100%",
-    paddingTop: 80, //TODO CHANGE LATER
+    paddingTop: 80,
   },
 
   scrollContainer: {
@@ -126,13 +461,28 @@ const styles = StyleSheet.create({
 
   title: {
     fontSize: 24,
-    fontWeight: 400,
+    fontWeight: "400",
     textTransform: "uppercase",
   },
 
   text: {
     fontSize: 16,
-    fontWeight: 300,
+    fontWeight: "300",
+  },
+
+  toggleAllContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginTop: 16,
+    padding: 16,
+    backgroundColor: "white",
+    borderRadius: 10,
+  },
+
+  toggleAllText: {
+    fontSize: 16,
+    fontWeight: "500",
   },
 
   button: {
@@ -151,14 +501,5 @@ const styles = StyleSheet.create({
     width: 180,
     justifyContent: "center",
     alignItems: "center",
-  },
-
-  bannerText: {
-    height: 64,
-    width: 100,
-    alignItems: "flex-start",
-    color: Colors.dark.icon,
-    fontSize: 16,
-    fontWeight: "bold",
   },
 });
