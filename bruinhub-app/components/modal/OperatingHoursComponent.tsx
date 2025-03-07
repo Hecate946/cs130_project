@@ -47,7 +47,7 @@ export default function OperatingHoursComponent({ hoursToday }: OperatingHoursPr
 
   return (
     <View style={styles.container}>
-      <Text style={{ color: isOpen ? "green" : "red", fontWeight: "bold", fontSize: 18 }}>
+      <Text style={{ color: isOpen ? "green" : "red", fontWeight: "bold", fontSize: 20 }}>
         {statusMessage}
       </Text>
     </View>

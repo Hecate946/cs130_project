@@ -10,7 +10,7 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 
 interface HomeCardProps {
   name: string,
-  description: string,
+  description: string | null,
   isPinned: boolean,
   pinCallback: () => void,
   onPress: () => void,
@@ -36,7 +36,7 @@ export default function HomeCard({ name, description, isPinned, pinCallback, onP
       </View>
       <View style={styles.content}>
         <Title style={[styles.title, { color: Colors.light.text }]}>{name}</Title>
-        <Paragraph style={{ color: Colors.light.text }}>{description}</Paragraph>
+        {/*<Paragraph style={{ color: Colors.light.text }}>{description}</Paragraph>*/}
       </View>
     </Card>
   )
@@ -45,13 +45,12 @@ export default function HomeCard({ name, description, isPinned, pinCallback, onP
 const styles = StyleSheet.create({
   card: {
     margin: 10,
-    //padding: 10,
     backgroundColor: Colors.light.icon,
     borderRadius: 25,
   },
 
   imageContainer: {
-    height: 55, // TODO need to finalize
+    height: 55,
     position: "relative",
     backgroundColor: Colors.light.shade,
     borderTopLeftRadius: 25,
@@ -67,7 +66,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: 4,
     right: 4,
-    padding: 10, // Adds touchable area
+    padding: 10,
     color: Colors.light.background,
   },
 

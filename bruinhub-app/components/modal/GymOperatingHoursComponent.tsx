@@ -50,8 +50,10 @@ export default function GymOperatingHoursComponent({ regularHours, specialHours 
       setStatusMessage(`Open until ${formatMinutesToTime(endMinutes)}`);
     } else if (isSpecial && !isOpen) {
       setStatusMessage("Closed Today");
+      setIsOpen(false);
     } else {
       setStatusMessage(`Closed until ${formatMinutesToTime(startMinutes)}`);
+      setIsOpen(false);
     }
   }, [specialHours, regularHours, currentDay, currentMinutes, specialDateKey]);
 

@@ -15,6 +15,7 @@ import GymZonesComponent from "./GymZonesComponent";
 import LibraryReservationComponent from "./LibraryReservationComponent";
 import FeastMenuComponent from "./FeastMenuComponent";
 import NotificationBell from "../NotificationBellComponent";
+import HistoricalDataComponent from "./HistoricalDataComponent";
 
 interface FacilityModalProps {
   visible: boolean;
@@ -27,7 +28,7 @@ interface FacilityData {
 }
 
 // TODO change lol
-const URL = "http://131.179.39.156:5001/api/v1/";
+const URL = "http://192.168.1.38:5001/api/v1/";
 
 const { height: SCREEN_HEIGHT } = Dimensions.get("window");
 const SWIPE_THRESHOLD = 100;
@@ -57,6 +58,7 @@ function getFacilityId(facilityName: string): number | undefined {
 
 export default function FacilityModal({ visible, onClose, facility }: FacilityModalProps) {
   const [facilityData, setFacilityData] = useState<FacilityData>(null);
+  const [historicalData, setHistoricalData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [isModalReady, setIsModalReady] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
@@ -78,6 +80,7 @@ export default function FacilityModal({ visible, onClose, facility }: FacilityMo
   const animatedCloseModal = useCallback(() => {
     setIsClosing(true);
     setFacilityData(null);
+    setHistoricalData(null);
     Animated.timing(translateY, {
       toValue: SCREEN_HEIGHT,
       duration: 200,
@@ -152,36 +155,43 @@ export default function FacilityModal({ visible, onClose, facility }: FacilityMo
       let specificURL = "";
       let response;
       const now = new Date();
-      const start = now.getFullYear() + '-' + 
-                    String(now.getMonth() + 1).padStart(2, '0') + '-' + 
-                    String(now.getDate()).padStart(2, '0') + 'T' + 
-                    String(now.getHours()).padStart(2, '0') + ':' + 
-                    String(now.getMinutes()).padStart(2, '0') + ':' + 
-                    String(now.getSeconds()).padStart(2, '0');
-      
+      const start = now.getFullYear() + '-' +
+        String(now.getMonth() + 1).padStart(2, '0') + '-' +
+        String(now.getDate()).padStart(2, '0') + 'T' +
+        String(now.getHours()).padStart(2, '0') + ':' +
+        String(now.getMinutes()).padStart(2, '0') + ':' +
+        String(now.getSeconds()).padStart(2, '0');
+
       const endOfDay = new Date();
       endOfDay.setHours(23, 59, 59, 0); // Set to the end of the current day (local time)
-      const end = endOfDay.getFullYear() + '-' + 
-                  String(endOfDay.getMonth() + 1).padStart(2, '0') + '-' + 
-                  String(endOfDay.getDate()).padStart(2, '0') + 'T' + 
-                  String(endOfDay.getHours()).padStart(2, '0') + ':' + 
-                  String(endOfDay.getMinutes()).padStart(2, '0') + ':' + 
-                  String(endOfDay.getSeconds()).padStart(2, '0');
-      
+      const end = endOfDay.getFullYear() + '-' +
+        String(endOfDay.getMonth() + 1).padStart(2, '0') + '-' +
+        String(endOfDay.getDate()).padStart(2, '0') + 'T' +
+        String(endOfDay.getHours()).padStart(2, '0') + ':' +
+        String(endOfDay.getMinutes()).padStart(2, '0') + ':' +
+        String(endOfDay.getSeconds()).padStart(2, '0');
+
       if (category === "library") {
         specificURL = `${URL}${category}/${slug}/bookings/range?start=${start}&end=${end}`;
       } else {
         specificURL = `${URL}${category}/${slug}`;
       }
-      
+
       console.log(specificURL); // TODO remove
-      
+
       response = await fetch(specificURL);
-      console.log("Response status:", response.status);
       const responseText = await response.text();
-      console.log("Response text:", responseText);
       const data = JSON.parse(responseText);
       setFacilityData(data);
+
+      // Get historical data if possible
+      if (category === 'dining' || category === 'gym') {
+        const historicalURL = `${URL}/historical/${category}/${slug}`;
+        const historicalRes = await fetch(historicalURL);
+        const historicalResText = await historicalRes.text();
+        const historical = JSON.parse(historicalResText);
+        setHistoricalData(historical);
+      }
     } catch (error) {
       console.error("Error fetching facility data:", error);
       console.error("Full error details:", {
@@ -252,7 +262,7 @@ export default function FacilityModal({ visible, onClose, facility }: FacilityMo
           >
             <View style={styles.titleContainer}>
               <Text style={styles.title}>{facility}</Text>
-              <NotificationBell facilityId={getFacilityId(facility)} style={styles.bell} />
+              <NotificationBell facilityId={getFacilityId(facility)} />
             </View>
 
             {/* Hours Display */}
@@ -284,23 +294,34 @@ export default function FacilityModal({ visible, onClose, facility }: FacilityMo
             {/* Menu Display */}
             {
               (facilityData?.data?.menu &&
-              Object.keys(facilityData.data.menu).length > 0) ?
-              facility === "Feast" ?
-              <FeastMenuComponent menuData={facilityData.data.menu} /> :
-              <MenuComponent sections={facilityData?.data?.menu} /> :
-              null
+                Object.keys(facilityData.data.menu).length > 0) ?
+                facility === "Feast" ?
+                  <FeastMenuComponent menuData={facilityData.data.menu} /> :
+                  <MenuComponent sections={facilityData?.data?.menu} /> :
+                null
+            }
+
+            {/* Historical Occupancy Data */}
+            {
+              historicalData && getCategoryFromFacility(facility) === 'dining' &&
+              <HistoricalDataComponent data={historicalData?.data} />
             }
 
             {/* Library Reservation Display, only shows the reservations for the rest of the day */}
             {
-              (getCategoryFromFacility(facility) === 'library' && facilityData.data) &&
-              <LibraryReservationComponent roomsData={facilityData?.data} />
-            }
+              (getCategoryFromFacility(facility) === 'library' && facilityData.data) ?
+                <LibraryReservationComponent roomsData={facilityData?.data} /> :
+                getCategoryFromFacility(facility) === 'library' &&
+                <Text style={styles.libraryDescription}>No availabilities for the rest of the day</Text>
 
-            <View style={styles.dateView}>
-              <Text style={styles.dateText}>Last updated:</Text>
-              <DateFormatter isoString={facilityData?.data?.last_updated} />
-            </View>
+            }
+            {
+              getCategoryFromFacility(facility) !== 'library' &&
+              (<View style={styles.dateView}>
+                <Text style={styles.dateText}>Last updated:</Text>
+                <DateFormatter isoString={facilityData?.data?.last_updated} />
+              </View>)
+            }
 
             <View style={styles.buttonView}>
               <Button
@@ -374,17 +395,16 @@ const styles = StyleSheet.create({
   },
   titleContainer: {
     flexDirection: "row",
-    width: "90%", //TODO 100% width causes notif bell to go off screen.
+    alignItems: "center",
+    width: "100%",
+    flex: 0,
+    justifyContent: "space-between",
   },
   title: {
     fontSize: 32,
     fontWeight: "bold",
-    width: "100%",
     paddingTop: 10,
     paddingBottom: 10,
-  },
-  bell: {
-    marginTop: 10, //TODO move the bell lower somehow.
   },
   description: {
     marginVertical: 15,
@@ -421,4 +441,13 @@ const styles = StyleSheet.create({
     alignItems: "center",
     height: 50,
   },
+  libraryDescription: {
+    marginVertical: 15,
+    textAlign: "center",
+    fontSize: 16,
+    width: "100%",
+    paddingTop: 20,
+    paddingBottom: 10,
+    fontStyle: "italic",
+  }
 });

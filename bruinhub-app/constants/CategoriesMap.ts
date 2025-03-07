@@ -10,7 +10,7 @@ export const CategoriesMap = new Map([
       ["7", "The Study"],
       ["8", "The Drey"],
       ["9", "Epic at Ackerman"],
-      ["10", "Food Trucks"],
+      // ["10", "Food Trucks"],
     ])],
 
     ["gym", new Map([

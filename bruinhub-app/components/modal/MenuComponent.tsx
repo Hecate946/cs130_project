@@ -29,12 +29,11 @@ const styles = StyleSheet.create({
     width: "100%",
     backgroundColor: Colors.light.background,
     paddingTop: 10,
-    paddingBottom: 20,
+    paddingBottom: 5,
   },
 
   text: {
     fontSize: 24,
-    textTransform: "uppercase",
     fontWeight: 600,
     paddingBottom: 10,
   },
