@@ -16,6 +16,23 @@
       "message": "TODO: Fix tests so they use a database with actual data",
       "revId": "71e3fd937213e48c87c5714032fb63b21a223809",
       "serverId": "3c7ad661-7ce8-4163-af0d-ebc0f4c5b529"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "273f9c11_df47b639",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000003
+      },
+      "writtenOn": "2025-03-08T06:37:37Z",
+      "side": 1,
+      "message": "+2 for now for FE integration. Someone on BE still needs to review for tests.",
+      "revId": "71e3fd937213e48c87c5714032fb63b21a223809",
+      "serverId": "3c7ad661-7ce8-4163-af0d-ebc0f4c5b529"
     }
   ]
 }
