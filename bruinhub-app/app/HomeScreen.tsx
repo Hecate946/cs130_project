@@ -14,6 +14,7 @@ import { Colors } from "@/constants/Colors";
 import HomeCard from "@/components/home/HomeCard";
 import Divider from "@/components/Divider";
 import FacilityModal from "@/components/modal/FacilityModal";
+import { SlugMap } from '@/constants/SlugMap';
 
 import Fuse from "fuse.js"; // Fuzzy searching!!!
 
@@ -30,12 +31,23 @@ interface HomeScreenProps {
   onFinish: () => void;
 };
 
+interface AllFacilityData {
+  data: Record<string, {
+    hours?: string;
+    capacity?: number;
+    occupants?: number;
+  }>;
+}
+
+const HOURS_OCCUP_URL = "http://192.168.98.104:5001/api/v1/hours-and-occupancy"; //TODO fix as needed.
+
 export default function HomeScreen({ onFinish }: HomeScreenProps) {
   const [pinnedItems, setPinnedItems] = useState<Set<string>>(new Set());
   const [allItems, setAllItems] = useState<{ id: string; name: string }[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedFacility, setSelectedFacility] = useState("");
   const [modalVisible, setModalVisible] = useState(false);
+  const [facilityData, setFacilityData] = useState<AllFacilityData>({ data: {} });
 
   const loadPinnedItems = async () => {
     try {
@@ -74,10 +86,222 @@ export default function HomeScreen({ onFinish }: HomeScreenProps) {
     }
   };
 
-  // Load data on component mount
+  // Register for push notifications
+  const registerForPushNotificationsAsync = async () => {
+    try {
+      let token;
+      
+      if (Platform.OS === 'android') {
+        await Notifications.setNotificationChannelAsync('default', {
+          name: 'default',
+          importance: Notifications.AndroidImportance.MAX,
+          vibrationPattern: [0, 250, 250, 250],
+          lightColor: '#FF231F7C',
+        });
+      }
+      
+      const { status: existingStatus } = await Notifications.getPermissionsAsync();
+      let finalStatus = existingStatus;
+      
+      if (existingStatus !== 'granted') {
+        const { status } = await Notifications.requestPermissionsAsync();
+        finalStatus = status;
+      }
+      
+      if (finalStatus !== 'granted') {
+        setNotificationStatus('Permission not granted for notifications');
+        return;
+      }
+      
+      token = await Notifications.getExpoPushTokenAsync({
+        projectId: Constants.expoConfig?.extra?.eas?.projectId,
+      });
+      
+      setExpoPushToken(token.data);
+      setNotificationStatus('Permission granted! Token: ' + token.data);
+      
+      // Store token in AsyncStorage for future use
+      await AsyncStorage.setItem('expoPushToken', token.data);
+      
+      // Register this token with our notification service
+      try {
+        const response = await fetch('http://192.168.216.35:5002/api/notifications/register', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            pushToken: token.data,
+            deviceType: Platform.OS,
+            preferences: {
+              capacity: { enabled: true, threshold: 50 },
+              closing: { enabled: true, minutes_before: 30 }
+            }
+          }),
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok) {
+          setNotificationStatus('Token registered with notification service!');
+          console.log('Registration successful:', data);
+        } else {
+          setNotificationStatus('Failed to register with notification service: ' + data.error);
+          console.error('Registration failed:', data);
+        }
+      } catch (err) {
+        console.error('Error registering with notification service:', err);
+        setNotificationStatus('Error registering with notification service');
+      }
+      
+    } catch (error) {
+      console.log('Error getting push token', error);
+      setNotificationStatus('Error: ' + error);
+    }
+  };
+
+  // Send a test notification from the backend
+  const sendTestNotification = async () => {
+    try {
+      if (!expoPushToken) {
+        setNotificationStatus('No push token available. Request permission first.');
+        return;
+      }
+      
+      // Send test notification using our notification service
+      const response = await fetch('http://192.168.216.35:5002/api/notifications/send-test', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          pushToken: expoPushToken,
+          title: 'BruinHub Test',
+          message: 'This is a test notification from BruinHub Notification Service!',
+          data: {
+            screen: 'NotificationsScreen',
+            id: Date.now().toString()
+          }
+        }),
+      });
+      
+      const data = await response.json();
+      
+      if (response.ok) {
+        setNotificationStatus('Notification sent successfully!');
+        console.log('Notification sent:', data);
+      } else {
+        setNotificationStatus('Failed to send notification: ' + data.error);
+        console.error('Notification failed:', data);
+      }
+    } catch (error) {
+      console.log('Error sending notification', error);
+      setNotificationStatus('Error sending notification: ' + error);
+    }
+  };
+
+  // Simulate capacity notification event
+  const simulateCapacityEvent = async () => {
+    try {
+      const response = await fetch('http://192.168.216.35:5002/api/notifications/simulate-event', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          eventType: 'capacity',
+          facilityName: 'BFit Gym',
+          currentCapacity: 40
+        }),
+      });
+      
+      const data = await response.json();
+      
+      if (response.ok) {
+        setNotificationStatus(`Simulated capacity event. Sent ${data.notifications_sent} notifications.`);
+        console.log('Simulation result:', data);
+      } else {
+        setNotificationStatus('Failed to simulate event: ' + data.error);
+        console.error('Simulation failed:', data);
+      }
+    } catch (error) {
+      console.log('Error simulating event', error);
+      setNotificationStatus('Error simulating event: ' + error);
+    }
+  };
+  
+  // Simulate closing notification event
+  const simulateClosingEvent = async () => {
+    try {
+      const response = await fetch('http://192.168.216.35:5002/api/notifications/simulate-event', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          eventType: 'closing',
+          facilityName: 'Wooden Center',
+          minutesUntilClose: 15
+        }),
+      });
+      
+      const data = await response.json();
+      
+      if (response.ok) {
+        setNotificationStatus(`Simulated closing event. Sent ${data.notifications_sent} notifications.`);
+        console.log('Simulation result:', data);
+      } else {
+        setNotificationStatus('Failed to simulate event: ' + data.error);
+        console.error('Simulation failed:', data);
+      }
+    } catch (error) {
+      console.log('Error simulating event', error);
+      setNotificationStatus('Error simulating event: ' + error);
+    }
+  };
+
+  const getTodayHours = (hours: Record<string, string>) => {
+    const today = new Date().toLocaleDateString("en-US", { weekday: "long" });
+    return hours?.[today] ?? "Hours Unavailable";
+  };
+
+  const fetchHoursAndCapacity = async () => {
+    try {
+      const response = await fetch(HOURS_OCCUP_URL);
+      if (!response.ok) {
+        throw new Error(`HTTP Error with Status: ${response.status}`);
+      }
+
+      const jsonResponse = await response.json();
+      const parsedFacilities: AllFacilityData = { data: {} };
+
+      Object.keys(jsonResponse.data).forEach((facilityKey) => {
+        const facility = jsonResponse.data[facilityKey];
+        let formattedHours = "Hours Unavailable";
+        if (Array.isArray(facility.hours)) { //Hours are usually the same every day.
+          formattedHours = `${facility.hours.join(", ")}`;
+        }
+        else if (typeof facility.hours === "object"){ //Hours for Gym differs Daily
+          formattedHours = getTodayHours(facility.hours);
+        }
+
+        parsedFacilities.data[facilityKey] = {
+          capacity: facility.capacity ?? 0,
+          occupants: facility.occupants ?? 0,
+          hours: formattedHours ?? "",
+        };
+      });
+      setFacilityData(parsedFacilities);
+    } catch (error) {
+      console.error("Error fetching facility data:", error);
+    }
+  };
+
+  // Load token from AsyncStorage on component mount
   useEffect(() => {
     loadPinnedItems();
     loadAllItems();
+    fetchHoursAndCapacity();
   }, []);
 
   const handleOpenModal = (facilityName: string) => {
@@ -149,36 +373,93 @@ export default function HomeScreen({ onFinish }: HomeScreenProps) {
         <Divider name="Pinned" />
         {
           filteredPinned.length > 0 ? (
-          filteredPinned.map((item) => (
-            <HomeCard
-              name={item.name}
-              description={null}
-              isPinned={true}
-              pinCallback={() => togglePin(item.id)}
-              key={item.id}
-              onPress={() => handleOpenModal(item.name)}
-            />
-          ))) :
-          <Text style={styles.pinText}>Pin your favorite spots!</Text>
+            filteredPinned.map((item) => {
+              const facilityKey = item.name;
+              const facName = SlugMap.get(facilityKey) ?? facilityKey;
+              const facilityInfo = facilityData?.data?.[facName] ?? {};
+              const hours = facilityInfo?.hours ?? "";
+
+              return (
+                <HomeCard
+                  name={item.name}
+                  description={hours}
+                  facilityData={facilityInfo}
+                  isPinned={true}
+                  pinCallback={() => togglePin(item.id)}
+                  key={item.id}
+                  onPress={() => handleOpenModal(item.name)}
+                />
+              );
+            })):(
+          <Text style={styles.pinText}>Pin your favorite spots!</Text>)
         }
         <Divider name="The Rest" />
         {
-          filteredUnpinned.map((item) => (
-            <HomeCard
-              name={item.name}
-              description={null}
-              isPinned={false}
-              pinCallback={() => togglePin(item.id)}
-              key={item.id}
-              onPress={() => handleOpenModal(item.name)}
-            />
-          ))
+          filteredUnpinned.map((item) => {
+            const facilityKey = item.name;
+            const facName = SlugMap.get(facilityKey) ?? facilityKey;
+            const facilityInfo = facilityData?.data?.[facName] ?? {};
+            const hours = facilityInfo?.hours ?? "";
+
+            return (
+              <HomeCard
+                name={item.name}
+                description={hours}
+                facilityData={facilityInfo}
+                isPinned={false}
+                pinCallback={() => togglePin(item.id)}
+                key={item.id}
+                onPress={() => handleOpenModal(item.name)}
+              />
+            );
+          })
         }
         <Link href="/" asChild>
           <Button mode="contained" onPress={handleFinish}>
             Back to onboarding for dev purposes
           </Button>
         </Link>
+
+        <View style={styles.devButtonsContainer}>
+          <Text style={styles.devTitle}>Push Notification Dev Tools</Text>
+
+          <Button 
+            mode="contained" 
+            onPress={registerForPushNotificationsAsync}
+            style={styles.devButton}
+          >
+            Request Push Notification Permission
+          </Button>
+          
+          <Button 
+            mode="contained" 
+            onPress={sendTestNotification}
+            style={styles.devButton}
+            disabled={!expoPushToken}
+          >
+            Send Test Notification
+          </Button>
+          
+          <Button 
+            mode="contained" 
+            onPress={simulateCapacityEvent}
+            style={styles.devButton}
+            disabled={!expoPushToken}
+          >
+            Simulate Capacity Notification
+          </Button>
+          
+          <Button 
+            mode="contained" 
+            onPress={simulateClosingEvent}
+            style={styles.devButton}
+            disabled={!expoPushToken}
+          >
+            Simulate Closing Notification
+          </Button>
+          
+          <Text style={styles.statusText}>{notificationStatus}</Text>
+        </View>
         
         <FacilityModal
           visible={modalVisible}

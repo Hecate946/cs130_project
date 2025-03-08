@@ -4,19 +4,27 @@ import { Colors } from "@/constants/Colors";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import * as Haptics from "expo-haptics";
 import { useState } from "react";
-
+import CapacityComponent from "../modal/CapacityComponent";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 
 interface HomeCardProps {
   name: string,
   description: string | null,
+  facilityData?: {
+    capacity?: number;
+    occupants?: number;
+  };
   isPinned: boolean,
   pinCallback: () => void,
   onPress: () => void,
 }
 
-export default function HomeCard({ name, description, isPinned, pinCallback, onPress }: HomeCardProps) {
+export default function HomeCard({ name, description, facilityData, isPinned, pinCallback, onPress }: HomeCardProps) {
+  const capacity = facilityData?.capacity ?? 0;
+  const occupants = facilityData?.occupants ?? 0;
+  const occupancyPercentage = capacity > 0 ? occupants / capacity : 0;
+
   const handlePress = async () => {
     await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     onPress();
@@ -36,7 +44,10 @@ export default function HomeCard({ name, description, isPinned, pinCallback, onP
       </View>
       <View style={styles.content}>
         <Title style={[styles.title, { color: Colors.light.text }]}>{name}</Title>
-        {/*<Paragraph style={{ color: Colors.light.text }}>{description}</Paragraph>*/}
+        <Paragraph style={{ color: Colors.light.text }}>{description}</Paragraph>
+        {capacity > 0 && (
+        <CapacityComponent percentage={occupancyPercentage} variant={"secondary"} />
+        )}
       </View>
     </Card>
   )
