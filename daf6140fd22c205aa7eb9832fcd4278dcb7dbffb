@@ -1,0 +1,191 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "6675e4f5_43016839",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2025-03-08T23:53:50Z",
+      "side": 1,
+      "message": "good job! a few changes requested!",
+      "revId": "daf6140fd22c205aa7eb9832fcd4278dcb7dbffb",
+      "serverId": "3c7ad661-7ce8-4163-af0d-ebc0f4c5b529"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f48530f1_ea143431",
+        "filename": "bruinhub-app/app/HomeScreen.tsx",
+        "patchSetId": 2
+      },
+      "lineNbr": 271,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2025-03-08T23:53:50Z",
+      "side": 1,
+      "message": "is there a reason why `fetchHoursAndCapacity` is defined within the `useEffect()`? Not too sure if it has to be in here -- it can just be an async function defined outside of this useEffect (since this useEffect is only run on component mount anyway)",
+      "revId": "daf6140fd22c205aa7eb9832fcd4278dcb7dbffb",
+      "serverId": "3c7ad661-7ce8-4163-af0d-ebc0f4c5b529"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "fb8ae533_4f097dec",
+        "filename": "bruinhub-app/app/HomeScreen.tsx",
+        "patchSetId": 2
+      },
+      "lineNbr": 285,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2025-03-08T23:53:50Z",
+      "side": 1,
+      "message": "i think we should just keep it consistent to say \"Hours\" instead of giving specific days. Ik there are some takeout spaces that have differing hours per day. Also, thoughts on removing \"Hours\" completely and just putting the actual hours without the \"Hours\" text.",
+      "revId": "daf6140fd22c205aa7eb9832fcd4278dcb7dbffb",
+      "serverId": "3c7ad661-7ce8-4163-af0d-ebc0f4c5b529"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d995349a_fe254352",
+        "filename": "bruinhub-app/app/HomeScreen.tsx",
+        "patchSetId": 2
+      },
+      "lineNbr": 355,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2025-03-08T23:53:50Z",
+      "side": 1,
+      "message": "this is already defined in `Slugmap.ts` under `/app/constants/`. Use that export accordingly for this file. Also, is there a reason only these specific ones are listed? Are hours-and-occupancy not supported for the other facilities?",
+      "revId": "daf6140fd22c205aa7eb9832fcd4278dcb7dbffb",
+      "serverId": "3c7ad661-7ce8-4163-af0d-ebc0f4c5b529"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a416b734_05f9e812",
+        "filename": "bruinhub-app/app/HomeScreen.tsx",
+        "patchSetId": 2
+      },
+      "lineNbr": 400,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2025-03-08T23:53:50Z",
+      "side": 1,
+      "message": "nit spacing should be 2 spaces and not 4 spaces",
+      "revId": "daf6140fd22c205aa7eb9832fcd4278dcb7dbffb",
+      "serverId": "3c7ad661-7ce8-4163-af0d-ebc0f4c5b529"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c3cd696c_3782201a",
+        "filename": "bruinhub-app/app/HomeScreen.tsx",
+        "patchSetId": 2
+      },
+      "lineNbr": 440,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2025-03-08T23:53:50Z",
+      "side": 1,
+      "message": "whitespace do u mind fixing this (ik it\u0027s not part of ur changes)",
+      "revId": "daf6140fd22c205aa7eb9832fcd4278dcb7dbffb",
+      "serverId": "3c7ad661-7ce8-4163-af0d-ebc0f4c5b529"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "329a0061_df754ae5",
+        "filename": "bruinhub-app/app/HomeScreen.tsx",
+        "patchSetId": 2
+      },
+      "lineNbr": 443,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2025-03-08T23:53:50Z",
+      "side": 1,
+      "message": "same here",
+      "revId": "daf6140fd22c205aa7eb9832fcd4278dcb7dbffb",
+      "serverId": "3c7ad661-7ce8-4163-af0d-ebc0f4c5b529"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "17059e7b_b0c23f3c",
+        "filename": "bruinhub-app/components/modal/CapacityComponent.tsx",
+        "patchSetId": 2
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2025-03-08T23:53:50Z",
+      "side": 1,
+      "message": "does this change impact the capacity indicator that is used within the modal? If so, we might need to apply special styling for the HomeCard use case.",
+      "revId": "daf6140fd22c205aa7eb9832fcd4278dcb7dbffb",
+      "serverId": "3c7ad661-7ce8-4163-af0d-ebc0f4c5b529"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "81fc9268_e4024626",
+        "filename": "bruinhub-app/components/modal/CapacityComponent.tsx",
+        "patchSetId": 2
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2025-03-08T23:53:50Z",
+      "side": 1,
+      "message": "i think we might need to have some special styling for the `HomeCard` use case. Currently, the padding at the bottom is a bit much imo. Also, thoughts on visualizing this in a pie chart (circle) instead of a bar? It could be cleaner and moved to the right of the Card itself. If so, we can just create a new component and use better styling/more precise styling there!",
+      "revId": "daf6140fd22c205aa7eb9832fcd4278dcb7dbffb",
+      "serverId": "3c7ad661-7ce8-4163-af0d-ebc0f4c5b529"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "51def120_79b3741b",
+        "filename": "bruinhub-app/components/modal/CapacityComponent.tsx",
+        "patchSetId": 2
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2025-03-08T23:53:50Z",
+      "side": 1,
+      "message": "same here, this will impact the other places that the `CapacityComponent` is used. Might need to use special styling",
+      "revId": "daf6140fd22c205aa7eb9832fcd4278dcb7dbffb",
+      "serverId": "3c7ad661-7ce8-4163-af0d-ebc0f4c5b529"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3020f60d_25c169e4",
+        "filename": "bruinhub-app/components/modal/CapacityComponent.tsx",
+        "patchSetId": 2
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2025-03-08T23:53:50Z",
+      "side": 1,
+      "message": "i think this should be extended to 100% still",
+      "revId": "daf6140fd22c205aa7eb9832fcd4278dcb7dbffb",
+      "serverId": "3c7ad661-7ce8-4163-af0d-ebc0f4c5b529"
+    }
+  ]
+}
