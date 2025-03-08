@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "cc5ae29b_a06a47fb",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000003
+      },
+      "writtenOn": "2025-03-08T06:36:29Z",
+      "side": 1,
+      "message": "Okay for now - we can make sure it works with everything, and then clean up nits and modularize.",
+      "revId": "18b6638cfa2032588d7015059f72d5ce3ff6bf11",
+      "serverId": "3c7ad661-7ce8-4163-af0d-ebc0f4c5b529"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "eb7db322_9de15689",
+        "filename": "bruinhub-app/components/modal/FacilityModal.tsx",
+        "patchSetId": 1
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 1000003
+      },
+      "writtenOn": "2025-03-08T06:36:29Z",
+      "side": 1,
+      "message": "Let\u0027s keep the URL the same so we don\u0027t have it changing every changeset.",
+      "range": {
+        "startLine": 31,
+        "startChar": 0,
+        "endLine": 31,
+        "endChar": 49
+      },
+      "revId": "18b6638cfa2032588d7015059f72d5ce3ff6bf11",
+      "serverId": "3c7ad661-7ce8-4163-af0d-ebc0f4c5b529"
+    }
+  ]
+}
