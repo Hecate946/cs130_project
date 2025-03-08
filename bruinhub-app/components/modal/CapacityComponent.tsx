@@ -28,7 +28,7 @@ export default function CapacityComponent({ percentage }: CapacityComponentProps
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: Colors.light.background,
+    //backgroundColor: Colors.light.icon,
     width: "100%",
     paddingTop: 5,
     paddingBottom: 15,
@@ -44,8 +44,8 @@ const styles = StyleSheet.create({
   progressBar: {
     height: 20,
     borderRadius: 10,
-    backgroundColor: Colors.light.icon,
-    width: "100%",
+    backgroundColor: Colors.dark.tint,
+    width: "90%",
   },
 
   progressBarWrapper: {
