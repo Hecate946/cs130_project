@@ -14,6 +14,7 @@ import { Colors } from "@/constants/Colors";
 import HomeCard from "@/components/home/HomeCard";
 import Divider from "@/components/Divider";
 import FacilityModal from "@/components/modal/FacilityModal";
+import { SlugMap } from '@/constants/SlugMap';
 
 import Fuse from "fuse.js"; // Fuzzy searching!!!
 
@@ -30,12 +31,23 @@ interface HomeScreenProps {
   onFinish: () => void;
 };
 
+interface AllFacilityData {
+  data: Record<string, {
+    hours?: string;
+    capacity?: number;
+    occupants?: number;
+  }>;
+}
+
+const HOURS_OCCUP_URL = "http://192.168.98.104:5001/api/v1/hours-and-occupancy"; //TODO fix as needed.
+
 export default function HomeScreen({ onFinish }: HomeScreenProps) {
   const [pinnedItems, setPinnedItems] = useState<Set<string>>(new Set());
   const [allItems, setAllItems] = useState<{ id: string; name: string }[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedFacility, setSelectedFacility] = useState("");
   const [modalVisible, setModalVisible] = useState(false);
+  const [facilityData, setFacilityData] = useState<AllFacilityData>({ data: {} });
 
   const loadPinnedItems = async () => {
     try {
@@ -74,10 +86,47 @@ export default function HomeScreen({ onFinish }: HomeScreenProps) {
     }
   };
 
-  // Load data on component mount
+  const getTodayHours = (hours: Record<string, string>) => {
+    const today = new Date().toLocaleDateString("en-US", { weekday: "long" });
+    return hours?.[today] ?? "Hours Unavailable";
+  };
+
+  const fetchHoursAndCapacity = async () => {
+    try {
+      const response = await fetch(HOURS_OCCUP_URL);
+      if (!response.ok) {
+        throw new Error(`HTTP Error with Status: ${response.status}`);
+      }
+
+      const jsonResponse = await response.json();
+      const parsedFacilities: AllFacilityData = { data: {} };
+
+      Object.keys(jsonResponse.data).forEach((facilityKey) => {
+        const facility = jsonResponse.data[facilityKey];
+        let formattedHours = "Hours Unavailable";
+        if (Array.isArray(facility.hours)) { //Hours are usually the same every day.
+          formattedHours = `${facility.hours.join(", ")}`;
+        }
+        else if (typeof facility.hours === "object"){ //Hours for Gym differs Daily
+          formattedHours = getTodayHours(facility.hours);
+        }
+
+        parsedFacilities.data[facilityKey] = {
+          capacity: facility.capacity ?? 0,
+          occupants: facility.occupants ?? 0,
+          hours: formattedHours ?? "",
+        };
+      });
+      setFacilityData(parsedFacilities);
+    } catch (error) {
+      console.error("Error fetching facility data:", error);
+    }
+  };
+
   useEffect(() => {
     loadPinnedItems();
     loadAllItems();
+    fetchHoursAndCapacity();
   }, []);
 
   const handleOpenModal = (facilityName: string) => {
@@ -149,37 +198,52 @@ export default function HomeScreen({ onFinish }: HomeScreenProps) {
         <Divider name="Pinned" />
         {
           filteredPinned.length > 0 ? (
-          filteredPinned.map((item) => (
-            <HomeCard
-              name={item.name}
-              description={null}
-              isPinned={true}
-              pinCallback={() => togglePin(item.id)}
-              key={item.id}
-              onPress={() => handleOpenModal(item.name)}
-            />
-          ))) :
-          <Text style={styles.pinText}>Pin your favorite spots!</Text>
+            filteredPinned.map((item) => {
+              const facilityKey = item.name;
+              const facName = SlugMap.get(facilityKey) ?? facilityKey;
+              const facilityInfo = facilityData?.data?.[facName] ?? {};
+              const hours = facilityInfo?.hours ?? "";
+
+              return (
+                <HomeCard
+                  name={item.name}
+                  description={hours}
+                  facilityData={facilityInfo}
+                  isPinned={true}
+                  pinCallback={() => togglePin(item.id)}
+                  key={item.id}
+                  onPress={() => handleOpenModal(item.name)}
+                />
+              );
+            })):(
+          <Text style={styles.pinText}>Pin your favorite spots!</Text>)
         }
         <Divider name="The Rest" />
         {
-          filteredUnpinned.map((item) => (
-            <HomeCard
-              name={item.name}
-              description={null}
-              isPinned={false}
-              pinCallback={() => togglePin(item.id)}
-              key={item.id}
-              onPress={() => handleOpenModal(item.name)}
-            />
-          ))
+          filteredUnpinned.map((item) => {
+            const facilityKey = item.name;
+            const facName = SlugMap.get(facilityKey) ?? facilityKey;
+            const facilityInfo = facilityData?.data?.[facName] ?? {};
+            const hours = facilityInfo?.hours ?? "";
+
+            return (
+              <HomeCard
+                name={item.name}
+                description={hours}
+                facilityData={facilityInfo}
+                isPinned={false}
+                pinCallback={() => togglePin(item.id)}
+                key={item.id}
+                onPress={() => handleOpenModal(item.name)}
+              />
+            );
+          })
         }
         <Link href="/" asChild>
           <Button mode="contained" onPress={handleFinish}>
             Back to onboarding for dev purposes
           </Button>
         </Link>
-        
         <FacilityModal
           visible={modalVisible}
           onClose={() => setModalVisible(false)}
