@@ -408,6 +408,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     paddingTop: 10,
     paddingBottom: 10,
+    maxWidth: "80%",
   },
   description: {
     marginVertical: 15,
