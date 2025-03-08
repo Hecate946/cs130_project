@@ -1,3 +1,4 @@
+import copy
 from sqlalchemy import Column, Integer, String, JSON, DateTime, Boolean, ForeignKey
 from sqlalchemy.sql import func
 from database.db import db
@@ -23,10 +24,12 @@ class DeviceToken(db.Model):
         self.push_token = push_token
         self.device_type = device_type
         self.user_id = user_id
-        self.is_active = is_active
         
-        # Set preferences with defaults only if none provided
-        if preferences is None:
+        if preferences:
+            # Use deepcopy to avoid mutation issues
+            self.preferences = copy.deepcopy(preferences)
+        else:
+            # Default preferences if none provided
             self.preferences = {
                 "capacity": {"enabled": True, "threshold": 50},
                 "closing": {"enabled": True, "minutes_before": 30}
@@ -36,4 +39,4 @@ class DeviceToken(db.Model):
             self.preferences = copy.deepcopy(preferences)
     
     def __repr__(self):
-        return f"<DeviceToken id={self.id} push_token={self.push_token[:10]}...>" 
+        return f"<DeviceToken id={self.id} push_token={self.push_token[:10]}...>"

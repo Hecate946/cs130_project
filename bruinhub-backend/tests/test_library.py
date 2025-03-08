@@ -455,7 +455,7 @@ def test_missing_date_params_in_range_route(app):
         assert response.status_code == 400
         data = response.get_json()
         assert "error" in data
-        assert "Both 'start' and 'end' query parameters are required" in data["error"]
+        assert "Missing start or end date" in data["error"]
 
 
 def test_invalid_date_format_route(app):
@@ -485,14 +485,14 @@ def test_missing_start_and_both_dates(app):
         assert response.status_code == 400
         data = response.get_json()
         assert "error" in data
-        assert "Both 'start' and 'end' query parameters are required" in data["error"]
+        assert "Missing start or end date" in data["error"]
 
         # Missing start parameter.
         response = client.get("/v1/library/missing-dates/bookings/range?end=2025-02-20T23:59:59")
         assert response.status_code == 400
         data = response.get_json()
         assert "error" in data
-        assert "Both 'start' and 'end' query parameters are required" in data["error"]
+        assert "Missing start or end date" in data["error"]
 
 
 def test_nonexistent_library_detail_route(app):

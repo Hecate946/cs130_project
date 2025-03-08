@@ -41,44 +41,70 @@ def get_library_rooms(slug: str):
     return jsonify({"data": data, "timestamp": datetime.now().isoformat()})
 
 @library_routes.route("/v1/library/<slug>/bookings/range", methods=["GET"])
-def get_library_bookings_by_date_range(slug: str):
+def get_library_bookings_by_date_range(slug):
     """
     Retrieve booking data for a specific library within a specified date range.
-
+    
+    Path Parameters:
+    - slug (str): The library identifier (e.g., 'powell', 'yrl')
+    
     Query Parameters:
-      - start: ISO formatted start datetime (e.g., "2025-02-20T00:00:00")
-      - end:   ISO formatted end datetime (e.g., "2025-02-21T00:00:00")
-
-    Example:
-      GET /v1/library/powell/bookings/range?start=2025-02-20T00:00:00&end=2025-02-21T00:00:00
+    - start (str, required): ISO 8601 formatted datetime string for the start of the range
+      Format: YYYY-MM-DDThh:mm:ss (e.g., '2025-03-08T00:00:00')
+    - end (str, required): ISO 8601 formatted datetime string for the end of the range
+      Format: YYYY-MM-DDThh:mm:ss (e.g., '2025-03-08T23:59:59')
+    
+    Returns:
+    - 200 OK: JSON object with an array of booking objects and a timestamp
+      - data: Array of booking objects, possibly empty if no bookings found
+      - timestamp: ISO 8601 timestamp of when the response was generated
+    - 400 Bad Request: If start/end parameters are missing or in invalid format
+    
+    Each booking object contains:
+    - id: Unique identifier for the booking
+    - room_id: ID of the room being booked
+    - start_time: ISO 8601 start time of the booking
+    - end_time: ISO 8601 end time of the booking
+    - status: Booking status ('available' or 'booked')
+    - created_at: ISO 8601 timestamp of when the booking was created
+    
+    Examples:
+    
+    1. Get all bookings for Powell Library on March 8, 2025:
+       GET /v1/library/powell/bookings/range?start=2025-03-08T00:00:00&end=2025-03-08T23:59:59
+    
+    2. Get bookings for YRL in the morning hours:
+       GET /v1/library/yrl/bookings/range?start=2025-03-10T08:00:00&end=2025-03-10T12:00:00
+    
+    3. Get bookings for a specific week:
+       GET /v1/library/powell/bookings/range?start=2025-03-01T00:00:00&end=2025-03-07T23:59:59
+    
+    Note: This endpoint always returns a 200 status code with an array (possibly empty)
+    when parameters are valid, even if no bookings are found in the specified range.
     """
-    start_str = request.args.get("start")
-    end_str = request.args.get("end")
-
-    if not start_str or not end_str:
+    start = request.args.get("start")
+    end = request.args.get("end")
+    
+    if not start or not end:
         return jsonify({
-            "error": "Both 'start' and 'end' query parameters are required",
+            "error": "Missing start or end date parameters", 
             "timestamp": datetime.now().isoformat()
         }), 400
-
+    
     try:
-        start_date = datetime.fromisoformat(start_str)
-        end_date = datetime.fromisoformat(end_str)
-    except ValueError as ve:
-        logger.error(f"Date parsing error: {ve}")
+        # Validate date format
+        start_datetime = datetime.fromisoformat(start)
+        end_datetime = datetime.fromisoformat(end)
+    except ValueError:
         return jsonify({
-            "error": "Invalid date format. Please use ISO format (YYYY-MM-DDTHH:MM:SS)",
+            "error": "Invalid date format", 
             "timestamp": datetime.now().isoformat()
         }), 400
-
-    data = library_db.get_library_bookings_by_date_range(slug, start_date, end_date)
-    if not data:
-        return jsonify({
-            "error": "No booking data found for the specified date range",
-            "timestamp": datetime.now().isoformat()
-        }), 404
-
-    return jsonify({"data": data, "timestamp": datetime.now().isoformat()})
+        
+    data = library_db.get_library_bookings_by_date_range(slug, start_datetime, end_datetime)
+    
+    # Always return 200 with data array (even if empty)
+    return jsonify({"data": data or [], "timestamp": datetime.now().isoformat()})
 
 @library_routes.route("/v1/library/<slug>", methods=["GET", "POST"])
 def get_library_details(slug: str):
@@ -146,4 +172,4 @@ def get_all_library_rooms():
     return jsonify({
         "data": rooms,
         "timestamp": datetime.now().isoformat()
-    }) 
+    })
