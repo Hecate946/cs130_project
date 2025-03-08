@@ -1,6 +1,7 @@
 import logging
-from flask import Blueprint, jsonify
+from flask import Blueprint, jsonify, request
 from datetime import datetime
+import re
 from database.dining import DiningDatabase
 from database.gyms import GymDatabase
 from config.dining import OCCUSPACE_IDS
@@ -21,6 +22,14 @@ def get_dining_historical(slug: str):
     - `/v1/historical/dining/bplate` → Returns hourly averages for BruinPlate.
     """
     logger.info(f"Fetching historical data for dining hall: {slug}")
+    
+    # Validate period parameter if provided
+    period = request.args.get('period')
+    if period and period not in ['day', 'week', 'month', 'year']:
+        return jsonify({
+            "error": f"Invalid period parameter: {period}. Valid values are: day, week, month, year",
+            "timestamp": datetime.now().isoformat()
+        }), 400
     
     if slug not in OCCUSPACE_IDS:
         return jsonify({
@@ -50,6 +59,26 @@ def get_gym_historical(slug: str):
     """
     logger.info(f"Fetching historical data for gym: {slug}")
     
+    # Validate date parameter if provided
+    date = request.args.get('date')
+    if date:
+        # Check if date matches YYYY-MM-DD format and is valid
+        date_pattern = re.compile(r'^\d{4}-\d{2}-\d{2}$')
+        if not date_pattern.match(date):
+            return jsonify({
+                "error": f"Invalid date format: {date}. Use YYYY-MM-DD format.",
+                "timestamp": datetime.now().isoformat()
+            }), 400
+        
+        try:
+            # Validate date further by attempting to parse it
+            datetime.strptime(date, '%Y-%m-%d')
+        except ValueError:
+            return jsonify({
+                "error": f"Invalid date: {date}. Date does not exist or is in wrong format.",
+                "timestamp": datetime.now().isoformat()
+            }), 400
+    
     if slug not in FACILITY_IDS:
         return jsonify({
             "error": "Invalid gym slug",
@@ -66,4 +95,4 @@ def get_gym_historical(slug: str):
     return jsonify({
         "data": data,
         "timestamp": datetime.now().isoformat()
-    }) 
+    })

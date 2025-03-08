@@ -1,6 +1,17 @@
+import pytest
 from scrapers.gyms import GymScrapers
 from config.gyms import FACILITY_IDS
 from scrapers.dining import DiningScrapers
+
+
+# Add this fixture to filter BeautifulSoup warnings
+@pytest.fixture(autouse=True)
+def suppress_bs4_warnings():
+    import warnings
+    # Filter the specific BeautifulSoup LXML DeprecationWarning
+    warnings.filterwarnings("ignore", 
+                           message="The 'strip_cdata' option of HTMLParser()",
+                           category=DeprecationWarning)
 
 
 def test_get_facility_counts():

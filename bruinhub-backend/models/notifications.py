@@ -1,3 +1,4 @@
+import copy
 from sqlalchemy import Column, Integer, String, JSON, DateTime, Boolean, ForeignKey
 from sqlalchemy.sql import func
 from database.db import db
@@ -27,7 +28,8 @@ class DeviceToken(db.Model):
         self.user_id = user_id
         
         if preferences:
-            self.preferences = preferences
+            # Use deepcopy to avoid mutation issues
+            self.preferences = copy.deepcopy(preferences)
         else:
             # Default preferences if none provided
             self.preferences = {
@@ -36,4 +38,4 @@ class DeviceToken(db.Model):
             }
     
     def __repr__(self):
-        return f"<DeviceToken id={self.id} push_token={self.push_token[:10]}...>" 
+        return f"<DeviceToken id={self.id} push_token={self.push_token[:10]}...>"
