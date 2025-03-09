@@ -18,6 +18,40 @@
       "serverId": "3c7ad661-7ce8-4163-af0d-ebc0f4c5b529"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "43eefd58_b4514f6a",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2025-03-09T00:05:56Z",
+      "side": 1,
+      "message": "FE lgtm! waiting on BE approval",
+      "revId": "18b6638cfa2032588d7015059f72d5ce3ff6bf11",
+      "serverId": "3c7ad661-7ce8-4163-af0d-ebc0f4c5b529"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6ec635e4_be5b4a39",
+        "filename": "bruinhub-app/components/NotificationBellComponent.tsx",
+        "patchSetId": 1
+      },
+      "lineNbr": 101,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2025-03-09T00:05:56Z",
+      "side": 1,
+      "message": "can we make this a variable instead (for ease of testing/use)",
+      "revId": "18b6638cfa2032588d7015059f72d5ce3ff6bf11",
+      "serverId": "3c7ad661-7ce8-4163-af0d-ebc0f4c5b529"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "eb7db322_9de15689",
