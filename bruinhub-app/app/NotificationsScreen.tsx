@@ -13,6 +13,7 @@ import NotificationItem from "@/components/notifications/NotificationItem";
 import Divider from "@/components/Divider";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useState, useEffect } from "react";
+import { EXPO_API_URL } from '@/constants/ApiUrls';
 
 const Restaurants = Categories.diningHalls;
 const Takeout = Categories.takeout;
@@ -113,7 +114,7 @@ export default function NotificationsScreen({ onFinish }: NotificationsScreenPro
         }
       }
 
-      const response = await fetch('http://192.168.216.35:5001/api/v1/notifications/register', {
+      const response = await fetch(`${EXPO_API_URL}:5001/api/v1/notifications/register`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -191,7 +192,7 @@ export default function NotificationsScreen({ onFinish }: NotificationsScreenPro
       console.log('Sending preferences to backend:', JSON.stringify(requestPayload, null, 2));
       
       // Send to backend
-      const response = await fetch('http://192.168.216.35:5001/api/v1/notifications/update-preferences', {
+      const response = await fetch(`${EXPO_API_URL}:5001/api/v1/notifications/update-preferences`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -263,7 +264,7 @@ export default function NotificationsScreen({ onFinish }: NotificationsScreenPro
         is_active: allEnabled
       };
       
-      const response = await fetch('http://192.168.216.35:5001/api/v1/notifications/update-preferences', {
+      const response = await fetch(`${EXPO_API_URL}:5001/api/v1/notifications/update-preferences`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -322,7 +323,7 @@ export default function NotificationsScreen({ onFinish }: NotificationsScreenPro
         is_active: newValue
       };
       
-      const response = await fetch('http://192.168.216.35:5001/api/v1/notifications/update-preferences', {
+      const response = await fetch(`${EXPO_API_URL}:5001/api/v1/notifications/update-preferences`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

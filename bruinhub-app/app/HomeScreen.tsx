@@ -15,6 +15,7 @@ import HomeCard from "@/components/home/HomeCard";
 import Divider from "@/components/Divider";
 import FacilityModal from "@/components/modal/FacilityModal";
 import { SlugMap } from '@/constants/SlugMap';
+import { EXPO_API_URL } from "@/constants/ApiUrls";
 
 import Fuse from "fuse.js"; // Fuzzy searching!!!
 
@@ -39,7 +40,7 @@ interface AllFacilityData {
   }>;
 }
 
-const HOURS_OCCUP_URL = "http://192.168.98.104:5001/api/v1/hours-and-occupancy"; //TODO fix as needed.
+const HOURS_OCCUP_URL = `${EXPO_API_URL}:5001/api/v1/hours-and-occupancy`;
 
 export default function HomeScreen({ onFinish }: HomeScreenProps) {
   const [pinnedItems, setPinnedItems] = useState<Set<string>>(new Set());

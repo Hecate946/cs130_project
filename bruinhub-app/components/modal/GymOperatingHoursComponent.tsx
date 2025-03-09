@@ -18,6 +18,8 @@ export default function GymOperatingHoursComponent({ regularHours, specialHours 
   const [statusMessage, setStatusMessage] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const [isSpecial, setIsSpecial] = useState(false);
+  const [startMinutes, setStartMinutes] = useState(-1);
+  const [endMinutes, setEndMinutes] = useState(-1);
 
   const specialDateKey = currentDate.toISOString().split('T')[0];
 
@@ -25,37 +27,43 @@ export default function GymOperatingHoursComponent({ regularHours, specialHours 
     let hoursToday = "";
     let startMinutes = -1;
     let endMinutes = -1;
+    let openStatus = false;
 
     if (specialHours[specialDateKey]) {
       setIsSpecial(true);
       let specialHoursToday = specialHours[specialDateKey];
       if (specialHoursToday === "CLOSED") {
-        setIsOpen(false);
+        openStatus = false;
       } else {
         hoursToday = specialHoursToday;
         const [start, end] = hoursToday.split(" - ");
         startMinutes = timeToMinutes(start);
         endMinutes = getEndMinutes(end, startMinutes);
-        setIsOpen(currentMinutes >= startMinutes && currentMinutes < endMinutes);
+        openStatus = currentMinutes >= startMinutes && currentMinutes < endMinutes;
       }
     } else {
       hoursToday = regularHours[currentDay];
       const [start, end] = hoursToday.split(" - ");
       startMinutes = timeToMinutes(start);
       endMinutes = getEndMinutes(end, startMinutes);
-      setIsOpen(currentMinutes >= startMinutes && currentMinutes < endMinutes);
+      openStatus = currentMinutes >= startMinutes && currentMinutes < endMinutes;
     }
 
+    setIsOpen(openStatus);
+
+    setStartMinutes(startMinutes);
+    setEndMinutes(endMinutes);
+  }, [specialHours, regularHours, currentDay, currentMinutes, specialDateKey]);
+
+  useEffect(() => {
     if (isOpen) {
       setStatusMessage(`Open until ${formatMinutesToTime(endMinutes)}`);
     } else if (isSpecial && !isOpen) {
       setStatusMessage("Closed Today");
-      setIsOpen(false);
     } else {
       setStatusMessage(`Closed until ${formatMinutesToTime(startMinutes)}`);
-      setIsOpen(false);
     }
-  }, [specialHours, regularHours, currentDay, currentMinutes, specialDateKey]);
+  }, [isOpen, isSpecial, startMinutes, endMinutes]);
 
 
   return (
