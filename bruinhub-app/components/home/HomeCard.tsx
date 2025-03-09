@@ -44,8 +44,8 @@ export default function HomeCard({ name, description, facilityData, isPinned, pi
       </View>
       <View style={styles.content}>
         <Title style={[styles.title, { color: Colors.light.text }]}>{name}</Title>
-        <Paragraph style={{ color: Colors.light.text }}>{description}</Paragraph>
-        {capacity > 0 && (
+        {description && <Paragraph style={{ color: Colors.light.text, fontSize: 14 }}>{description}</Paragraph>}
+        {occupancyPercentage > 0.02 && (
         <CapacityComponent percentage={occupancyPercentage} variant={"secondary"} />
         )}
       </View>
