@@ -6,6 +6,7 @@ import { Categories } from "@/constants/Categories";
 import { CategoriesMap } from "@/constants/CategoriesMap";
 import { SlugMap } from "@/constants/SlugMap";
 import { Colors } from "@/constants/Colors";
+import { API_BASE_URL } from "@/constants/ApiUrls";
 import MenuComponent from "./MenuComponent";
 import CapacityComponent from "./CapacityComponent";
 import DateFormatter from "./DateFormatter";
@@ -27,8 +28,7 @@ interface FacilityData {
   data: object,
 }
 
-// TODO change lol
-const URL = "http://192.168.216.35:5001/api/v1/";
+const URL = API_BASE_URL;
 
 const { height: SCREEN_HEIGHT } = Dimensions.get("window");
 const SWIPE_THRESHOLD = 100;

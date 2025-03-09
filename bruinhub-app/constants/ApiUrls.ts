@@ -1,2 +1,1 @@
-// Base API URLs for different environments
-export const EXPO_API_URL = 'http://131.179.38.235:5002'; // Replace with your actual API URL 
+export const API_BASE_URL = "http://192.168.216.35:5001/api/v1/"; 

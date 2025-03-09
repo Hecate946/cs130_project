@@ -13,6 +13,7 @@ import NotificationItem from "@/components/notifications/NotificationItem";
 import Divider from "@/components/Divider";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useState, useEffect } from "react";
+import { API_BASE_URL } from "@/constants/ApiUrls";
 
 const Restaurants = Categories.diningHalls;
 const Takeout = Categories.takeout;
@@ -112,7 +113,7 @@ export default function NotificationsScreen({ onFinish }: NotificationsScreenPro
         }
       }
 
-      const response = await fetch('http://192.168.216.35:5001/api/v1/notifications/register', {
+      const response = await fetch(`${API_BASE_URL}/notifications/register`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -188,7 +189,7 @@ export default function NotificationsScreen({ onFinish }: NotificationsScreenPro
       };
 
       // Send to backend
-      const response = await fetch('http://192.168.216.35:5001/api/v1/notifications/update-preferences', {
+      const response = await fetch(`${API_BASE_URL}/notifications/update-preferences`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -257,7 +258,7 @@ export default function NotificationsScreen({ onFinish }: NotificationsScreenPro
         is_active: allEnabled
       };
       
-      const response = await fetch('http://192.168.216.35:5001/api/v1/notifications/update-preferences', {
+      const response = await fetch(`${API_BASE_URL}/notifications/update-preferences`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -325,7 +326,7 @@ export default function NotificationsScreen({ onFinish }: NotificationsScreenPro
         is_active: newValue  // Only update the global toggle
       };
       
-      const response = await fetch('http://192.168.216.35:5001/api/v1/notifications/update-preferences', {
+      const response = await fetch(`${API_BASE_URL}/notifications/update-preferences`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

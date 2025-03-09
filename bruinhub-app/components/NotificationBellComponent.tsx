@@ -6,6 +6,7 @@ import { useFocusEffect } from "@react-navigation/native";
 import * as Haptics from "expo-haptics";
 import { SlugMap } from "@/constants/SlugMap";
 import { Categories } from "@/constants/Categories";
+import { API_BASE_URL } from "@/constants/ApiUrls";
 
 interface NotificationBellProps {
   facilityId: number;
@@ -97,7 +98,7 @@ export default function NotificationBell({ facilityId, facilityName }: Notificat
       }
 
       // Send to backend
-      const response = await fetch('http://192.168.216.35:5001/api/v1/notifications/update-preferences', {
+      const response = await fetch(`${API_BASE_URL}/notifications/update-preferences`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
