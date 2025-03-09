@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f71636d2_67ac3534",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2025-03-09T00:00:04Z",
+      "side": 1,
+      "message": "didn\u0027t review backend files (waiting on backend team). one big change requested though",
+      "revId": "9e632c79ddfdb9d4a4459ef2d3ac8d2c81009abd",
+      "serverId": "3c7ad661-7ce8-4163-af0d-ebc0f4c5b529"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b52b92f9_0e6beb38",
+        "filename": "venv/bin/activate",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2025-03-09T00:00:04Z",
+      "side": 1,
+      "message": "wait idt anything in `/venv` should be committed to version control",
+      "revId": "9e632c79ddfdb9d4a4459ef2d3ac8d2c81009abd",
+      "serverId": "3c7ad661-7ce8-4163-af0d-ebc0f4c5b529"
+    }
+  ]
+}
