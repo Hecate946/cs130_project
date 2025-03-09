@@ -127,22 +127,16 @@ class GymDatabase:
             "last_updated": gym.last_updated.isoformat(),
         }
 
-    def get_historical_capacity(self, slug: str) -> Dict[str, Dict[int, Dict[str, float]]]:
+    def get_historical_capacity(self, slug: str) -> Dict[int, Dict[str, float]]:
         """
-        Calculate historical capacity averages by hour for each zone in a gym.
+        Calculate historical capacity averages by hour for the entire gym (aggregated across zones).
         
         Returns:
-            Dict[str, Dict[int, Dict[str, float]]]: A dictionary mapping zone names to their hourly averages:
+            Dict[int, Dict[str, float]]: A dictionary mapping hours (6-1) to their average capacity data:
             {
-                "Weight Room": {
-                    6: {"occupants": 30.5, "capacity": 50.0},
-                    7: {"occupants": 45.2, "capacity": 50.0},
-                    ...
-                },
-                "Cardio Room": {
-                    6: {"occupants": 20.3, "capacity": 40.0},
-                    ...
-                }
+                6: {"occupants": 50.5, "capacity": 100.0},
+                7: {"occupants": 75.2, "capacity": 100.0},
+                ...
             }
             Hours with no data will return {"occupants": 0.0, "capacity": 0.0}
         """
@@ -158,38 +152,44 @@ class GymDatabase:
         ).all()
 
         if not capacities:
-            return {}
+            return {
+                hour: {"occupants": 0.0, "capacity": 0.0}
+                for hour in range(6, 26)  # 6am to 1am
+            }
 
-        # Initialize data structure
-        zone_data = {}
+        # Initialize hourly counters
+        hourly_data = {hour: {"occupants": 0.0, "capacity": 0.0, "count": 0} for hour in range(6, 26)}  # 6am to 1am
 
-        # Group capacities by zone
+        # Group capacities by timestamp to aggregate zones
+        from collections import defaultdict
+        timestamp_groups = defaultdict(list)
         for capacity in capacities:
-            zone_name = capacity.zone_name
-            if zone_name not in zone_data:
-                # Initialize hourly counters for this zone
-                zone_data[zone_name] = {
-                    hour: {"occupants": 0.0, "capacity": 0.0, "count": 0}
-                    for hour in range(6, 26)  # 6am to 1am
-                }
-
             hour = capacity.last_updated.hour
-            if hour in zone_data[zone_name]:
-                zone_data[zone_name][hour]["occupants"] += capacity.occupants
-                zone_data[zone_name][hour]["capacity"] += capacity.capacity
-                zone_data[zone_name][hour]["count"] += 1
+            if hour in hourly_data:
+                # Group by timestamp to later aggregate zones from the same time
+                timestamp_groups[capacity.last_updated].append(capacity)
 
-        # Calculate averages for each zone, return 0 for hours with no data
+        # Process each timestamp group
+        for timestamp, records in timestamp_groups.items():
+            hour = timestamp.hour
+            if hour in hourly_data:
+                # Sum occupants and capacity across all zones for this timestamp
+                total_occupants = sum(record.occupants for record in records)
+                total_capacity = sum(record.capacity for record in records)
+                
+                hourly_data[hour]["occupants"] += total_occupants
+                hourly_data[hour]["capacity"] += total_capacity
+                hourly_data[hour]["count"] += 1
+
+        # Calculate averages, return 0 for hours with no data
         result = {}
-        for zone_name, hourly_data in zone_data.items():
-            result[zone_name] = {}
-            for hour, data in hourly_data.items():
-                if data["count"] > 0:
-                    result[zone_name][hour] = {
-                        "occupants": round(data["occupants"] / data["count"], 1),
-                        "capacity": round(data["capacity"] / data["count"], 1)
-                    }
-                else:
-                    result[zone_name][hour] = {"occupants": 0.0, "capacity": 0.0}
+        for hour, data in hourly_data.items():
+            if data["count"] > 0:
+                result[hour] = {
+                    "occupants": round(data["occupants"] / data["count"], 1),
+                    "capacity": round(data["capacity"] / data["count"], 1)
+                }
+            else:
+                result[hour] = {"occupants": 0.0, "capacity": 0.0}
 
         return result

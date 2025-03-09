@@ -56,7 +56,6 @@ export default function NotificationItem({name, id, onPreferenceChange} : Notifi
   const updatePreferences = async (newPrefs: Partial<NotificationPreference>) => {
     try {
       const updatedPrefs = { ...preferences, ...newPrefs };
-      console.log(`Updating preferences for ${name}:`, updatedPrefs);
       setPreferences(updatedPrefs);
       await AsyncStorage.setItem(`notification_${id}`, JSON.stringify(updatedPrefs));
       await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
