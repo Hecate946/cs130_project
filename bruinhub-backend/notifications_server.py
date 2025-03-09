@@ -10,6 +10,7 @@ from services.notification_scheduler import NotificationScheduler
 from config.base import DATABASE_URL
 from apscheduler.schedulers.background import BackgroundScheduler
 from datetime import datetime
+import os
 
 # Configure logging
 logging.basicConfig(
@@ -23,6 +24,7 @@ CORS(app)
 
 # Load configuration
 DB_URL = DATABASE_URL
+NOTIFICATION_INTERVAL = int(os.getenv("NOTIFICATION_INTERVAL", "3600"))
 app.config["SQLALCHEMY_DATABASE_URI"] = DB_URL
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 db.init_app(app)
@@ -88,11 +90,21 @@ def init_scheduler():
     """Initialize the notification scheduler"""
     logger.info("Initializing notification scheduler")
     
+    def check_with_context():
+        """Wrapper to ensure app context is available"""
+        with app.app_context():
+            try:
+                logger.info("Running scheduled capacity check")
+                NotificationScheduler.check_and_notify()
+                logger.info("Completed scheduled capacity check")
+            except Exception as e:
+                logger.error(f"Error in scheduled check: {str(e)}", exc_info=True)
+    
     # Add job to check capacities every 5 minutes
     scheduler.add_job(
-        func=lambda: app.app_context().push() and NotificationScheduler.check_and_notify(),
+        func=check_with_context,
         trigger='interval',
-        minutes=5,
+        seconds=NOTIFICATION_INTERVAL,
         id='check_capacities'
     )
     
