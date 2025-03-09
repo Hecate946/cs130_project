@@ -39,7 +39,7 @@ interface AllFacilityData {
   }>;
 }
 
-const HOURS_OCCUP_URL = "http://192.168.98.104:5001/api/v1/hours-and-occupancy"; //TODO fix as needed.
+const HOURS_OCCUP_URL = "http://192.168.1.38:5001/api/v1/hours-and-occupancy"; //TODO fix as needed.
 
 export default function HomeScreen({ onFinish }: HomeScreenProps) {
   const [pinnedItems, setPinnedItems] = useState<Set<string>>(new Set());

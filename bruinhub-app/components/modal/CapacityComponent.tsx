@@ -20,7 +20,7 @@ export default function CapacityComponent({ percentage, variant = "default" }: C
             style={[styles.progressBar, variant === "secondary" && styles.compactProgressBar]}
           />
         </View>
-        <Text style={styles.percentageText}>{roundedPercentage}%</Text>
+        <Text style={[styles.percentageText, variant === "secondary" && styles.compactPercentageText]}>{roundedPercentage}%</Text>
       </View>
     </View>
   );
@@ -38,7 +38,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.light.icon,
     width: "100%",
     paddingTop: 5,
-    paddingBottom: 15,
+    paddingBottom: 0,
   },
 
   title: {
@@ -56,10 +56,10 @@ const styles = StyleSheet.create({
   },
 
   compactProgressBar: {
-    height: 20,
+    height: 15,
     borderRadius: 10,
     backgroundColor: Colors.dark.tint,
-    width: "97%",
+    width: "100%",
   },
 
   progressBarWrapper: {
@@ -77,5 +77,12 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 400,
     textAlign: "right",
-  }
+  },
+
+  compactPercentageText: {
+    fontSize: 14,
+    fontWeight: 400,
+    textAlign: "right",
+    marginLeft: 5,
+  },
 });
