@@ -287,39 +287,48 @@ export default function NotificationsScreen({ onFinish }: NotificationsScreenPro
     // Store the new value in AsyncStorage
     await AsyncStorage.setItem('notifications_all_enabled', JSON.stringify(newValue));
     
-    // Update all facilities
-    const facilities = [...Restaurants, ...Takeout, ...Gyms, ...Libraries];
-    const capacityPreferences: { [key: string]: any } = {};
-    
-    // If disabling all, ensure all preferences are set to disabled
-    for (const facility of facilities) {
-      const prefs = {
-        enabled: false,  // Always set to false when toggling off
-        threshold: 50
-      };
-      
-      // Store in AsyncStorage
-      await AsyncStorage.setItem(`notification_${facility.key}`, JSON.stringify(prefs));
-      
-      // Update backend preferences
-      const slug = SlugMap.get(facility.name);
-      if (slug) {
-        capacityPreferences[slug] = prefs;
-      }
-    }
-    
     await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     
     if (!expoPushToken) {
       await registerForPushNotifications();
     } else {
+      // Get current preferences from AsyncStorage
+      const keys = await AsyncStorage.getAllKeys();
+      const notificationKeys = keys.filter(key => key.startsWith('notification_'));
+      const preferences: { [key: string]: any } = {};
+      
+      for (const key of notificationKeys) {
+        const value = await AsyncStorage.getItem(key);
+        if (value) {
+          preferences[key] = JSON.parse(value);
+        }
+      }
+      
+      // Convert to backend format while preserving existing preferences
+      const capacityPreferences: { [key: string]: any } = {};
+      for (const [key, value] of Object.entries(preferences)) {
+        const id = key.replace('notification_', '');
+        const name = [...Restaurants, ...Takeout, ...Gyms, ...Libraries]
+          .find(item => item.key === id)?.name;
+        
+        if (name) {
+          const slug = SlugMap.get(name);
+          if (slug) {
+            capacityPreferences[slug] = {
+              enabled: value.enabled,
+              threshold: value.threshold
+            };
+          }
+        }
+      }
+      
       // Send to backend
       const requestPayload = {
         pushToken: expoPushToken,
         preferences: {
           capacity: capacityPreferences
         },
-        is_active: newValue
+        is_active: newValue  // Only update the global toggle
       };
       
       const response = await fetch('http://192.168.216.35:5001/api/v1/notifications/update-preferences', {
