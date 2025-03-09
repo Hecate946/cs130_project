@@ -29,7 +29,7 @@ export default function LibraryReservationComponent({ roomsData }: LibraryReserv
       {
         Object.keys(availableRooms).length > 0 ?
           <View>
-            <Text style={styles.text}>Today's Reservations</Text>
+            <Text style={styles.text}>Today's Open Reservations</Text>
             <FlatList
               data={Object.entries(availableRooms)}
               keyExtractor={([roomId]) => roomId}
@@ -83,11 +83,14 @@ const styles = StyleSheet.create({
     fontSize: 22,
     fontWeight: 600,
     paddingBottom: 10,
+    paddingTop: 10,
   },
   description: {
     marginVertical: 15,
-    textAlign: "left",
+    textAlign: "center",
     fontSize: 16,
+    fontStyle: "italic",
     width: "100%",
+    paddingTop: 15,
   },
 });

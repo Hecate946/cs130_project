@@ -16,6 +16,7 @@ import LibraryReservationComponent from "./LibraryReservationComponent";
 import FeastMenuComponent from "./FeastMenuComponent";
 import NotificationBell from "../NotificationBellComponent";
 import HistoricalDataComponent from "./HistoricalDataComponent";
+import { EXPO_API_URL } from "@/constants/ApiUrls";
 
 interface FacilityModalProps {
   visible: boolean;
@@ -27,8 +28,7 @@ interface FacilityData {
   data: object,
 }
 
-// TODO change lol
-const URL = "http://192.168.216.35:5001/api/v1/";
+const URL = `${EXPO_API_URL}:5001/api/v1/`;
 
 const { height: SCREEN_HEIGHT } = Dimensions.get("window");
 const SWIPE_THRESHOLD = 100;
