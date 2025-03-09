@@ -34,9 +34,6 @@ class DeviceToken(db.Model):
                 "capacity": {"enabled": True, "threshold": 50},
                 "closing": {"enabled": True, "minutes_before": 30}
             }
-        else:
-            # Make a deep copy to ensure we don't have reference issues
-            self.preferences = copy.deepcopy(preferences)
     
     def __repr__(self):
         return f"<DeviceToken id={self.id} push_token={self.push_token[:10]}...>"
