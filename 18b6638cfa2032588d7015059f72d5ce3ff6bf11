@@ -52,6 +52,24 @@
       "serverId": "3c7ad661-7ce8-4163-af0d-ebc0f4c5b529"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "b7f9a704_2c30ba53",
+        "filename": "bruinhub-app/components/NotificationBellComponent.tsx",
+        "patchSetId": 1
+      },
+      "lineNbr": 101,
+      "author": {
+        "id": 1000005
+      },
+      "writtenOn": "2025-03-09T03:07:25Z",
+      "side": 1,
+      "message": "Acknowledged",
+      "parentUuid": "6ec635e4_be5b4a39",
+      "revId": "18b6638cfa2032588d7015059f72d5ce3ff6bf11",
+      "serverId": "3c7ad661-7ce8-4163-af0d-ebc0f4c5b529"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "eb7db322_9de15689",
@@ -65,6 +83,30 @@
       "writtenOn": "2025-03-08T06:36:29Z",
       "side": 1,
       "message": "Let\u0027s keep the URL the same so we don\u0027t have it changing every changeset.",
+      "range": {
+        "startLine": 31,
+        "startChar": 0,
+        "endLine": 31,
+        "endChar": 49
+      },
+      "revId": "18b6638cfa2032588d7015059f72d5ce3ff6bf11",
+      "serverId": "3c7ad661-7ce8-4163-af0d-ebc0f4c5b529"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "48915d98_87925677",
+        "filename": "bruinhub-app/components/modal/FacilityModal.tsx",
+        "patchSetId": 1
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 1000005
+      },
+      "writtenOn": "2025-03-09T03:07:25Z",
+      "side": 1,
+      "message": "Acknowledged",
+      "parentUuid": "eb7db322_9de15689",
       "range": {
         "startLine": 31,
         "startChar": 0,
