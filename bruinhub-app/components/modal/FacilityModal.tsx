@@ -6,6 +6,7 @@ import { Categories } from "@/constants/Categories";
 import { CategoriesMap } from "@/constants/CategoriesMap";
 import { SlugMap } from "@/constants/SlugMap";
 import { Colors } from "@/constants/Colors";
+import { API_BASE_URL } from "@/constants/ApiUrls";
 import MenuComponent from "./MenuComponent";
 import CapacityComponent from "./CapacityComponent";
 import DateFormatter from "./DateFormatter";
@@ -172,9 +173,9 @@ export default function FacilityModal({ visible, onClose, facility }: FacilityMo
         String(endOfDay.getSeconds()).padStart(2, '0');
 
       if (category === "library") {
-        specificURL = `${URL}${category}/${slug}/bookings/range?start=${start}&end=${end}`;
+        specificURL = `${URL}/${category}/${slug}/bookings/range?start=${start}&end=${end}`;
       } else {
-        specificURL = `${URL}${category}/${slug}`;
+        specificURL = `${URL}/${category}/${slug}`;
       }
 
       console.log(specificURL); // TODO remove
