@@ -172,9 +172,9 @@ export default function FacilityModal({ visible, onClose, facility }: FacilityMo
         String(endOfDay.getSeconds()).padStart(2, '0');
 
       if (category === "library") {
-        specificURL = `${URL}${category}/${slug}/bookings/range?start=${start}&end=${end}`;
+        specificURL = `${URL}/${category}/${slug}/bookings/range?start=${start}&end=${end}`;
       } else {
-        specificURL = `${URL}${category}/${slug}`;
+        specificURL = `${URL}/${category}/${slug}`;
       }
 
       console.log(specificURL); // TODO remove
