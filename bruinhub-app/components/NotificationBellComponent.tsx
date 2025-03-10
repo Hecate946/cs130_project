@@ -49,7 +49,6 @@ export default function NotificationBell({ facilityId, facilityName }: Notificat
         setHasNotifications(false);
       }
     } catch (error) {
-      console.error("Error checking notifications:", error);
       setHasNotifications(false);
     }
   };

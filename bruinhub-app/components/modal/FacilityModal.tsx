@@ -306,7 +306,7 @@ export default function FacilityModal({ visible, onClose, facility }: FacilityMo
 
             {/* Historical Occupancy Data */}
             {
-              historicalData && getCategoryFromFacility(facility) === 'dining' &&
+              historicalData && (getCategoryFromFacility(facility) === 'dining' || getCategoryFromFacility(facility) === 'gym') &&
               <HistoricalDataComponent data={historicalData?.data} />
             }
 

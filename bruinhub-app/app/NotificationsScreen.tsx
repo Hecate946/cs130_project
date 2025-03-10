@@ -79,7 +79,6 @@ export default function NotificationsScreen({ onFinish }: NotificationsScreenPro
       }
       
       if (finalStatus !== 'granted') {
-        console.log('Failed to get push notification permission');
         return;
       }
       
@@ -189,8 +188,6 @@ export default function NotificationsScreen({ onFinish }: NotificationsScreenPro
         is_active: currentAllEnabled  // Use the current local state
       };
 
-      console.log('Sending preferences to backend:', JSON.stringify(requestPayload, null, 2));
-      
       // Send to backend
       const response = await fetch(`${EXPO_API_URL}:5001/api/v1/notifications/update-preferences`, {
         method: 'POST',
@@ -201,13 +198,10 @@ export default function NotificationsScreen({ onFinish }: NotificationsScreenPro
       });
       
       const responseData = await response.json();
-      console.log('Backend response:', JSON.stringify(responseData, null, 2));
       
       if (!response.ok) {
         throw new Error(`Failed to sync preferences with backend: ${responseData.error || 'Unknown error'}`);
       }
-      
-      // Don't update allEnabled from backend response
       
     } catch (error) {
       console.error('Error syncing preferences with backend:', error);
