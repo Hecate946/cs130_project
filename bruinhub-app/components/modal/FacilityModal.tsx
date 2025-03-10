@@ -232,6 +232,7 @@ export default function FacilityModal({ visible, onClose, facility }: FacilityMo
       hideModalContentWhileAnimating
       swipeDirection={undefined}
       propagateSwipe={false}
+      testID="facility-modal"
     >
       <Animated.View
         style={[

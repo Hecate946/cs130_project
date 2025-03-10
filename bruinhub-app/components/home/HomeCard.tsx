@@ -31,7 +31,7 @@ export default function HomeCard({ name, description, facilityData, isPinned, pi
   };
 
   return (
-    <Card onPress={handlePress} style={styles.card}>
+    <Card onPress={handlePress} style={styles.card} testID="facility-card">
       <View style={styles.imageContainer}>
         {/* <Image source={{ uri: imageUrl }} style={styles.image} /> */}
         <TouchableOpacity onPress={pinCallback} testID="pin-button">

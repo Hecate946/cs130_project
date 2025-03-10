@@ -140,11 +140,12 @@ export default function NotificationBell({ facilityId, facilityName }: Notificat
   };
 
   return (
-    <TouchableOpacity onPress={toggleNotification}>
+    <TouchableOpacity onPress={toggleNotification} testID="notification-bell-button">
       <MaterialCommunityIcons
         name={hasNotifications ? "bell-check-outline" : "bell-off-outline"}
         size={32}
         color="black"
+        testID="notification-bell-icon"
       />
     </TouchableOpacity>
   );
