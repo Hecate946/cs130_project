@@ -29,7 +29,7 @@ interface FacilityData {
   data: object,
 }
 
-const URL = `${EXPO_API_URL}:5001/api/v1/`;
+const URL = `${EXPO_API_URL}:5001/api/v1`;
 
 const { height: SCREEN_HEIGHT } = Dimensions.get("window");
 const SWIPE_THRESHOLD = 100;
@@ -327,7 +327,11 @@ export default function FacilityModal({ visible, onClose, facility }: FacilityMo
               getCategoryFromFacility(facility) !== 'library' &&
               (<View style={styles.dateView}>
                 <Text style={styles.dateText}>Last updated:</Text>
-                <DateFormatter isoString={facilityData?.data?.last_updated} />
+                <DateFormatter isoString={
+                  getCategoryFromFacility(facility) === 'gym' && facilityData?.data?.zones
+                    ? Object.values(facilityData.data.zones)[0]?.last_updated
+                    : facilityData?.data?.last_updated
+                } />
               </View>)
             }
 
