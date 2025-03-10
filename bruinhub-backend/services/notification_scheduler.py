@@ -93,7 +93,7 @@ class NotificationScheduler:
                             threshold = preferences.get("threshold", 50)
                             
                             # Send notification if capacity is below threshold
-                            if capacity_percentage <= threshold:
+                            if capacity_percentage >= threshold:
                                 NotificationService.dispatch_notification(
                                     push_token=device.push_token,
                                     title=f"{facility_name} Capacity Alert",
@@ -122,8 +122,8 @@ class NotificationScheduler:
                         if preferences.get("enabled", False):
                             threshold = preferences.get("threshold", 50)
                             
-                            # Send notification if capacity is below threshold
-                            if capacity_percentage <= threshold:
+                            # Send notification if capacity exceeds threshold
+                            if capacity_percentage >= threshold:
                                 NotificationService.dispatch_notification(
                                     push_token=device.push_token,
                                     title=f"{facility_name} Capacity Alert",
