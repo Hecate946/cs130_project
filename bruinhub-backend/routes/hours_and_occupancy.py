@@ -43,22 +43,16 @@ def get_hours():
 
     logger.info("Fetching hours and occupancy for gyms")
     for slug in FACILITY_IDS:
-        gym_occupancy = gym_db.get_latest_gym_capacity(slug)
         gym_data = gym_db.get_gym_latest(slug)
         
         if gym_data and "regular_hours" in gym_data:
             gym_hours = gym_data["regular_hours"]
-            if gym_occupancy:
-                data[slug] = {"hours": gym_hours}
-                data[slug].update(
-                    {
-                        zone.zone_name: {
-                            "occupants": zone.occupants,
-                            "capacity": zone.capacity,
-                        }
-                        for zone in gym_occupancy
-                    }
-                )
+            if "capacity" in gym_data and "occupants" in gym_data:
+                data[slug] = {
+                    "hours": gym_hours,
+                    "occupants": gym_data["occupants"],
+                    "capacity": gym_data["capacity"]
+                }
             else:
                 continue  # Skip this gym if no occupancy data
         else:

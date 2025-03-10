@@ -119,11 +119,17 @@ class GymDatabase:
             for cap in capacities
         } if capacities else {}
 
+        # Calculate total capacity and occupants across all zones
+        total_occupants = sum(zone["occupants"] for zone in zones.values()) if zones else 0
+        total_capacity = sum(zone["capacity"] for zone in zones.values()) if zones else 0
+
         return {
             "slug": gym.slug,
             "regular_hours": gym.regular_hours,
             "special_hours": gym.special_hours,
             "zones": zones,
+            "occupants": total_occupants,
+            "capacity": total_capacity,
             "last_updated": gym.last_updated.isoformat(),
         }
 

@@ -291,8 +291,12 @@ export default function FacilityModal({ visible, onClose, facility }: FacilityMo
               )
             }
             {
-              getCategoryFromFacility(facility) === 'gym' &&
-              <GymZonesComponent zones={facilityData?.data?.zones} />
+              getCategoryFromFacility(facility) === 'gym' && facilityData?.data?.zones && (
+                <>
+                  <Text style={styles.sectionTitle}>Zone Capacities</Text>
+                  <GymZonesComponent zones={facilityData.data.zones} />
+                </>
+              )
             }
 
             {/* Menu Display */}
@@ -454,5 +458,11 @@ const styles = StyleSheet.create({
     paddingTop: 20,
     paddingBottom: 10,
     fontStyle: "italic",
-  }
+  },
+  sectionTitle: {
+    fontSize: 20,
+    fontWeight: "500",
+    marginTop: 15,
+    marginBottom: 5,
+  },
 });
