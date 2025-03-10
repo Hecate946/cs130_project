@@ -3,7 +3,11 @@ from .gym_tasks import scrape_and_store_gym_data
 from .dining_tasks import scrape_and_store_dining_data
 from .library_tasks import scrape_and_store_library_data
 from .rec_tasks import check_and_refresh_sessions, attempt_reservations
-def init_scheduler(app, scrape_interval: int, refresh_interval: int) -> BackgroundScheduler:
+
+
+def init_scheduler(
+    app, scrape_interval: int, refresh_interval: int
+) -> BackgroundScheduler:
     """Initialize the task scheduler with all periodic tasks"""
     scheduler = BackgroundScheduler()
 
@@ -29,11 +33,13 @@ def init_scheduler(app, scrape_interval: int, refresh_interval: int) -> Backgrou
             attempt_reservations()
 
     # Add jobs with wrapped context
-    scheduler.add_job(gym_job, 'interval', seconds=scrape_interval)
-    scheduler.add_job(dining_job, 'interval', seconds=scrape_interval)
-    scheduler.add_job(library_job, 'interval', seconds=scrape_interval)
+    scheduler.add_job(gym_job, "interval", seconds=scrape_interval)
+    scheduler.add_job(dining_job, "interval", seconds=scrape_interval)
+    scheduler.add_job(library_job, "interval", seconds=scrape_interval)
 
-    scheduler.add_job(session_refresh_job, 'interval', seconds=refresh_interval, id="session_refresh")
+    scheduler.add_job(
+        session_refresh_job, "interval", seconds=refresh_interval, id="session_refresh"
+    )
     # TODO: scheduler.add_job(reservation_attempt_job, 'interval', seconds=reservation_interval, id="reservation_attempt")
 
     scheduler.start()

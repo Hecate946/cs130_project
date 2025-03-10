@@ -28,8 +28,7 @@ for url in urls:
     script_data = driver.execute_script("return resources;")
 
     # Process the data
-    room_data = [{"name": room["title"], "id": room["eid"]}
-                 for room in script_data]
+    room_data = [{"name": room["title"], "id": room["eid"]} for room in script_data]
 
     # Print results
     for room in room_data:

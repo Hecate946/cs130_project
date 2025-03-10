@@ -28,9 +28,11 @@ def check_and_refresh_sessions():
             cookies = {".AspNet.ApplicationCookie": user.aspnet_cookie}
             response = requests.get(AUTH_CHECK_URL, cookies=cookies)
 
-            if response.status_code == 200 and response.json().get("IsAuthenticated", False):
+            if response.status_code == 200 and response.json().get(
+                "IsAuthenticated", False
+            ):
                 logger.info(f"✅ User {user.party_id} is authenticated.")
-                
+
                 # Check if a new cookie was issued
                 new_cookie = response.cookies.get(".AspNet.ApplicationCookie")
                 if new_cookie:
@@ -41,11 +43,15 @@ def check_and_refresh_sessions():
                 if verify_response.status_code == 200:
                     logger.info(f"🔹 Session for {user.party_id} is valid.")
                 else:
-                    logger.warning(f"⚠️ Session verification failed for {user.party_id}.")
+                    logger.warning(
+                        f"⚠️ Session verification failed for {user.party_id}."
+                    )
                     rec_db.mark_session_invalid(user.id)
 
             else:
-                logger.warning(f"❌ User {user.party_id} is NOT authenticated. Marking session as invalid.")
+                logger.warning(
+                    f"❌ User {user.party_id} is NOT authenticated. Marking session as invalid."
+                )
                 rec_db.mark_session_invalid(user.id)
 
         except requests.RequestException as e:
@@ -75,7 +81,7 @@ def attempt_reservations():
             "m": task.desired_date.month,
             "d": task.desired_date.day,
             "t": "",
-            "v": "0"
+            "v": "0",
         }
 
         try:
@@ -84,7 +90,9 @@ def attempt_reservations():
                 logger.info(f"✅ Successfully reserved court for task {task.id}.")
                 rec_db.mark_reservation_task_completed(task.id)
             else:
-                logger.warning(f"⚠️ Failed to reserve court for task {task.id}. Response: {response.text}")
+                logger.warning(
+                    f"⚠️ Failed to reserve court for task {task.id}. Response: {response.text}"
+                )
 
         except requests.RequestException as e:
             logger.error(f"⚠️ Error attempting reservation for task {task.id}: {e}")

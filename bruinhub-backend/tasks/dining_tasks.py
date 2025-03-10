@@ -44,7 +44,7 @@ def scrape_and_store_dining_data():
                     dining_db.insert_dining_capacity(
                         slug=hall_slug,
                         occupants=hall_info["occupants"],
-                        capacity=hall_info["capacity"]
+                        capacity=hall_info["capacity"],
                     )
 
             logger.info("Successfully completed dining data update")

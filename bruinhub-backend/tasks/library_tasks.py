@@ -33,7 +33,7 @@ def scrape_and_store_library_data():
             if not library_id:
                 logger.warning(f"Library {library_name} not found in database")
                 continue
-            
+
             logger.info(f"Processing data for {library_name}")
             library_db.process_library_data(data, library_id)
             logger.info(f"Successfully processed data for {library_name}")

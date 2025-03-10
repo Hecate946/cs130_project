@@ -4,7 +4,11 @@ from tasks import init_scheduler
 from tasks.gym_tasks import setup_gym_tasks, scrape_and_store_gym_data
 from tasks.dining_tasks import setup_dining_tasks, scrape_and_store_dining_data
 from tasks.library_tasks import setup_library_tasks, scrape_and_store_library_data
-from tasks.rec_tasks import setup_rec_tasks, check_and_refresh_sessions, attempt_reservations
+from tasks.rec_tasks import (
+    setup_rec_tasks,
+    check_and_refresh_sessions,
+    attempt_reservations,
+)
 import logging
 from config.base import DATABASE_URL
 from config.rec import REFRESH_INTERVAL
@@ -48,4 +52,4 @@ if __name__ == "__main__":
     # TODO attempt_reservations
 
     # Run the app (this will keep the scheduler running)
-    app.run(debug=True, host="0.0.0.0", port=5002) 
+    app.run(debug=True, host="0.0.0.0", port=5002)

@@ -6,6 +6,7 @@ from sqlalchemy import desc
 
 logger = logging.getLogger(__name__)
 
+
 class DiningDatabase:
     def __init__(self):
         logger.info("Initialized DiningDatabase")
@@ -25,16 +26,12 @@ class DiningDatabase:
         hall = self.get_dining_hall_by_slug(slug)
         if not hall:
             # Create new dining hall if it doesn't exist
-            hall = DiningHall(
-                slug=slug,
-                menu=menu,
-                hours_today=hours_today
-            )
+            hall = DiningHall(slug=slug, menu=menu, hours_today=hours_today)
             db.session.add(hall)
         else:
             hall.menu = menu
             hall.hours_today = hours_today
-            
+
         try:
             db.session.commit()
             logger.info(f"Successfully updated dining hall {slug}")
@@ -53,9 +50,7 @@ class DiningDatabase:
 
         try:
             new_capacity = DiningCapacityHistory(
-                hall_id=hall.id,
-                occupants=occupants,
-                capacity=capacity
+                hall_id=hall.id, occupants=occupants, capacity=capacity
             )
             db.session.add(new_capacity)
             db.session.commit()
@@ -73,11 +68,11 @@ class DiningDatabase:
             logger.error(f"No dining hall found with slug {slug}")
             return None
 
-        return DiningCapacityHistory.query.filter_by(
-            hall_id=hall.id
-        ).order_by(
-            desc(DiningCapacityHistory.last_updated)
-        ).first()
+        return (
+            DiningCapacityHistory.query.filter_by(hall_id=hall.id)
+            .order_by(desc(DiningCapacityHistory.last_updated))
+            .first()
+        )
 
     def get_dining_hall_latest(self, slug: str) -> Dict:
         """Gets the latest data for a dining hall, including capacity."""
@@ -92,13 +87,13 @@ class DiningDatabase:
             "hours_today": hall.hours_today,
             "occupants": capacity.occupants if capacity else 0,
             "capacity": capacity.capacity if capacity else 0,
-            "last_updated": hall.last_updated.isoformat()
+            "last_updated": hall.last_updated.isoformat(),
         }
 
     def get_historical_capacity(self, slug: str) -> Dict[int, Dict[str, float]]:
         """
         Calculate historical capacity averages by hour for a dining hall.
-        
+
         Returns:
             Dict[int, Dict[str, float]]: A dictionary mapping hours (6-1) to their average capacity data:
             {
@@ -113,11 +108,11 @@ class DiningDatabase:
             return {}
 
         # Get all capacity records for this hall
-        capacities = DiningCapacityHistory.query.filter_by(
-            hall_id=hall.id
-        ).order_by(
-            DiningCapacityHistory.last_updated
-        ).all()
+        capacities = (
+            DiningCapacityHistory.query.filter_by(hall_id=hall.id)
+            .order_by(DiningCapacityHistory.last_updated)
+            .all()
+        )
 
         if not capacities:
             # Return all hours with zero values if no data
@@ -127,7 +122,10 @@ class DiningDatabase:
             }
 
         # Initialize hourly counters
-        hourly_data = {hour: {"occupants": 0.0, "capacity": 0.0, "count": 0} for hour in range(6, 26)}  # 6am to 1am
+        hourly_data = {
+            hour: {"occupants": 0.0, "capacity": 0.0, "count": 0}
+            for hour in range(6, 26)
+        }  # 6am to 1am
 
         # Aggregate data by hour
         for capacity in capacities:
@@ -143,7 +141,7 @@ class DiningDatabase:
             if data["count"] > 0:
                 result[hour] = {
                     "occupants": round(data["occupants"] / data["count"], 1),
-                    "capacity": round(data["capacity"] / data["count"], 1)
+                    "capacity": round(data["capacity"] / data["count"], 1),
                 }
             else:
                 result[hour] = {"occupants": 0.0, "capacity": 0.0}

@@ -27,7 +27,7 @@ def get_hours():
     for slug in OCCUSPACE_IDS:
         hall_occupancy = dining_db.get_latest_dining_capacity(slug)
         hall_data = dining_db.get_dining_hall_latest(slug)
-        
+
         if hall_data and "hours_today" in hall_data:
             hall_hours = hall_data["hours_today"]
             if hall_occupancy:
@@ -44,14 +44,14 @@ def get_hours():
     logger.info("Fetching hours and occupancy for gyms")
     for slug in FACILITY_IDS:
         gym_data = gym_db.get_gym_latest(slug)
-        
+
         if gym_data and "regular_hours" in gym_data:
             gym_hours = gym_data["regular_hours"]
             if "capacity" in gym_data and "occupants" in gym_data:
                 data[slug] = {
                     "hours": gym_hours,
                     "occupants": gym_data["occupants"],
-                    "capacity": gym_data["capacity"]
+                    "capacity": gym_data["capacity"],
                 }
             else:
                 continue  # Skip this gym if no occupancy data

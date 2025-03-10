@@ -2,29 +2,23 @@ OCCUSPACE_PREFIX = "https://testing.occuspace.io/waitz/location"
 MENUS_PREFIX = "https://menu.dining.ucla.edu/Menus"
 
 # Dining locations that support menu scraping
-# 
+#
 # WARNING: Keys are not canonical slugs, but rather the slugs used in the menu URL
 MENU_ENABLED_RESTAURANTS = {
     "bplate": {
         "menu_name": "BruinPlate",  # Name used in menu URL
-        "scraper_type": "standard"  # standard uses the regular menu scraping logic
+        "scraper_type": "standard",  # standard uses the regular menu scraping logic
     },
-    "deneve": {
-        "menu_name": "DeNeve",
-        "scraper_type": "standard"
-    },
-    "epicuria": {
-        "menu_name": "Epicuria",
-        "scraper_type": "standard"
-    },
+    "deneve": {"menu_name": "DeNeve", "scraper_type": "standard"},
+    "epicuria": {"menu_name": "Epicuria", "scraper_type": "standard"},
     "feast": {
         "menu_name": "FeastAtRieber",
-        "scraper_type": "feast"  # feast uses special menu scraping logic
-    }
+        "scraper_type": "feast",  # feast uses special menu scraping logic
+    },
 }
 
 # Occuspace IDs for all dining locations
-# 
+#
 # Keys are canonical slugs
 OCCUSPACE_IDS = {
     "bplate": 77,
@@ -35,13 +29,15 @@ OCCUSPACE_IDS = {
     "study-hedrick": 83,
     "epicuria-covel": 88,
     "feast": 100,
-    "epicuria-ackerman": 108
+    "epicuria-ackerman": 108,
 }
+
 
 def supports_menu_scraping(slug: str) -> bool:
     """Check if a dining location supports menu scraping."""
     return slug in MENU_ENABLED_RESTAURANTS
 
+
 def get_menu_info(slug: str) -> dict:
     """Get menu scraping information for a dining location."""
-    return MENU_ENABLED_RESTAURANTS.get(slug, {}) 
+    return MENU_ENABLED_RESTAURANTS.get(slug, {})

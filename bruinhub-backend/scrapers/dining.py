@@ -8,7 +8,7 @@ from config.dining import (
     OCCUSPACE_IDS,
     MENU_ENABLED_RESTAURANTS,
     supports_menu_scraping,
-    get_menu_info
+    get_menu_info,
 )
 
 logger = logging.getLogger(__name__)
@@ -23,7 +23,9 @@ class DiningScrapers:
         try:
             occuspace_id = OCCUSPACE_IDS[slug]
             data = requests.get(f"{OCCUSPACE_PREFIX}/{occuspace_id}/hours").json()
-            hours = next(rules["hours"] for rules in data["data"][0]["rules"] if rules["active"])
+            hours = next(
+                rules["hours"] for rules in data["data"][0]["rules"] if rules["active"]
+            )
             return hours
         except Exception as e:
             logger.error(f"Error fetching hours for {slug}: {str(e)}")
@@ -48,13 +50,15 @@ class DiningScrapers:
             response.raise_for_status()
             soup = BeautifulSoup(response.text, "lxml")
             return {
-                str(section.contents[0]).strip(): [elem.text for elem in section.select("a")]
+                str(section.contents[0]).strip(): [
+                    elem.text for elem in section.select("a")
+                ]
                 for section in soup.select("li.sect-item")
             }
         except Exception as e:
             logger.error(f"Error fetching menu for {menu_name}: {str(e)}")
             return {}
-        
+
     @staticmethod
     def _get_feast_menu(menu_name: str) -> Dict[str, dict]:
         """Returns the menu for restaurants using feast menu format,
@@ -63,7 +67,7 @@ class DiningScrapers:
             response = requests.get(f"{MENUS_PREFIX}/{menu_name}")
             response.raise_for_status()
             soup = BeautifulSoup(response.text, "lxml")
-            
+
             main_content = soup.find(id="main-content")
             if not main_content:
                 logger.error("Could not locate main-content container.")
@@ -71,7 +75,7 @@ class DiningScrapers:
 
             sections = {}
             current_section = None
-            
+
             # Helper function to decide if an image tag is valid for a section.
             def is_valid_section_image(img_tag):
                 if not img_tag:
@@ -92,12 +96,14 @@ class DiningScrapers:
                     header_text = element.get_text(strip=True)
                     if header_text:
                         current_section = header_text
-                        
+
                         # Look for a valid image immediately following the header.
                         section_image = None
                         next_elem = element.find_next_sibling()
                         while next_elem:
-                            if next_elem.name == "img" and is_valid_section_image(next_elem):
+                            if next_elem.name == "img" and is_valid_section_image(
+                                next_elem
+                            ):
                                 src = next_elem.get("src")
                                 # Convert relative URL to absolute URL
                                 if src and src.startswith("/"):
@@ -106,9 +112,12 @@ class DiningScrapers:
                                     section_image = src
                                 break
                             next_elem = next_elem.find_next_sibling()
-                        
-                        sections[current_section] = {"image": section_image, "items": []}
-                
+
+                        sections[current_section] = {
+                            "image": section_image,
+                            "items": [],
+                        }
+
                 # Extract menu items as before.
                 if (
                     element.name == "div"
@@ -119,7 +128,7 @@ class DiningScrapers:
                     if link and current_section:
                         item_text = link.get_text(strip=True)
                         sections[current_section]["items"].append(item_text)
-            
+
             return sections
         except Exception as e:
             logger.error(f"Error fetching menu for {menu_name}: {str(e)}")
@@ -145,7 +154,7 @@ class DiningScrapers:
     def scrape_dining_halls(self) -> Dict:
         """
         Scrapes and returns dining hall data including occupancy, menu, and hours.
-        
+
         Returns:
             Dict: A dictionary containing data for all dining locations with structure:
             {
@@ -164,14 +173,14 @@ class DiningScrapers:
             try:
                 logger.info(f"Scraping data for {slug}")
                 occupants, capacity = self._get_occupancy(slug)
-                
+
                 dining_data[slug] = {
                     "menu": self._get_menu(slug),
                     "capacity": capacity,
                     "occupants": occupants,
-                    "hours_today": self._get_hours_today(slug)
+                    "hours_today": self._get_hours_today(slug),
                 }
-                
+
                 logger.info(f"Successfully scraped data for {slug}")
             except Exception as e:
                 logger.error(f"Error scraping data for {slug}: {str(e)}")
@@ -181,9 +190,9 @@ class DiningScrapers:
 
 if __name__ == "__main__":
     import json
+
     # Configure logging for standalone testing
     logging.basicConfig(level=logging.INFO)
     # Test the scraper
     scraper = DiningScrapers()
     print(json.dumps(scraper.scrape_dining_halls(), indent=4))
-

@@ -4,4 +4,4 @@ from .library import *
 from .dining import *
 from .gyms_static import *
 
-__all__ = ['DATABASE_URL']
+__all__ = ["DATABASE_URL"]

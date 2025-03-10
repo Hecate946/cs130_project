@@ -5,6 +5,7 @@ from models.rec import db, RecUser, ReservationTask, SessionTask, TaskStatus
 
 logger = logging.getLogger(__name__)
 
+
 class RecDatabase:
     """Handles recreation-related database operations."""
 
@@ -13,7 +14,11 @@ class RecDatabase:
 
     def get_active_users(self) -> List[RecUser]:
         """Fetch all users with active session tasks."""
-        return RecUser.query.join(SessionTask).filter(SessionTask.status == TaskStatus.running).all()
+        return (
+            RecUser.query.join(SessionTask)
+            .filter(SessionTask.status == TaskStatus.running)
+            .all()
+        )
 
     def get_user_by_party_id(self, party_id: str) -> Optional[RecUser]:
         """Fetch a user by their Party ID."""
@@ -34,7 +39,9 @@ class RecDatabase:
 
     def get_pending_reservation_tasks(self) -> List[ReservationTask]:
         """Retrieve all scheduled reservation tasks that haven't been completed."""
-        return ReservationTask.query.filter(ReservationTask.status == TaskStatus.running).all()
+        return ReservationTask.query.filter(
+            ReservationTask.status == TaskStatus.running
+        ).all()
 
     def mark_reservation_task_completed(self, task_id: int) -> bool:
         """Mark a reservation task as completed."""

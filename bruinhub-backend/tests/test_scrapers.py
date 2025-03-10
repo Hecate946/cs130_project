@@ -8,10 +8,13 @@ from scrapers.dining import DiningScrapers
 @pytest.fixture(autouse=True)
 def suppress_bs4_warnings():
     import warnings
+
     # Filter the specific BeautifulSoup LXML DeprecationWarning
-    warnings.filterwarnings("ignore", 
-                           message="The 'strip_cdata' option of HTMLParser()",
-                           category=DeprecationWarning)
+    warnings.filterwarnings(
+        "ignore",
+        message="The 'strip_cdata' option of HTMLParser()",
+        category=DeprecationWarning,
+    )
 
 
 def test_get_facility_counts():
@@ -29,9 +32,9 @@ def test_get_facility_counts():
     assert "LocationName" in first_item, "Each facility should have a location name"
     assert "LastCount" in first_item, "Each facility should have a count"
     assert "TotalCapacity" in first_item, "Each facility should have a capacity"
-    assert "LastUpdatedDateAndTime" in first_item, (
-        "Each facility should have a timestamp"
-    )
+    assert (
+        "LastUpdatedDateAndTime" in first_item
+    ), "Each facility should have a timestamp"
 
 
 def test_filter_facility_zones():
@@ -96,6 +99,7 @@ def test_scrape_facility_counts():
             assert isinstance(first_zone["occupants"], int)
             assert isinstance(first_zone["open"], bool)
 
+
 def test_scrape_dining_halls():
     """Test the restaurant data fetching"""
     scraper = DiningScrapers()
@@ -106,7 +110,9 @@ def test_scrape_dining_halls():
     assert "bplate" in restaurants, "Should have data for slug: bplate"
     assert "deneve" in restaurants, "Should have data for slug: deneve"
     assert "epicuria-covel" in restaurants, "Should have data for slug: epicuria-covel"
-    assert "epicuria-ackerman" in restaurants, "Should have data for slug: epicuria-ackerman"
+    assert (
+        "epicuria-ackerman" in restaurants
+    ), "Should have data for slug: epicuria-ackerman"
 
     # Check structure of restaurant data
     for restaurant, data in restaurants.items():

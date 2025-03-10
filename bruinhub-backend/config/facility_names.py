@@ -11,8 +11,7 @@ FACILITY_NAMES = {
     "study-hedrick": "The Study at Hedrick",
     "the-drey": "The Drey",
     "epicuria-ackerman": "Epic at Ackerman",
-    
     # Gyms
     "bfit": "BFit",
-    "john-wooden-center": "John Wooden Center"
-} 
+    "john-wooden-center": "John Wooden Center",
+}

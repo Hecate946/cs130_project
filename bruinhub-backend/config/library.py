@@ -14,14 +14,13 @@ SEL_URL = "https://calendar.library.ucla.edu/reserve/spaces/SEL"
 MEDIA_LAB_URL = "https://calendar.library.ucla.edu/spaces?lid=19391"
 
 
-
 LIBRARY_NAME_TO_URL_MAP = {
     POWELL: POWELL_URL,
     YRL: YRL_URL,
     MUSIC_LIBRARY: MUSIC_LIBRARY_URL,
     BIOMEDICAL: BIOMEDICAL_URL,
     SEL: SEL_URL,
-    MEDIA_LAB: MEDIA_LAB_URL
+    MEDIA_LAB: MEDIA_LAB_URL,
 }
 
 LIBRARY_URL_TO_NAME_MAP = {
@@ -30,14 +29,19 @@ LIBRARY_URL_TO_NAME_MAP = {
     MUSIC_LIBRARY_URL: MUSIC_LIBRARY,
     BIOMEDICAL_URL: BIOMEDICAL,
     SEL_URL: SEL,
-    MEDIA_LAB_URL: MEDIA_LAB
+    MEDIA_LAB_URL: MEDIA_LAB,
 }
 
-ALL_LIBRARY_URLS = [POWELL_URL, YRL_URL, MUSIC_LIBRARY_URL,
-                    BIOMEDICAL_URL, SEL_URL, MEDIA_LAB_URL]
+ALL_LIBRARY_URLS = [
+    POWELL_URL,
+    YRL_URL,
+    MUSIC_LIBRARY_URL,
+    BIOMEDICAL_URL,
+    SEL_URL,
+    MEDIA_LAB_URL,
+]
 
-ALL_LIBRARY_NAMES = [POWELL, YRL, MUSIC_LIBRARY,
-                     BIOMEDICAL, SEL, MEDIA_LAB]
+ALL_LIBRARY_NAMES = [POWELL, YRL, MUSIC_LIBRARY, BIOMEDICAL, SEL, MEDIA_LAB]
 
 LIBRARY_GRID_ENDPOINT = "https://calendar.library.ucla.edu/spaces/availability/grid"
 
@@ -47,7 +51,7 @@ LIBRARY_LID_MAP = {
     MUSIC_LIBRARY: 4752,
     BIOMEDICAL: 6578,
     SEL: 8312,
-    MEDIA_LAB: 19391
+    MEDIA_LAB: 19391,
 }
 
 LIBRARY_GID_MAP = {
@@ -56,7 +60,7 @@ LIBRARY_GID_MAP = {
     MUSIC_LIBRARY: 7750,
     BIOMEDICAL: 11674,
     SEL: 14408,
-    MEDIA_LAB: 40875
+    MEDIA_LAB: 40875,
 }
 
 LIBRARY_URL_CONFIG = {
@@ -70,7 +74,7 @@ LIBRARY_URL_CONFIG = {
             "Accept": "*/*",
             "Accept-Encoding": "gzip, deflate, br",
             "Origin": "https://calendar.library.ucla.edu",
-            "Referer": f"https://calendar.library.ucla.edu?lid={LIBRARY_LID_MAP[library_name]}&gid=0"
+            "Referer": f"https://calendar.library.ucla.edu?lid={LIBRARY_LID_MAP[library_name]}&gid=0",
         },
         "payload": {
             "lid": LIBRARY_LID_MAP[library_name],
@@ -78,7 +82,7 @@ LIBRARY_URL_CONFIG = {
             "gid": 0,
             "start": None,  # TODO: Update to be flexible input
             "end": None,  # TODO: Update to be flexible input
-            "pageSize": 1
+            "pageSize": 1,
         },
     }
     for library_name in ALL_LIBRARY_NAMES
