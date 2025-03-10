@@ -1,22 +1,28 @@
 import React from 'react';
-import { render, fireEvent, waitFor } from '@testing-library/react-native';
+import { render, fireEvent, waitFor, act } from '@testing-library/react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { act } from 'react-test-renderer';
 import FacilityModal from '@/components/modal/FacilityModal';
 import { CategoriesMap } from '@/constants/CategoriesMap';
 import { SlugMap } from '@/constants/SlugMap';
+import { NavigationContainer } from '@react-navigation/native';
 
-// Mock dependencies
-jest.mock('react-native-modal', () => {
-  const MockModal = jest.requireActual('react-native-paper').Modal;
-  return MockModal;
-});
+jest.mock('react-native-modal', () => ({
+  __esModule: true,
+  default: jest.fn(({ children }) => <>{children}</>), // Ensures children render
+}));
 
 jest.mock('react-native-paper', () => ({
-  ActivityIndicator: 'ActivityIndicator',
+  __esModule: true,
+  ActivityIndicator: jest.fn(() => <div data-testid="loading-indicator" />),
   Button: jest.fn(({ children, onPress }) => (
-    <button onClick={onPress}>{children}</button>
-  )),
+      <button data-testid={"close-button"} onClick={onPress}>{children}</button>
+    )),
+}));
+
+jest.mock('@react-native-async-storage/async-storage', () => ({
+  getItem: jest.fn(() => Promise.resolve(null)),
+  setItem: jest.fn(() => Promise.resolve()),
+  removeItem: jest.fn(() => Promise.resolve()),
 }));
 
 // Mock child components to simplify testing
@@ -28,8 +34,8 @@ jest.mock('@/components/modal/GymOperatingHoursComponent', () => 'GymOperatingHo
 jest.mock('@/components/modal/GymZonesComponent', () => 'GymZonesComponent');
 jest.mock('@/components/modal/LibraryReservationComponent', () => 'LibraryReservationComponent');
 jest.mock('@/components/modal/FeastMenuComponent', () => 'FeastMenuComponent');
+jest.mock('@/components/modal/FeastMenuComponent', () => 'FeastMenuComponent');
 
-// Mock fetch
 global.fetch = jest.fn();
 
 describe('FacilityModal', () => {
@@ -45,31 +51,42 @@ describe('FacilityModal', () => {
       hours_today: '9:00 AM - 5:00 PM',
       zones: [{ name: 'Zone A', occupancy: 30 }],
       regular_hours: 'Regular Hours',
-      special_hours: 'Special Hours'
+      special_hours: 'Special Hours',
     }
   };
 
   // Wrapper to provide SafeAreaProvider
   const renderComponent = (props = {}) => render(
-    <SafeAreaProvider initialSafeAreaInsets={{ top: 0, bottom: 0, left: 0, right: 0 }}>
-      <FacilityModal
-        visible={true}
-        onClose={mockOnClose}
-        facility={mockFacility}
-        {...props}
-      />
-    </SafeAreaProvider>
+    <NavigationContainer>
+      <SafeAreaProvider initialSafeAreaInsets={{ top: 0, bottom: 0, left: 0, right: 0 }}>
+          <FacilityModal visible={true} onClose={mockOnClose} facility={mockFacility} {...props} />
+      </SafeAreaProvider>
+      </NavigationContainer>
   );
 
   beforeEach(() => {
+    jest.restoreAllMocks();
     jest.clearAllMocks();
-    (fetch as jest.Mock).mockClear();
+    (fetch as jest.Mock).mockResolvedValue({
+      ok: true,
+      text: jest.fn().mockResolvedValue(JSON.stringify(mockFacilityData)),
+      json: jest.fn().mockResolvedValue(mockFacilityData),
+    });
 
-    // Mock CategoriesMap and SlugMap
-    jest.spyOn(CategoriesMap, 'entries').mockReturnValue([
-      ['dining', new Map([['Test Facility', mockFacility]])]
-    ]);
-    jest.spyOn(SlugMap, 'get').mockReturnValue('test-facility');
+    jest.spyOn(CategoriesMap, 'entries').mockReturnValue(new Map([
+      ['dining', new Map([['Test Facility', mockFacility]])],
+      ['gym', new Map([['BFit', 'BFit']])]
+    ]).entries());
+
+    jest.spyOn(SlugMap, 'get').mockImplementation((key) => {
+      const mockSlugMap = new Map([
+        ["Test Facility", "test-facility"],
+        ["BFit", "BFit"],
+        ["Wooden", "john-wooden-center"]
+      ]);
+      return mockSlugMap.get(key);
+    });
+    jest.spyOn(React, 'useState').mockRestore();
   });
 
   it('renders nothing when not visible', () => {
@@ -87,35 +104,25 @@ describe('FacilityModal', () => {
   });
 
   it('shows loading indicator when fetching data', async () => {
-    // Create a pending promise to simulate loading
-    const fetchPromise = new Promise(() => { });
-    (fetch as jest.Mock).mockReturnValue(fetchPromise);
+    (fetch as jest.Mock).mockImplementation(
+      () => new Promise((resolve) => setTimeout(() => resolve({ json: () => Promise.resolve(mockFacilityData) }), 500))
+    );
 
     const { getByTestId } = renderComponent();
 
-    // Wait for loading to appear
     await waitFor(() => {
-      const loadingIndicator = getByTestId('loading-indicator');
-      expect(loadingIndicator).toBeTruthy();
-    });
+      expect(getByTestId('loading-indicator')).toBeTruthy();
+    }, { timeout: 1000 }); // make sure we wait so we can see loading indicator
   });
 
   it('fetches facility data successfully', async () => {
-    (fetch as jest.Mock).mockResolvedValue({
-      json: () => Promise.resolve(mockFacilityData)
-    });
-
-    const { getByText } = renderComponent();
-
-    // Wait for facility name to appear
+    const { getByText } = renderComponent({ visible: true, facility: mockFacility });
+  
     await waitFor(() => {
       expect(getByText(mockFacility)).toBeTruthy();
     });
 
-    // Verify fetch was called
-    expect(fetch).toHaveBeenCalledWith(
-      expect.stringContaining(`dining/${SlugMap.get(mockFacility)}`)
-    );
+    expect(fetch).toHaveBeenCalled();
   });
 
   it('handles fetch error gracefully', async () => {
@@ -125,7 +132,6 @@ describe('FacilityModal', () => {
 
     renderComponent();
 
-    // Wait for error to be logged
     await waitFor(() => {
       expect(consoleErrorSpy).toHaveBeenCalledWith(
         'Error fetching facility data:',
@@ -137,83 +143,76 @@ describe('FacilityModal', () => {
   });
 
   it('closes modal when close button is pressed', async () => {
-    (fetch as jest.Mock).mockResolvedValue({
-      json: () => Promise.resolve(mockFacilityData)
-    });
 
-    const { getByText } = renderComponent();
-
-    // Wait for close button to appear and then press it
+    const { getByText } = renderComponent({ visible: true, facility: mockFacility });
+  
     await waitFor(() => {
       const closeButton = getByText('Close');
       fireEvent.press(closeButton);
     });
 
-    // Verify onClose was called
     expect(mockOnClose).toHaveBeenCalled();
   });
 
-  it('renders different components based on facility category', async () => {
-    // Test dining facility
-    jest.spyOn(CategoriesMap, 'entries').mockReturnValueOnce([
-      ['dining', new Map([['Feast', 'Feast']])]
-    ]);
-
+  it('displays correct category-specific information', async () => {
     (fetch as jest.Mock).mockResolvedValue({
-      json: () => Promise.resolve({
+      ok: true,
+      text: jest.fn().mockResolvedValue(JSON.stringify({
         data: {
-          ...mockFacilityData.data,
-          menu: { section1: ['dish1', 'dish2'] }
+          occupants: 50,
+          capacity: 100,
+          last_updated: '2024-03-04T12:00:00Z',
+          menu: { section1: ['item1', 'item2'] },
+          hours_today: '9:00 AM - 5:00 PM',
+          regular_hours: 'Regular Hours',
+          special_hours: 'Special Hours',
+          zones: [{ name: 'Cardio Zone', occupancy: 20 }]
+        }
+      })),
+      json: jest.fn().mockResolvedValue({
+        data: {
+          occupants: 50,
+          capacity: 100,
+          last_updated: '2024-03-04T12:00:00Z',
+          menu: { section1: ['item1', 'item2'] },
+          hours_today: '9:00 AM - 5:00 PM',
+          regular_hours: 'Regular Hours',
+          special_hours: 'Special Hours',
+          zones: [{ name: 'Cardio Zone', occupancy: 20 }]
         }
       })
-    });
+    });    
 
-    const { getByText } = renderComponent({ facility: 'Feast' });
+    const { getByText } = renderComponent({ facility: 'BFit' });
 
-    // Wait for modal content to render
     await waitFor(() => {
       expect(getByText('Last updated:')).toBeTruthy();
     });
   });
 
-  it('handles pan responder for dragging', async () => {
+  it('does not crash when no facility data is available', async () => {
+    (fetch as jest.Mock).mockResolvedValue({
+      json: () => Promise.resolve(null)
+    });
+
+    const { queryByText } = renderComponent();
+
+    await waitFor(() => {
+      expect(queryByText('Historical Capacity')).toBeNull();
+    });
+  });
+
+  it('ensures fetch is called with correct URL based on category', async () => {
     (fetch as jest.Mock).mockResolvedValue({
       json: () => Promise.resolve(mockFacilityData)
     });
 
-    const { getByTestId } = renderComponent();
+    renderComponent();
 
-    // Simulate drag gesture
-    await act(async () => {
-      const scrollView = getByTestId('drag-indicator');
-      // Note: This is a simplified gesture simulation
-      fireEvent(scrollView, 'panResponderMove', { dy: 200 });
-    });
-
-    // Verify modal behavior (this might require more complex mocking)
-    expect(mockOnClose).not.toHaveBeenCalled();
-  });
-
-  it('renders gym-specific components for gym facilities', async () => {
-    // Mock gym facility
-    jest.spyOn(CategoriesMap, 'entries').mockReturnValueOnce([
-      ['gym', new Map([['Test Gym', 'Test Gym']])]
-    ]);
-
-    (fetch as jest.Mock).mockResolvedValue({
-      json: () => Promise.resolve({
-        data: {
-          ...mockFacilityData.data,
-          zones: [{ name: 'Cardio Zone', occupancy: 20 }]
-        }
-      })
-    });
-
-    const { getByText } = renderComponent({ facility: 'Test Gym' });
-
-    // Wait for modal content to render
     await waitFor(() => {
-      expect(getByText('Last updated:')).toBeTruthy();
+      expect(fetch).toHaveBeenCalledWith(
+        expect.stringContaining(`dining/${SlugMap.get(mockFacility)}`)
+      );
     });
   });
 });

@@ -178,8 +178,6 @@ export default function FacilityModal({ visible, onClose, facility }: FacilityMo
         specificURL = `${URL}/${category}/${slug}`;
       }
 
-      console.log(specificURL); // TODO remove
-
       response = await fetch(specificURL);
       const responseText = await response.text();
       const data = JSON.parse(responseText);
@@ -333,6 +331,7 @@ export default function FacilityModal({ visible, onClose, facility }: FacilityMo
 
             <View style={styles.buttonView}>
               <Button
+                testID="close-button"
                 onPress={handleClosePress}
                 mode="contained"
                 style={styles.button}
